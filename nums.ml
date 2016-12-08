@@ -7,7 +7,32 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "pair.ml";;
+set_jrh_lexer;;
+open Pair;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Metis;;
+open Quot;;
+open Impconv;;
 
 (* ------------------------------------------------------------------------- *)
 (* Declare a new type "ind" of individuals.                                  *)

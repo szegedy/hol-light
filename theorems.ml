@@ -8,7 +8,22 @@
 (*                 (c) Copyright, Marco Maggesi 2012                         *)
 (* ========================================================================= *)
 
-needs "simp.ml";;
+set_jrh_lexer;;
+open Simp;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
 
 (* ------------------------------------------------------------------------- *)
 (* More stuff about equality.                                                *)

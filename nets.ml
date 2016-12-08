@@ -7,7 +7,12 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "basics.ml";;
+set_jrh_lexer;;
+open Basics;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
 
 (* ------------------------------------------------------------------------- *)
 (* Term nets are a finitely branching tree structure; at each level we       *)

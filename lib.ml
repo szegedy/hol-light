@@ -7,6 +7,11 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
+set_jrh_lexer;;
+open Num;;
+open Hol_native;;
+open System;;
+
 let fail() = failwith "";;
 
 (* ------------------------------------------------------------------------- *)
@@ -770,7 +775,7 @@ let rec choose t =
 
 let print_fpf (f:('a,'b)func) = Format.print_string "<func>";;
 
-#install_printer print_fpf;;
+(* #install_printer print_fpf;; *)
 
 (* ------------------------------------------------------------------------- *)
 (* Set operations parametrized by equality (from Steven Obua).               *)

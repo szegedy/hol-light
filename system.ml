@@ -43,7 +43,7 @@ set_jrh_lexer;;
 (* Load in the bignum library and set up printing in the toplevel.           *)
 (* ------------------------------------------------------------------------- *)
 
-#load "nums.cma";;
+(* #load "nums.cma";; *)
 
 include Num;;
 
@@ -52,4 +52,4 @@ let print_num n =
   Format.print_string(string_of_num n);
   Format.close_box();;
 
-#install_printer print_num;;
+(* #install_printer print_num;; *)

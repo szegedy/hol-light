@@ -8,7 +8,31 @@
 (*                 (c) Copyright, Marco Maggesi 2015                         *)
 (* ========================================================================= *)
 
-needs "quot.ml";;
+set_jrh_lexer;;
+open Quot;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Metis;;
+open Impconv;;
 
 (* ------------------------------------------------------------------------- *)
 (* Constants implementing (or at least tagging) syntactic sugar.             *)

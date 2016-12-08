@@ -7,7 +7,21 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "itab.ml";;
+set_jrh_lexer;;
+open Itab;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
 
 (* ------------------------------------------------------------------------- *)
 (* Generalized conversion (conversion plus a priority).                      *)

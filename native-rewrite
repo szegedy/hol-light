@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+
+import collections
+import os
+import re
+import subprocess
+import sys
+
+
+lumps = {
+  'hol': '''hol_native
+      system lib fusion basics nets printer preterm parser equal bool drule
+      tactics itab simp theorems ind_defs class trivia canon meson metis quot
+      impconv pair nums recursion arith wf calc_num normalizer grobner ind_types
+      lists realax calc_int realarith reals calc_rat ints sets iterate cart define
+      help database'''.split()
+}
+
+
+def rewrite(path):
+  if not path.endswith('.ml'):
+    raise ValueError('Expected .ml files only, got %r' % path)
+  us = os.path.basename(path)[:-3]
+
+  # Slurp in entire file
+  contents = open(path).read()
+  lines = contents.split('\n')
+  contents = re.sub(r'\(\*.*?\*\)', '(* *)', contents)
+
+  # Split into header, middle, footer
+  middle_re = re.compile(r'^(?:needs "[\w/]*?(\w+)\.ml"|open (\w+)|set_jrh_lexer);;')
+  footer_re = re.compile(r'^let\b')
+  for i, line in enumerate(lines):
+    if middle_re.match(line):
+      header = lines[:i]
+      j = i + 1
+      while middle_re.match(lines[j]):
+        j += 1
+      middle = lines[i:j]
+      footer = lines[j:]
+      break
+    elif 'system.ml' not in path and footer_re.match(line):
+      header = lines[:i]
+      middle = []
+      footer = [''] + lines[i:]
+      break
+
+  # Make sure middle starts with set_jrh_lexer
+  if not middle or 'set_jrh_lexer' not in middle[0]:
+    middle = ['set_jrh_lexer;;'] + middle
+
+  # Rewrite needs into open
+  for i, line in enumerate(middle):
+    m = middle_re.match(line)
+    need = m.group(1)
+    if need:
+      middle[i] = 'open %s;;' % need.capitalize()
+
+  # Comment out install_printer lines
+  for i, line in enumerate(footer):
+    if line.startswith('#install_printer'):
+      footer[i] = '(* Disabled for native build: %s *)' % line
+
+  # Collect current opens
+  existing_opens = set()
+  for line in middle:
+    m = middle_re.match(line)
+    module = m.group(2)
+    if module: existing_opens.add(module)
+
+  # Make sure every lump includes everything before it in the lump
+  for lump, mods in lumps.items():
+    if us in mods:
+      mods = tuple(mods)
+      index = mods.index(us)
+      for i, m in enumerate(mods):
+        m = m.capitalize()
+        open_m = 'open %s;;' % m
+        if i < index and not m in existing_opens:
+          if us == 'system' and m == 'Hol_native': continue
+          middle.append(open_m)
+        if i >= index:
+          if open_m in middle: middle.remove(open_m)
+
+  # Rewrite file in place
+  open(path, 'w').write('\n'.join(header + middle + footer))
+
+
+def main():
+  for path in sys.argv[1:]:
+    try:
+      rewrite(path)
+    except:
+      print('failure rewriting %r' % path, file=sys.stderr)
+      raise
+
+
+if __name__ == '__main__':
+  main()

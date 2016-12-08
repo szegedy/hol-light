@@ -8,7 +8,40 @@
 (*                 (c) Copyright, Marco Maggesi 2014                         *)
 (* ========================================================================= *)
 
-needs "ind_types.ml";;
+set_jrh_lexer;;
+open Ind_types;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Metis;;
+open Quot;;
+open Impconv;;
+open Pair;;
+open Nums;;
+open Recursion;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Normalizer;;
+open Grobner;;
 
 (* ------------------------------------------------------------------------- *)
 (* Standard tactic for list induction using MATCH_MP_TAC list_INDUCT         *)
@@ -715,34 +748,33 @@ let dest_char,mk_char,dest_string,mk_string,CHAR_EQ_CONV,STRING_EQ_CONV =
       let pp = prefix n avars in
       let pth = if b then ASCII_NEQS_FT else ASCII_NEQS_TF in
       INST (zip p pp @ zip s1 ss1 @ zip s2 ss2) (el n pth) in
-  let rec STRING_DISTINCTNESS =
-    let xtm,xstm = `x:char`,`xs:string`
-    and ytm,ystm = `y:char`,`ys:string`
-    and niltm = `[]:string` in
-    let NIL_EQ_THM = EQT_INTRO (REFL niltm)
-    and CONS_EQ_THM,CONS_NEQ_THM = (CONJ_PAIR o prove)
-     (`(CONS x xs:string = CONS x ys <=> xs = ys) /\
-       ((x = y <=> F) ==> (CONS x xs:string = CONS y ys <=> F))`,
-      REWRITE_TAC[CONS_11] THEN MESON_TAC[])
-    and NIL_NEQ_CONS,CONS_NEQ_NIL = (CONJ_PAIR o prove)
-     (`(NIL:string = CONS x xs <=> F) /\
-       (CONS x xs:string = NIL <=> F)`,
-      REWRITE_TAC[NOT_CONS_NIL]) in
-    fun s1 s2 ->
-      if s1 = niltm
-      then if s2 = niltm then NIL_EQ_THM
-           else let c2,s2 = rand (rator s2),rand s2 in
-                INST [c2,xtm;s2,xstm] NIL_NEQ_CONS
-      else let c1,s1 = rand (rator s1),rand s1 in
-           if s2 = niltm then INST [c1,xtm;s1,xstm] CONS_NEQ_NIL
-           else let c2,s2 = rand (rator s2),rand s2 in
-           if c1 = c2
-           then let th1 = INST [c1,xtm; s1,xstm; s2,ystm] CONS_EQ_THM
-                and th2 = STRING_DISTINCTNESS s1 s2 in
-                TRANS th1 th2
-           else let ilist = [c1,xtm; c2,ytm; s1,xstm; s2,ystm] in
-                let itm = INST ilist CONS_NEQ_THM in
-                MP itm (CHAR_DISTINCTNESS c1 c2) in
+  let xtm,xstm = `x:char`,`xs:string`
+  and ytm,ystm = `y:char`,`ys:string`
+  and niltm = `[]:string` in
+  let NIL_EQ_THM = EQT_INTRO (REFL niltm)
+  and CONS_EQ_THM,CONS_NEQ_THM = (CONJ_PAIR o prove)
+   (`(CONS x xs:string = CONS x ys <=> xs = ys) /\
+     ((x = y <=> F) ==> (CONS x xs:string = CONS y ys <=> F))`,
+    REWRITE_TAC[CONS_11] THEN MESON_TAC[])
+  and NIL_NEQ_CONS,CONS_NEQ_NIL = (CONJ_PAIR o prove)
+   (`(NIL:string = CONS x xs <=> F) /\
+     (CONS x xs:string = NIL <=> F)`,
+    REWRITE_TAC[NOT_CONS_NIL]) in
+  let rec STRING_DISTINCTNESS s1 s2 =
+    if s1 = niltm
+    then if s2 = niltm then NIL_EQ_THM
+         else let c2,s2 = rand (rator s2),rand s2 in
+              INST [c2,xtm;s2,xstm] NIL_NEQ_CONS
+    else let c1,s1 = rand (rator s1),rand s1 in
+         if s2 = niltm then INST [c1,xtm;s1,xstm] CONS_NEQ_NIL
+         else let c2,s2 = rand (rator s2),rand s2 in
+         if c1 = c2
+         then let th1 = INST [c1,xtm; s1,xstm; s2,ystm] CONS_EQ_THM
+              and th2 = STRING_DISTINCTNESS s1 s2 in
+              TRANS th1 th2
+         else let ilist = [c1,xtm; c2,ytm; s1,xstm; s2,ystm] in
+              let itm = INST ilist CONS_NEQ_THM in
+              MP itm (CHAR_DISTINCTNESS c1 c2) in
   let CHAR_EQ_CONV : conv =
     fun tm ->
       let c1,c2 = dest_eq tm in

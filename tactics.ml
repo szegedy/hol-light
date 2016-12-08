@@ -8,7 +8,19 @@
 (*                 (c) Copyright, Marco Maggesi 2012                         *)
 (* ========================================================================= *)
 
-needs "drule.ml";;
+set_jrh_lexer;;
+open Drule;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
 
 (* ------------------------------------------------------------------------- *)
 (* The common case of trivial instantiations.                                *)
@@ -921,5 +933,5 @@ let top_thm() =
 (* Install the goal-related printers.                                        *)
 (* ------------------------------------------------------------------------- *)
 
-#install_printer print_goal;;
-#install_printer print_goalstack;;
+(* Disabled for native build: #install_printer print_goal;; *)
+(* Disabled for native build: #install_printer print_goalstack;; *)

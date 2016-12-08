@@ -7,7 +7,15 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "preterm.ml";;
+set_jrh_lexer;;
+open Preterm;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
 
 (* ------------------------------------------------------------------------- *)
 (* Need to have this now for set enums, since "," isn't a reserved word.     *)

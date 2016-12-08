@@ -7,7 +7,10 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "lib.ml";;
+set_jrh_lexer;;
+open Lib;;
+open Hol_native;;
+open System;;
 
 module type Hol_kernel =
   sig

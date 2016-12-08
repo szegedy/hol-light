@@ -7,7 +7,11 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "fusion.ml";;
+set_jrh_lexer;;
+open Fusion;;
+open Hol_native;;
+open System;;
+open Lib;;
 
 (* ------------------------------------------------------------------------- *)
 (* Create probably-fresh variable                                            *)

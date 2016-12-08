@@ -7,7 +7,20 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "tactics.ml";;
+set_jrh_lexer;;
+open Tactics;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
 
 (* ------------------------------------------------------------------------- *)
 (* Accept a theorem modulo unification.                                      *)

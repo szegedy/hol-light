@@ -7,7 +7,17 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "equal.ml";;
+set_jrh_lexer;;
+open Equal;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
 
 (* ------------------------------------------------------------------------- *)
 (* Set up parse status of basic and derived logical constants.               *)

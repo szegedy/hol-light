@@ -7,7 +7,23 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "theorems.ml";;
+set_jrh_lexer;;
+open Theorems;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
 
 (* ------------------------------------------------------------------------- *)
 (* Strip off exactly n arguments from combination.                           *)

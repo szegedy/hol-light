@@ -12,6 +12,8 @@
 
 (* Execute any OCaml expression given as a string. *)
 
+set_jrh_lexer;;
+
 let exec = ignore o Toploop.execute_phrase false Format.std_formatter
   o !Toploop.parse_toplevel_phrase o Lexing.from_string;;
 

@@ -7,7 +7,13 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "nets.ml";;
+set_jrh_lexer;;
+open Nets;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
 
 (* ------------------------------------------------------------------------- *)
 (* Character discrimination.                                                 *)
@@ -517,9 +523,9 @@ let print_thm = pp_print_thm std_formatter;;
 (* Install all the printers.                                                 *)
 (* ------------------------------------------------------------------------- *)
 
-#install_printer print_qtype;;
-#install_printer print_qterm;;
-#install_printer print_thm;;
+(* Disabled for native build: #install_printer print_qtype;; *)
+(* Disabled for native build: #install_printer print_qterm;; *)
+(* Disabled for native build: #install_printer print_thm;; *)
 
 (* ------------------------------------------------------------------------- *)
 (* Conversions to string.                                                    *)

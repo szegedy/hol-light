@@ -7,7 +7,18 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "bool.ml";;
+set_jrh_lexer;;
+open Bool;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
 
 (* ------------------------------------------------------------------------- *)
 (* Type of instantiations, with terms, types and higher-order data.          *)

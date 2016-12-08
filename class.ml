@@ -7,7 +7,24 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "ind_defs.ml";;
+set_jrh_lexer;;
+open Ind_defs;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
 
 (* ------------------------------------------------------------------------- *)
 (* Eta-axiom, corresponding conversion, and extensionality.                  *)

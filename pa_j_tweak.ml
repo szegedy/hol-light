@@ -6,9 +6,14 @@
 (* $Id: pa_o.ml,v 6.33 2010-11-16 16:48:21 deraugla Exp $ *)
 (* Copyright (c) INRIA 2007-2010 *)
 
+(*
 #load "pa_extend.cmo";
 #load "q_MLast.cmo";
 #load "pa_reloc.cmo";
+*)
+open Pa_extend;
+open Q_MLast;
+open Pa_reloc;
 
 open Pcaml;
 
@@ -23,7 +28,8 @@ Pcaml.no_constructors_arity.val := True;
 (* $Id: reloc.ml,v 6.15 2010-11-14 11:20:26 deraugla Exp $ *)
 (* Copyright (c) INRIA 2007-2010 *)
 
-#load "pa_macro.cmo";
+(* #load "pa_macro.cmo"; *)
+open Pa_macro;
 
 open MLast;
 
@@ -752,7 +758,7 @@ value eq_class_expr x y =
 (* $Id: plexer.ml,v 6.11 2010-10-04 20:14:58 deraugla Exp $ *)
 (* Copyright (c) INRIA 2007-2010 *)
 
-#load "pa_lexer.cmo";
+(* #load "pa_lexer.cmo"; *)
 
 (* ------------------------------------------------------------------------- *)
 (* Added by JRH as a backdoor to change lexical conventions.                 *)
@@ -788,8 +794,12 @@ value err ctx loc msg =
 (* JRH's hack to make the case distinction "unmixed" versus "mixed"          *)
 (* ------------------------------------------------------------------------- *)
 
-value is_uppercase s = String.uppercase s = s;
-value is_only_lowercase s = String.lowercase s = s && not(is_uppercase s);
+value is_uppercase s = do {
+  (* output_string stderr ("checking upper " ^ s ^ "\n"); *)
+  String.uppercase_ascii s = s };
+value is_only_lowercase s = do {
+  (* output_string stderr ("checking lower " ^ s ^ "\n"); *)
+  String.lowercase_ascii s = s && not(is_uppercase s) };
 
 value jrh_identifier find_kwd id =
   let jflag = jrh_lexer.val in

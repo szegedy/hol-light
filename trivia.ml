@@ -7,7 +7,25 @@
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (* ========================================================================= *)
 
-needs "class.ml";;
+set_jrh_lexer;;
+open Class;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
 
 (* ------------------------------------------------------------------------- *)
 (* Combinators. We don't bother with S and K, which seem of little use.      *)
