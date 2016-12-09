@@ -1,7 +1,9 @@
 *.cmi
 *.cmo
 *.cmx
+*.cmxa
 *.o
+*.a
 syntax?
 victory
 pa_j.ml

@@ -7,20 +7,29 @@ import subprocess
 import sys
 
 
+# lump_name -> (lump_deps, files)
 lumps = {
-  'hol': '''hol_native
-      system lib fusion basics nets printer preterm parser equal bool drule
-      tactics itab simp theorems ind_defs class trivia canon meson metis quot
-      impconv pair nums recursion arith wf calc_num normalizer grobner ind_types
-      lists realax calc_int realarith reals calc_rat ints sets iterate cart define
-      help database'''.split()
+  'hol': ((), '''
+      hol_native system lib fusion basics nets printer preterm parser equal bool
+      drule tactics itab simp theorems ind_defs class trivia canon meson metis
+      quot impconv pair nums recursion arith wf calc_num normalizer grobner
+      ind_types lists realax calc_int realarith reals calc_rat ints sets iterate
+      cart define help database'''.split()),
+  'multivariate': (('hol',), '''
+      Library/wo Library/binary Library/card Library/permutations Library/products
+      Library/floor Library/iter Multivariate/misc Multivariate/metric
+      Multivariate/vectors Multivariate/determinants Multivariate/topology
+      Multivariate/convex Multivariate/paths Multivariate/polytope
+      Multivariate/degree Multivariate/derivatives Multivariate/clifford
+      Multivariate/integration Multivariate/measure
+      Multivariate/multivariate_database'''.split()),
 }
 
 
 def rewrite(path):
   if not path.endswith('.ml'):
     raise ValueError('Expected .ml files only, got %r' % path)
-  us = os.path.basename(path)[:-3]
+  us = path[:-3]
 
   # Slurp in entire file
   contents = open(path).read()
@@ -69,18 +78,25 @@ def rewrite(path):
     if module: existing_opens.add(module)
 
   # Make sure every lump includes everything before it in the lump
-  for lump, mods in lumps.items():
-    if us in mods:
-      mods = tuple(mods)
-      index = mods.index(us)
-      for i, m in enumerate(mods):
-        m = m.capitalize()
-        open_m = 'open %s;;' % m
-        if i < index and not m in existing_opens:
-          if us == 'system' and m == 'Hol_native': continue
-          middle.append(open_m)
-        if i >= index:
-          if open_m in middle: middle.remove(open_m)
+  try:
+    lump, = (lump for lump, (_, mods) in lumps.items() if us in mods)
+  except ValueError:
+    raise ValueError("Can't find lump containing %r" % us)
+  mods = tuple(lumps[lump][1])
+  index = mods.index(us)
+  for i, m in enumerate(mods):
+    m = os.path.basename(m).capitalize()
+    open_m = 'open %s;;' % m
+    if i < index and not m in existing_opens:
+      if us == 'system' and m == 'Hol_native': continue
+      middle.append(open_m)
+    if i >= index:
+      if open_m in middle: middle.remove(open_m)
+  for prev_lump in lumps[lump][0]:
+    for m in lumps[prev_lump][1]:
+      m = os.path.basename(m).capitalize()
+      if m not in existing_opens:
+        middle.append('open %s;;' % m)
 
   # Rewrite file in place
   open(path, 'w').write('\n'.join(header + middle + footer))

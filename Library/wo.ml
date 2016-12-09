@@ -6,6 +6,54 @@
 (* the patience to persist till the end. Anyway, the proofs work!            *)
 (* ========================================================================= *)
 
+set_jrh_lexer;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Metis;;
+open Quot;;
+open Impconv;;
+open Pair;;
+open Nums;;
+open Recursion;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Normalizer;;
+open Grobner;;
+open Ind_types;;
+open Lists;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Cart;;
+open Define;;
+open Help;;
+open Database;;
+
 let PBETA_TAC = CONV_TAC(ONCE_DEPTH_CONV GEN_BETA_CONV);;
 
 let EXPAND_TAC s = FIRST_ASSUM(SUBST1_TAC o SYM o

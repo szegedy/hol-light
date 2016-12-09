@@ -7,7 +7,65 @@
 (*               (c) Copyright, Marco Maggesi 2014                           *)
 (* ========================================================================= *)
 
-needs "Multivariate/topology.ml";;
+set_jrh_lexer;;
+open Topology;;
+open Wo;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
+open Vectors;;
+open Determinants;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Metis;;
+open Quot;;
+open Impconv;;
+open Pair;;
+open Nums;;
+open Recursion;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Normalizer;;
+open Grobner;;
+open Ind_types;;
+open Lists;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Cart;;
+open Define;;
+open Help;;
+open Database;;
+open Binary;;
 
 (* ------------------------------------------------------------------------- *)
 (* Some miscelleneous things that are convenient to prove here.              *)

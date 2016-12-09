@@ -5,8 +5,60 @@
 (*                (c) Copyright, Marco Maggesi 2014                          *)
 (* ========================================================================= *)
 
-needs "Library/card.ml";;
-needs "Library/floor.ml";;
+set_jrh_lexer;;
+open Card;;
+open Floor;;
+open Wo;;
+open Permutations;;
+open Products;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Itab;;
+open Simp;;
+open Theorems;;
+open Ind_defs;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Metis;;
+open Quot;;
+open Impconv;;
+open Pair;;
+open Nums;;
+open Recursion;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Normalizer;;
+open Grobner;;
+open Ind_types;;
+open Lists;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Cart;;
+open Define;;
+open Help;;
+open Database;;
+open Binary;;
+open Iter;;
 prioritize_real();;
 
 (* ------------------------------------------------------------------------- *)
