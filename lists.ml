@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Ind_types;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -42,6 +41,7 @@ open Wf;;
 open Calc_num;;
 open Normalizer;;
 open Grobner;;
+open Ind_types;;
 
 (* ------------------------------------------------------------------------- *)
 (* Standard tactic for list induction using MATCH_MP_TAC list_INDUCT         *)

@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Reals;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -46,7 +45,7 @@ open Lists;;
 open Realax;;
 open Calc_int;;
 open Realarith;;
-open Real;;
+open Reals;;
 
 (* ------------------------------------------------------------------------- *)
 (* Constant for decimal fractions written #xxx.yyy                           *)

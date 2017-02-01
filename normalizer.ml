@@ -5,7 +5,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Calc_num;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -35,6 +34,7 @@ open Nums;;
 open Recursion;;
 open Arith;;
 open Wf;;
+open Calc_num;;
 
 let SEMIRING_NORMALIZERS_CONV =
   let SEMIRING_PTHS = prove

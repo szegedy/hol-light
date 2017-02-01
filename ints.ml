@@ -11,7 +11,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Calc_rat;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -50,7 +49,7 @@ open Realax;;
 open Calc_int;;
 open Realarith;;
 open Reals;;
-open Real;;
+open Calc_rat;;
 
 (* ------------------------------------------------------------------------- *)
 (* Representing predicate. The "is_int" variant is useful for backwards      *)

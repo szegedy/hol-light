@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Grobner;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -40,6 +39,7 @@ open Arith;;
 open Wf;;
 open Calc_num;;
 open Normalizer;;
+open Grobner;;
 
 (* ------------------------------------------------------------------------- *)
 (* Abstract left inverses for binary injections (we could construct them...) *)

@@ -1,5 +1,4 @@
 set_jrh_lexer;;
-open Help;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -44,8 +43,7 @@ open Sets;;
 open Iterate;;
 open Cart;;
 open Define;;
-open Real;;
-open Int;;
+open Help;;
 
 theorems :=
 [

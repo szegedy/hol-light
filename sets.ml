@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Ints;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -49,8 +48,7 @@ open Calc_int;;
 open Realarith;;
 open Reals;;
 open Calc_rat;;
-open Real;;
-open Int;;
+open Ints;;
 
 (* ------------------------------------------------------------------------- *)
 (* Infix symbols for set operations.                                         *)

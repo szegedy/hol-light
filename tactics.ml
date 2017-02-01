@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Drule;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -21,6 +20,7 @@ open Preterm;;
 open Parser;;
 open Equal;;
 open Bool;;
+open Drule;;
 
 (* ------------------------------------------------------------------------- *)
 (* The common case of trivial instantiations.                                *)

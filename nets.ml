@@ -8,11 +8,11 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Basics;;
 open Hol_native;;
 open System;;
 open Lib;;
 open Fusion;;
+open Basics;;
 
 (* ------------------------------------------------------------------------- *)
 (* Term nets are a finitely branching tree structure; at each level we       *)

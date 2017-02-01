@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Define;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -52,8 +51,7 @@ open Ints;;
 open Sets;;
 open Iterate;;
 open Cart;;
-open Real;;
-open Int;;
+open Define;;
 
 (* ------------------------------------------------------------------------- *)
 (* Help system.                                                              *)

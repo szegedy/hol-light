@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Wf;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -37,6 +36,7 @@ open Pair;;
 open Nums;;
 open Recursion;;
 open Arith;;
+open Wf;;
 
 (* ------------------------------------------------------------------------- *)
 (* Simple rule to get rid of NUMERAL constant.                               *)

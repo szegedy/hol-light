@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Recursion;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -36,6 +35,7 @@ open Quot;;
 open Impconv;;
 open Pair;;
 open Nums;;
+open Recursion;;
 
 (* ------------------------------------------------------------------------- *)
 (* Note: all the following proofs are intuitionistic and intensional, except *)

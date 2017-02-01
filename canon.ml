@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Trivia;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -27,6 +26,7 @@ open Simp;;
 open Theorems;;
 open Ind_defs;;
 open Class;;
+open Trivia;;
 
 (* ------------------------------------------------------------------------- *)
 (* Pre-simplification.                                                       *)

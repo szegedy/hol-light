@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Canon;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -28,6 +27,7 @@ open Theorems;;
 open Ind_defs;;
 open Class;;
 open Trivia;;
+open Canon;;
 
 (* ------------------------------------------------------------------------- *)
 (* Some parameters controlling MESON behaviour.                              *)

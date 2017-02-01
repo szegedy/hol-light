@@ -8,10 +8,10 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Fusion;;
 open Hol_native;;
 open System;;
 open Lib;;
+open Fusion;;
 
 (* ------------------------------------------------------------------------- *)
 (* Create probably-fresh variable                                            *)

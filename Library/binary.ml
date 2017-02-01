@@ -3,7 +3,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Wo;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -50,6 +49,7 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 
 let BINARY_INDUCT = prove
  (`!P. P 0 /\ (!n. P n ==> P(2 * n) /\ P(2 * n + 1)) ==> !n. P n`,

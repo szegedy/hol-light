@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Meson;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -29,6 +28,7 @@ open Ind_defs;;
 open Class;;
 open Trivia;;
 open Canon;;
+open Meson;;
 open Metis;;
 
 (* ------------------------------------------------------------------------- *)

@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Tactics;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -21,6 +20,7 @@ open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
+open Tactics;;
 
 (* ------------------------------------------------------------------------- *)
 (* Accept a theorem modulo unification.                                      *)

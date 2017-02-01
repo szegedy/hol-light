@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Calc_int;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -44,6 +43,7 @@ open Grobner;;
 open Ind_types;;
 open Lists;;
 open Realax;;
+open Calc_int;;
 
 (* ------------------------------------------------------------------------- *)
 (* Some lemmas needed now just to drive the decision procedure.              *)

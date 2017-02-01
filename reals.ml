@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Realarith;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -46,6 +45,7 @@ open Ind_types;;
 open Lists;;
 open Realax;;
 open Calc_int;;
+open Realarith;;
 
 (* ------------------------------------------------------------------------- *)
 (* Additional commutativity properties of the inclusion map.                 *)

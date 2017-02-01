@@ -6,21 +6,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Degree;;
-open Wo;;
-open Card;;
-open Permutations;;
-open Products;;
-open Floor;;
-open Misc;;
-open Iter;;
-open Metric;;
-open Vectors;;
-open Determinants;;
-open Topology;;
-open Convex;;
-open Paths;;
-open Polytope;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -67,7 +52,22 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
+open Vectors;;
+open Determinants;;
+open Topology;;
+open Convex;;
+open Paths;;
+open Polytope;;
+open Degree;;
 
 (* ------------------------------------------------------------------------- *)
 (* Derivatives. The definition is slightly tricky since we make it work over *)

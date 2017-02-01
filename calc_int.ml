@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Realax;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -43,6 +42,7 @@ open Normalizer;;
 open Grobner;;
 open Ind_types;;
 open Lists;;
+open Realax;;
 
 (* ------------------------------------------------------------------------- *)
 (* Syntax operations on integer constants of type ":real".                   *)

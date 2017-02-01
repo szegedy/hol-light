@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Pair;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -33,6 +32,7 @@ open Meson;;
 open Metis;;
 open Quot;;
 open Impconv;;
+open Pair;;
 
 (* ------------------------------------------------------------------------- *)
 (* Declare a new type "ind" of individuals.                                  *)

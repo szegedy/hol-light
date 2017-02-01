@@ -8,9 +8,9 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Lib;;
 open Hol_native;;
 open System;;
+open Lib;;
 
 module type Hol_kernel =
   sig

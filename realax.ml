@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Lists;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -42,6 +41,7 @@ open Calc_num;;
 open Normalizer;;
 open Grobner;;
 open Ind_types;;
+open Lists;;
 
 (* ------------------------------------------------------------------------- *)
 (* The main infix overloaded operations                                      *)

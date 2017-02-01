@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Simp;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -24,6 +23,7 @@ open Bool;;
 open Drule;;
 open Tactics;;
 open Itab;;
+open Simp;;
 
 (* ------------------------------------------------------------------------- *)
 (* More stuff about equality.                                                *)

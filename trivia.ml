@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Class;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -26,6 +25,7 @@ open Itab;;
 open Simp;;
 open Theorems;;
 open Ind_defs;;
+open Class;;
 
 (* ------------------------------------------------------------------------- *)
 (* Combinators. We don't bother with S and K, which seem of little use.      *)

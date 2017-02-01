@@ -10,13 +10,13 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Printer;;
 open Hol_native;;
 open System;;
 open Lib;;
 open Fusion;;
 open Basics;;
 open Nets;;
+open Printer;;
 
 (* ------------------------------------------------------------------------- *)
 (* Flag to say whether to treat varstruct "\const. bod" as variable.         *)

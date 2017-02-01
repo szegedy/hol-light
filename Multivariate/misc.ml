@@ -6,11 +6,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Card;;
-open Floor;;
-open Wo;;
-open Permutations;;
-open Products;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -57,8 +52,12 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
-open Iter;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
 prioritize_real();;
 
 (* ------------------------------------------------------------------------- *)

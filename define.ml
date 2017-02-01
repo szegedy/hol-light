@@ -5,7 +5,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Cart;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -48,8 +47,7 @@ open Calc_rat;;
 open Ints;;
 open Sets;;
 open Iterate;;
-open Real;;
-open Int;;
+open Cart;;
 
 (* ------------------------------------------------------------------------- *)
 (* Constant supporting casewise definitions.                                 *)

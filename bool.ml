@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Equal;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -18,6 +17,7 @@ open Nets;;
 open Printer;;
 open Preterm;;
 open Parser;;
+open Equal;;
 
 (* ------------------------------------------------------------------------- *)
 (* Set up parse status of basic and derived logical constants.               *)

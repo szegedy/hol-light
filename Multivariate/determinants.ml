@@ -5,15 +5,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Vectors;;
-open Permutations;;
-open Floor;;
-open Products;;
-open Wo;;
-open Card;;
-open Misc;;
-open Iter;;
-open Metric;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -60,7 +51,16 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
+open Vectors;;
 
 prioritize_real();;
 

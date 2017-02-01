@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Arith;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -36,6 +35,7 @@ open Impconv;;
 open Pair;;
 open Nums;;
 open Recursion;;
+open Arith;;
 
 (* ------------------------------------------------------------------------- *)
 (* Definition of wellfoundedness for arbitrary (infix) relation <<           *)

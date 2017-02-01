@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Itab;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -22,6 +21,7 @@ open Equal;;
 open Bool;;
 open Drule;;
 open Tactics;;
+open Itab;;
 
 (* ------------------------------------------------------------------------- *)
 (* Generalized conversion (conversion plus a priority).                      *)

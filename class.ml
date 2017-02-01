@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Ind_defs;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -25,6 +24,7 @@ open Tactics;;
 open Itab;;
 open Simp;;
 open Theorems;;
+open Ind_defs;;
 
 (* ------------------------------------------------------------------------- *)
 (* Eta-axiom, corresponding conversion, and extensionality.                  *)

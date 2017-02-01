@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Bool;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -19,6 +18,7 @@ open Printer;;
 open Preterm;;
 open Parser;;
 open Equal;;
+open Bool;;
 
 (* ------------------------------------------------------------------------- *)
 (* Type of instantiations, with terms, types and higher-order data.          *)

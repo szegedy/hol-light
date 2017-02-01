@@ -3,19 +3,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Paths;;
-open Wo;;
-open Card;;
-open Permutations;;
-open Products;;
-open Floor;;
-open Misc;;
-open Iter;;
-open Metric;;
-open Vectors;;
-open Determinants;;
-open Topology;;
-open Convex;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -62,7 +49,20 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
+open Vectors;;
+open Determinants;;
+open Topology;;
+open Convex;;
+open Paths;;
 
 (* ------------------------------------------------------------------------- *)
 (* Faces of a (usually convex) set.                                          *)

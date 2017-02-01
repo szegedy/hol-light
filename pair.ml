@@ -9,7 +9,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Quot;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -32,6 +31,7 @@ open Trivia;;
 open Canon;;
 open Meson;;
 open Metis;;
+open Quot;;
 open Impconv;;
 
 (* ------------------------------------------------------------------------- *)

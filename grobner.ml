@@ -11,7 +11,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Normalizer;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -42,6 +41,7 @@ open Recursion;;
 open Arith;;
 open Wf;;
 open Calc_num;;
+open Normalizer;;
 
 (* ------------------------------------------------------------------------- *)
 (* Type for recording history, i.e. how a polynomial was obtained.           *)

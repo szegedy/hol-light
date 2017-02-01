@@ -6,7 +6,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Sets;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -47,8 +46,7 @@ open Realarith;;
 open Reals;;
 open Calc_rat;;
 open Ints;;
-open Real;;
-open Int;;
+open Sets;;
 
 prioritize_num();;
 

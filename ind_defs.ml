@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Theorems;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -24,6 +23,7 @@ open Drule;;
 open Tactics;;
 open Itab;;
 open Simp;;
+open Theorems;;
 
 (* ------------------------------------------------------------------------- *)
 (* Strip off exactly n arguments from combination.                           *)

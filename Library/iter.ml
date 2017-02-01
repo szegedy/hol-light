@@ -5,11 +5,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Wo;;
-open Card;;
-open Permutations;;
-open Products;;
-open Floor;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -56,7 +51,13 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
 
 let ITER = define
   `(!f. ITER 0 f x = x) /\

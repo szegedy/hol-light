@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Preterm;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -16,6 +15,7 @@ open Fusion;;
 open Basics;;
 open Nets;;
 open Printer;;
+open Preterm;;
 
 (* ------------------------------------------------------------------------- *)
 (* Need to have this now for set enums, since "," isn't a reserved word.     *)

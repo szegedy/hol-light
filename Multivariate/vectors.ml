@@ -6,14 +6,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Misc;;
-open Wo;;
-open Card;;
-open Permutations;;
-open Products;;
-open Floor;;
-open Iter;;
-open Metric;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -60,7 +52,15 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
 
 (* ------------------------------------------------------------------------- *)
 (* Some common special cases.                                                *)

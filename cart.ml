@@ -5,7 +5,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Iterate;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -47,8 +46,7 @@ open Reals;;
 open Calc_rat;;
 open Ints;;
 open Sets;;
-open Real;;
-open Int;;
+open Iterate;;
 
 (* ------------------------------------------------------------------------- *)
 (* Association of a number with an indexing type.                            *)

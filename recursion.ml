@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Nums;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -34,6 +33,7 @@ open Metis;;
 open Quot;;
 open Impconv;;
 open Pair;;
+open Nums;;
 
 (* ------------------------------------------------------------------------- *)
 (* Prove existence of recursive function. The inner "raw" version requires   *)

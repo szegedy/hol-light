@@ -7,29 +7,28 @@ import subprocess
 import sys
 
 
-# lump_name -> (lump_deps, files)
-lumps = {
-  'hol': ((), '''
-      hol_native system lib fusion basics nets printer preterm parser equal bool
-      drule tactics itab simp theorems ind_defs class trivia canon meson metis
-      quot impconv pair nums recursion arith wf calc_num normalizer grobner
-      ind_types lists realax calc_int realarith reals calc_rat ints sets iterate
-      cart define help database'''.split()),
-  'multivariate': (('hol',), '''
-      Library/wo Library/binary Library/card Library/permutations Library/products
-      Library/floor Library/iter Multivariate/misc Multivariate/metric
-      Multivariate/vectors Multivariate/determinants Multivariate/topology
-      Multivariate/convex Multivariate/paths Multivariate/polytope
-      Multivariate/degree Multivariate/derivatives Multivariate/clifford
-      Multivariate/integration Multivariate/measure
-      Multivariate/multivariate_database'''.split()),
-}
+hol_files = ['Hol_native', 'System', 'Lib', 'Fusion', 'Basics', 'Nets', 'Printer', 
+             'Preterm', 'Parser', 'Equal', 'Bool', 'Drule', 'Tactics', 'Itab', 
+             'Simp', 'Theorems', 'Ind_defs', 'Class', 'Trivia', 'Canon', 
+             'Meson', 'Metis', 'Quot', 'Impconv', 'Pair', 'Nums', 'Recursion', 
+             'Arith', 'Wf', 'Calc_num', 'Normalizer', 'Grobner', 'Ind_types', 
+             'Lists', 'Realax', 'Calc_int', 'Realarith', 'Reals', 'Calc_rat', 
+             'Ints', 'Sets', 'Iterate', 'Cart', 'Define', 'Help', 'Database']
+multi_files = ['Wo', 'Binary', 'Card', 'Permutations', 'Products', 'Floor', 
+               'Misc', 'Iter', 'Metric', 'Vectors', 'Determinants', 'Topology',
+               'Convex', 'Paths', 'Polytope', 'Degree', 'Derivatives',
+               'Clifford', 'Integration', 'Measure', 'Multivariate_database']
 
+ordered_files = hol_files + multi_files
 
 def rewrite(path):
   if not path.endswith('.ml'):
     raise ValueError('Expected .ml files only, got %r' % path)
-  us = path[:-3]
+  name = path[:-3].split('/')[-1].capitalize()
+  if not name in ordered_files:
+    raise ValueError('Can\'t find file in list of expected files.')
+  if 'system.ml' in path:
+    raise ValueError('Not implemented.')
 
   # Slurp in entire file
   contents = open(path).read()
@@ -41,7 +40,8 @@ def rewrite(path):
   footer_re = re.compile(r'^let\b')
   for i, line in enumerate(lines):
     if middle_re.match(line):
-      header = lines[:i]
+      # Make sure header ends with set_jrh_lexer
+      header = lines[:i] + ['set_jrh_lexer;;']
       j = i + 1
       while middle_re.match(lines[j]):
         j += 1
@@ -49,54 +49,26 @@ def rewrite(path):
       footer = lines[j:]
       break
     elif 'system.ml' not in path and footer_re.match(line):
-      header = lines[:i]
+      header = lines[:i] + ['set_jrh_lexer;;']
       middle = []
       footer = [''] + lines[i:]
       break
 
-  # Make sure middle starts with set_jrh_lexer
-  if not middle or 'set_jrh_lexer' not in middle[0]:
-    middle = ['set_jrh_lexer;;'] + middle
-
-  # Rewrite needs into open
+  # If needs file is not in list of previously loaded files, throw an error.
   for i, line in enumerate(middle):
     m = middle_re.match(line)
     need = m.group(1)
-    if need:
-      middle[i] = 'open %s;;' % need.capitalize()
+    if need and need.capitalize() not in ordered_files:
+      raise ValueError('File \'needs\' an unknown file: %s' % need)
 
   # Comment out install_printer lines
   for i, line in enumerate(footer):
     if line.startswith('#install_printer'):
       footer[i] = '(* Disabled for native build: %s *)' % line
 
-  # Collect current opens
-  existing_opens = set()
-  for line in middle:
-    m = middle_re.match(line)
-    module = m.group(2)
-    if module: existing_opens.add(module)
-
-  # Make sure every lump includes everything before it in the lump
-  try:
-    lump, = (lump for lump, (_, mods) in lumps.items() if us in mods)
-  except ValueError:
-    raise ValueError("Can't find lump containing %r" % us)
-  mods = tuple(lumps[lump][1])
-  index = mods.index(us)
-  for i, m in enumerate(mods):
-    m = os.path.basename(m).capitalize()
-    open_m = 'open %s;;' % m
-    if i < index and not m in existing_opens:
-      if us == 'system' and m == 'Hol_native': continue
-      middle.append(open_m)
-    if i >= index:
-      if open_m in middle: middle.remove(open_m)
-  for prev_lump in lumps[lump][0]:
-    for m in lumps[prev_lump][1]:
-      m = os.path.basename(m).capitalize()
-      if m not in existing_opens:
-        middle.append('open %s;;' % m)
+  # Set middle to be all previous dependencies, in order
+  index = ordered_files.index(name)
+  middle = ['open %s;;' % s for s in ordered_files[:index]]
 
   # Rewrite file in place
   open(path, 'w').write('\n'.join(header + middle + footer))

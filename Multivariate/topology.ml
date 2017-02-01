@@ -7,16 +7,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Card;;
-open Iter;;
-open Metric;;
-open Determinants;;
-open Wo;;
-open Permutations;;
-open Products;;
-open Floor;;
-open Misc;;
-open Vectors;;
 open Hol_native;;
 open System;;
 open Lib;;
@@ -63,7 +53,17 @@ open Cart;;
 open Define;;
 open Help;;
 open Database;;
+open Wo;;
 open Binary;;
+open Card;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
+open Vectors;;
+open Determinants;;
 
 (* ------------------------------------------------------------------------- *)
 (* The universal Euclidean topology that we use most of the time.            *)
