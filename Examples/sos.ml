@@ -2,8 +2,6 @@
 (* Nonlinear universal reals procedure using SOS decomposition.              *)
 (* ========================================================================= *)
 
-prioritize_real();;
-
 set_jrh_lexer;;
 open Hol_native;;
 open System;;
@@ -27,6 +25,8 @@ open Reals;;
 open Calc_rat;;
 open Ints;;
 open Analysis;;
+
+prioritize_real();;
 
 let debugging = ref false;;
 

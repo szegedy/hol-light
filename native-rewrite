@@ -59,7 +59,7 @@ def rewrite(path):
   # Split into header, middle, footer
   middle_re = re.compile(
       r'^(?:needs "[\w/]*?(\w+)\.ml"|open (\w+)|set_jrh_lexer);;')
-  footer_re = re.compile(r'^let\b|^prioritize_num\b')
+  footer_re = re.compile(r'^let\b|^prioritize\b')
   for i, line in enumerate(lines):
     if middle_re.match(line):
       # Make sure header ends with set_jrh_lexer
