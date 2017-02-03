@@ -8,7 +8,6 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Hol_native;;
 open System;;
 open Lib;;
 open Fusion;;
