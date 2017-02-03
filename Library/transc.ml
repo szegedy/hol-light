@@ -2,7 +2,33 @@
 (* Properties of power series.                                              *)
 (* ======================================================================== *)
 
-needs "Library/analysis.ml";;
+set_jrh_lexer;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Canon;;
+open Meson;;
+open Pair;;
+open Nums;;
+open Arith;;
+open Calc_num;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Analysis;;
 
 (* ------------------------------------------------------------------------ *)
 (* More theorems about rearranging finite sums                              *)

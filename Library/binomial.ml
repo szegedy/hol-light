@@ -2,6 +2,33 @@
 (* Binomial coefficients and the binomial theorem.                           *)
 (* ========================================================================= *)
 
+set_jrh_lexer;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Class;;
+open Meson;;
+open Pair;;
+open Nums;;
+open Arith;;
+open Calc_num;;
+open Grobner;;
+open Realax;;
+open Calc_int;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Define;;
+
 prioritize_num();;
 
 (* ------------------------------------------------------------------------- *)

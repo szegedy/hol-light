@@ -4,6 +4,30 @@
 
 prioritize_real();;
 
+set_jrh_lexer;;
+open Hol_native;;
+open System;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Printer;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Canon;;
+open Nums;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Analysis;;
+
 let debugging = ref false;;
 
 exception Sanity;;
@@ -347,10 +371,10 @@ let print_monomial m = Format.print_string(string_of_monomial m);;
 
 let print_poly m = Format.print_string(string_of_poly m);;
 
-#install_printer print_vector;;
-#install_printer print_matrix;;
-#install_printer print_monomial;;
-#install_printer print_poly;;
+(* Disabled for native build: #install_printer print_vector;; *)
+(* Disabled for native build: #install_printer print_matrix;; *)
+(* Disabled for native build: #install_printer print_monomial;; *)
+(* Disabled for native build: #install_printer print_poly;; *)
 
 (* ------------------------------------------------------------------------- *)
 (* Conversion from HOL term.                                                 *)

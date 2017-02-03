@@ -6,12 +6,10 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Hol_native;;
 open System;;
 open Lib;;
 open Fusion;;
 open Basics;;
-open Nets;;
 open Printer;;
 open Preterm;;
 open Parser;;
@@ -19,7 +17,6 @@ open Equal;;
 open Bool;;
 open Drule;;
 open Tactics;;
-open Itab;;
 open Simp;;
 open Theorems;;
 open Ind_defs;;
@@ -28,17 +25,11 @@ open Trivia;;
 open Canon;;
 open Meson;;
 open Metis;;
-open Quot;;
-open Impconv;;
 open Pair;;
 open Nums;;
-open Recursion;;
 open Arith;;
 open Wf;;
 open Calc_num;;
-open Normalizer;;
-open Grobner;;
-open Ind_types;;
 open Lists;;
 open Realax;;
 open Calc_int;;
@@ -50,17 +41,10 @@ open Sets;;
 open Iterate;;
 open Cart;;
 open Define;;
-open Help;;
-open Database;;
 open Wo;;
-open Binary;;
 open Card;;
-open Permutations;;
-open Products;;
 open Floor;;
 open Misc;;
-open Iter;;
-open Metric;;
 
 (* ------------------------------------------------------------------------- *)
 (* Some common special cases.                                                *)

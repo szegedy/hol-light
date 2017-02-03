@@ -6,9 +6,60 @@
 (*              (c) Copyright, Valentina Bruno 2010                          *)
 (* ========================================================================= *)
 
-needs "Library/binomial.ml";;
-needs "Library/iter.ml";;
-needs "Multivariate/moretop.ml";;
+set_jrh_lexer;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Printer;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Trivia;;
+open Meson;;
+open Impconv;;
+open Pair;;
+open Nums;;
+open Recursion;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Cart;;
+open Define;;
+open Wo;;
+open Card;;
+open Floor;;
+open Misc;;
+open Iter;;
+open Metric;;
+open Vectors;;
+open Determinants;;
+open Topology;;
+open Convex;;
+open Paths;;
+open Polytope;;
+open Degree;;
+open Derivatives;;
+open Integration;;
+open Measure;;
+open Binomial;;
+open Complexes;;
+open Canal;;
+open Transcendentals;;
+open Realanalysis;;
+open Moretop;;
 
 prioritize_complex();;
 

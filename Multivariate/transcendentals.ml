@@ -4,8 +4,54 @@
 (*              (c) Copyright, John Harrison 1998-2008                       *)
 (* ========================================================================= *)
 
-needs "Multivariate/measure.ml";;
-needs "Multivariate/canal.ml";;
+set_jrh_lexer;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Printer;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Trivia;;
+open Meson;;
+open Pair;;
+open Nums;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Ind_types;;
+open Lists;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Cart;;
+open Wo;;
+open Permutations;;
+open Products;;
+open Floor;;
+open Misc;;
+open Metric;;
+open Vectors;;
+open Determinants;;
+open Topology;;
+open Convex;;
+open Paths;;
+open Degree;;
+open Derivatives;;
+open Integration;;
+open Measure;;
+open Complexes;;
+open Canal;;
 
 prioritize_complex();;
 

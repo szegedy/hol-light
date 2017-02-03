@@ -8,35 +8,21 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Hol_native;;
 open System;;
 open Lib;;
 open Fusion;;
 open Basics;;
-open Nets;;
-open Printer;;
-open Preterm;;
 open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
 open Tactics;;
-open Itab;;
 open Simp;;
 open Theorems;;
-open Ind_defs;;
 open Class;;
-open Trivia;;
-open Canon;;
 open Meson;;
-open Metis;;
-open Quot;;
-open Impconv;;
-open Pair;;
 open Nums;;
-open Recursion;;
 open Arith;;
-open Wf;;
 
 (* ------------------------------------------------------------------------- *)
 (* Simple rule to get rid of NUMERAL constant.                               *)

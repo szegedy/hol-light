@@ -12,29 +12,18 @@
 (* ========================================================================= *)
 
 set_jrh_lexer;;
-open Hol_native;;
-open System;;
 open Lib;;
 open Fusion;;
 open Basics;;
-open Nets;;
-open Printer;;
-open Preterm;;
 open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
 open Tactics;;
-open Itab;;
 open Simp;;
 open Theorems;;
-open Ind_defs;;
 open Class;;
-open Trivia;;
 open Canon;;
-open Meson;;
-open Metis;;
-open Quot;;
 
 let IMP_REWRITE_TAC,TARGET_REWRITE_TAC,HINT_EXISTS_TAC,
     SEQ_IMP_REWRITE_TAC,CASE_REWRITE_TAC =

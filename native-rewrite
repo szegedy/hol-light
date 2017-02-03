@@ -2,30 +2,51 @@
 
 import collections
 import os
+import pickle
 import re
 import subprocess
 import sys
 
 
-hol_files = ['Hol_native', 'System', 'Lib', 'Fusion', 'Basics', 'Nets', 'Printer', 
-             'Preterm', 'Parser', 'Equal', 'Bool', 'Drule', 'Tactics', 'Itab', 
-             'Simp', 'Theorems', 'Ind_defs', 'Class', 'Trivia', 'Canon', 
-             'Meson', 'Metis', 'Quot', 'Impconv', 'Pair', 'Nums', 'Recursion', 
-             'Arith', 'Wf', 'Calc_num', 'Normalizer', 'Grobner', 'Ind_types', 
-             'Lists', 'Realax', 'Calc_int', 'Realarith', 'Reals', 'Calc_rat', 
-             'Ints', 'Sets', 'Iterate', 'Cart', 'Define', 'Help', 'Database']
-multi_files = ['Wo', 'Binary', 'Card', 'Permutations', 'Products', 'Floor', 
+unused = collections.defaultdict(set,
+                                 pickle.load(open('unused_opens.pkl', 'rb')))
+
+hol = ['Hol_native', 'System', 'Lib', 'Fusion', 'Basics', 'Nets', 'Printer',
+       'Preterm', 'Parser', 'Equal', 'Bool', 'Drule', 'Tactics', 'Itab',
+       'Simp', 'Theorems', 'Ind_defs', 'Class', 'Trivia', 'Canon',
+       'Meson', 'Metis', 'Quot', 'Impconv', 'Pair', 'Nums', 'Recursion',
+       'Arith', 'Wf', 'Calc_num', 'Normalizer', 'Grobner', 'Ind_types',
+       'Lists', 'Realax', 'Calc_int', 'Realarith', 'Reals', 'Calc_rat',
+       'Ints', 'Sets', 'Iterate', 'Cart', 'Define', 'Help', 'Database']
+
+card_files = ['Wo', 'Binary', 'Card']
+card = hol + card_files
+
+multi_files = ['Permutations', 'Products', 'Floor',
                'Misc', 'Iter', 'Metric', 'Vectors', 'Determinants', 'Topology',
                'Convex', 'Paths', 'Polytope', 'Degree', 'Derivatives',
                'Clifford', 'Integration', 'Measure', 'Multivariate_database']
+multivariate = card + multi_files
 
-ordered_files = hol_files + multi_files
+sos_files = ['Analysis', 'Transc', 'Sos']
+sosa = hol + sos_files
+
+complex_files = ['Binomial', 'Complexes', 'Canal', 'Transcendentals',
+                 'Realanalysis', 'Moretop', 'Cauchy', 'Complex_database']
+complx = multivariate + complex_files
 
 def rewrite(path):
   if not path.endswith('.ml'):
     raise ValueError('Expected .ml files only, got %r' % path)
   name = path[:-3].split('/')[-1].capitalize()
-  if not name in ordered_files:
+
+  ordered_files = None
+  for files in [hol, card, sosa, multivariate, complx]:
+    if name in files:
+      ordered_files = files
+      break
+
+  if not ordered_files:
     raise ValueError('Can\'t find file in list of expected files.')
   if 'system.ml' in path:
     raise ValueError('Not implemented.')
@@ -36,8 +57,9 @@ def rewrite(path):
   contents = re.sub(r'\(\*.*?\*\)', '(* *)', contents)
 
   # Split into header, middle, footer
-  middle_re = re.compile(r'^(?:needs "[\w/]*?(\w+)\.ml"|open (\w+)|set_jrh_lexer);;')
-  footer_re = re.compile(r'^let\b')
+  middle_re = re.compile(
+      r'^(?:needs "[\w/]*?(\w+)\.ml"|open (\w+)|set_jrh_lexer);;')
+  footer_re = re.compile(r'^let\b|^prioritize_num\b')
   for i, line in enumerate(lines):
     if middle_re.match(line):
       # Make sure header ends with set_jrh_lexer
@@ -54,12 +76,14 @@ def rewrite(path):
       footer = [''] + lines[i:]
       break
 
-  # If needs file is not in list of previously loaded files, throw an error.
+  # If needs file will not be replaced with open, throw and error.
   for i, line in enumerate(middle):
     m = middle_re.match(line)
     need = m.group(1)
     if need and need.capitalize() not in ordered_files:
-      raise ValueError('File \'needs\' an unknown file: %s' % need)
+      raise ValueError('File \'needs\' un unloaded file: %s' % need)
+    if need and need.capitalize() in unused[name]:
+      raise ValueError('File \'needs\' an unused file: %s' % need)
 
   # Comment out install_printer lines
   for i, line in enumerate(footer):
@@ -68,7 +92,8 @@ def rewrite(path):
 
   # Set middle to be all previous dependencies, in order
   index = ordered_files.index(name)
-  middle = ['open %s;;' % s for s in ordered_files[:index]]
+  middle = ['open %s;;' % s for s in ordered_files[:index]
+            if s not in unused[name]]
 
   # Rewrite file in place
   open(path, 'w').write('\n'.join(header + middle + footer))

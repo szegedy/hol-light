@@ -4,7 +4,52 @@
 (*              (c) Copyright, John Harrison 1998-2013                       *)
 (* ========================================================================= *)
 
-needs "Multivariate/realanalysis.ml";;
+set_jrh_lexer;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Trivia;;
+open Meson;;
+open Pair;;
+open Nums;;
+open Arith;;
+open Wf;;
+open Calc_num;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Cart;;
+open Wo;;
+open Card;;
+open Floor;;
+open Misc;;
+open Metric;;
+open Vectors;;
+open Determinants;;
+open Topology;;
+open Convex;;
+open Paths;;
+open Polytope;;
+open Degree;;
+open Derivatives;;
+open Integration;;
+open Measure;;
+open Complexes;;
+open Canal;;
+open Transcendentals;;
+open Realanalysis;;
 
 (* ------------------------------------------------------------------------- *)
 (* Injective map into R is also an open map w.r.t. the universe, and this    *)

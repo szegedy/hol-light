@@ -2,6 +2,35 @@
 (* Elementary real analysis, with some supporting HOL88 compatibility stuff. *)
 (* ========================================================================= *)
 
+set_jrh_lexer;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Printer;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Meson;;
+open Pair;;
+open Nums;;
+open Recursion;;
+open Arith;;
+open Calc_num;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+
 let dest_neg_imp tm =
   try dest_imp tm with Failure _ ->
   try (dest_neg tm,mk_const("F",[]))

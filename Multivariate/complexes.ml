@@ -5,7 +5,45 @@
 (*              (c) Copyright, Valentina Bruno 2010                          *)
 (* ========================================================================= *)
 
-needs "Multivariate/convex.ml";;
+set_jrh_lexer;;
+open Lib;;
+open Fusion;;
+open Basics;;
+open Nets;;
+open Preterm;;
+open Parser;;
+open Equal;;
+open Bool;;
+open Drule;;
+open Tactics;;
+open Simp;;
+open Theorems;;
+open Class;;
+open Trivia;;
+open Canon;;
+open Meson;;
+open Pair;;
+open Nums;;
+open Arith;;
+open Calc_num;;
+open Normalizer;;
+open Grobner;;
+open Realax;;
+open Calc_int;;
+open Realarith;;
+open Reals;;
+open Calc_rat;;
+open Ints;;
+open Sets;;
+open Iterate;;
+open Cart;;
+open Define;;
+open Products;;
+open Misc;;
+open Vectors;;
+open Determinants;;
+open Topology;;
+open Convex;;
 
 new_type_abbrev("complex",`:real^2`);;
 
