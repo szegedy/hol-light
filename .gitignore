@@ -7,3 +7,9 @@
 syntax?
 victory
 pa_j.ml
+
+*.native
+.depend
+presyntax
+revised
+syntax

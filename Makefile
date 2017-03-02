@@ -128,4 +128,76 @@ install: hol hol.multivariate hol.sosa hol.card hol.complex; cp hol hol.multivar
 
 # Clean up all compiled files
 
-clean:; rm -f pa_j.ml pa_j.cmi pa_j.cmo hol hol.multivariate hol.sosa hol.card hol.complex;
+.PHONY: clean
+clean: native-clean; rm -f pa_j.ml pa_j.cmi pa_j.cmo hol hol.multivariate hol.sosa hol.card hol.complex;
+
+############### Native build support #################
+
+native: core.native multivariate.native sosa.native card.native complex.native
+
+# Parameters for native builds
+OCAMLOPT=ocamlfind ocamlopt
+OCAMLFLAGS=-w -3-8-52 -I Library -I Multivariate
+CAMLP5_WHERE=-I `camlp5 -where`
+CAMLP5_PRE=$(CAMLP5_WHERE) odyl.cmxa camlp5.cmxa
+CAMLP5_POST=odyl.cmx -linkall
+CAMLP5_REVISED=pa_r.cmx pa_rp.cmx pr_dump.cmx pa_lexer.cmx pa_extend.cmx q_MLast.cmx pa_reloc.cmx pa_macro.cmx
+NATIVE_PRE=-linkall nums.cmxa $(CAMLP5_WHERE) quotation.cmx
+
+revised:
+	$(OCAMLOPT) $(OCAMLFLAGS) -o $@ $(CAMLP5_PRE) $(CAMLP5_REVISED) $(CAMLP5_POST)
+
+pa_j_tweak.cmi pa_j_tweak.cmx pa_j_tweak.o: pa_j_tweak.ml revised
+	$(OCAMLOPT) $(OCAMLFLAGS) -c $< -pp ./revised $(CAMLP5_WHERE)
+
+presyntax: pa_j_tweak.cmx revised
+	$(OCAMLOPT) $(OCAMLFLAGS) -o $@ $(CAMLP5_PRE) $(CAMLP5_REVISED) $< $(CAMLP5_POST)
+
+system.cmi system.cmx system.o: system.ml presyntax
+	$(OCAMLOPT) $(OCAMLFLAGS) -c $< -pp ./presyntax $(CAMLP5_WHERE)
+
+syntax: pa_j_tweak.cmx system.cmx
+	$(OCAMLOPT) $(OCAMLFLAGS) -o $@ nums.cmxa $(CAMLP5_PRE) $(CAMLP5_REVISED) $^ $(CAMLP5_POST)
+
+%.cmx: %.ml syntax
+	$(OCAMLOPT) $(OCAMLFLAGS) -c $@ $< -pp ./syntax
+
+core.cmxa: $(addsuffix .cmx, system hol_native lib fusion basics nets printer preterm parser equal bool drule tactics itab simp theorems ind_defs class trivia canon meson metis quot impconv pair nums recursion arith wf calc_num normalizer grobner ind_types lists realax calc_int realarith reals calc_rat ints sets iterate cart define help database)
+	$(OCAMLOPT) -a -o $@ -linkall $(CAMLP5_WHERE) $^
+
+multivariate.cmxa: $(addsuffix .cmx, Library/wo Library/binary Library/card Library/permutations Library/products Library/floor Multivariate/misc Library/iter Multivariate/metric Multivariate/vectors Multivariate/determinants Multivariate/topology Multivariate/convex Multivariate/paths Multivariate/polytope Multivariate/degree Multivariate/derivatives Multivariate/clifford Multivariate/integration Multivariate/measure Multivariate/multivariate_database)
+	$(OCAMLOPT) -a -o $@ -linkall $^
+
+sosa.cmxa: $(addsuffix .cmx, Library/analysis Library/transc Examples/sos)
+	$(OCAMLOPT) -a -o $@ -linkall $^
+
+complex.cmxa: $(addsuffix .cmx, Library/binomial Multivariate/complexes Multivariate/canal Multivariate/transcendentals Multivariate/realanalysis Multivariate/moretop Multivariate/cauchy Multivariate/complex_database)
+	$(OCAMLOPT) -a -o $@ -linkall $^
+
+card.cmxa: $(addsuffix .cmx, Library/wo Library/binary Library/card)
+	$(OCAMLOPT) -a -o $@ -linkall $^
+
+core.native: core.cmxa
+	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
+
+multivariate.native: core.cmxa multivariate.cmxa
+	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
+
+sosa.native: core.cmxa sosa.cmxa
+	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
+
+complex.native: core.cmxa multivariate.cmxa complex.cmxa
+	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
+
+card.native: core.cmxa card.cmxa
+	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
+
+.PHONY: depend
+depend: syntax
+	ocamldep -pp ./syntax $(filter-out pa_j%.ml make.ml, $(wildcard *.ml)) > .depend
+
+-include .depend
+
+.PHONY: native-clean
+native-clean:
+	rm -f revised presyntax syntax .depend *.cmx *.cmi *.o
