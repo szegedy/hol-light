@@ -16,6 +16,7 @@ open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
+open Log;;
 open Tactics;;
 open Itab;;
 

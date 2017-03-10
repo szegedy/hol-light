@@ -14,6 +14,7 @@ open Basics;;
 open Equal;;
 open Bool;;
 open Drule;;
+open Log;;
 open Tactics;;
 
 (* ------------------------------------------------------------------------- *)
@@ -24,13 +25,14 @@ let UNIFY_ACCEPT_TAC mvs th (asl,w) =
   let insts = term_unify mvs (concl th) w in
   ([],insts),[],
   let th' = INSTANTIATE insts th in
-  fun i [] -> INSTANTIATE i th';;
+  fun i [] -> INSTANTIATE i th',
+              Proof_log ((asl,w), Unknown_log, []);;
 
 (* ------------------------------------------------------------------------- *)
 (* The actual prover, as a tactic.                                           *)
 (* ------------------------------------------------------------------------- *)
 
-let ITAUT_TAC =
+let (ITAUT_TAC : tactic) =
   let CONJUNCTS_THEN' ttac cth =
     ttac(CONJUNCT1 cth) THEN ttac(CONJUNCT2 cth) in
   let IMPLICATE t =

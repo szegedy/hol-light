@@ -17,6 +17,7 @@ open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
+open Log;;
 
 (* ------------------------------------------------------------------------- *)
 (* The common case of trivial instantiations.                                *)
@@ -30,7 +31,8 @@ let null_meta = (([]:term list),null_inst);;
 (* A goal has labelled assumptions, and the hyps are now thms.               *)
 (* ------------------------------------------------------------------------- *)
 
-type goal = (string * thm) list * term;;
+(*type goal = (string * thm) list * term;;*)
+type goal = Log.goal;;
 
 let equals_goal ((a,w):goal) ((a',w'):goal) =
   forall2 (fun (s,th) (s',th') -> s = s' && equals_thm th th') a a' && w = w';;
@@ -43,14 +45,16 @@ let equals_goal ((a,w):goal) ((a',w'):goal) =
 (*   f(@) [A1@ |- g1@; ...; An@ |- gn@] = A@ |- g@                           *)
 (* ------------------------------------------------------------------------- *)
 
-type justification = instantiation -> thm list -> thm;;
+(*type justification = instantiation -> (thm * proof_log) list -> thm * proof_log;;*)
+type justification = Log.justification;;
 
 (* ------------------------------------------------------------------------- *)
 (* The goalstate stores the subgoals, justification, current instantiation,  *)
 (* and a list of metavariables.                                              *)
 (* ------------------------------------------------------------------------- *)
 
-type goalstate = (term list * instantiation) * goal list * justification;;
+(*type goalstate = (term list * instantiation) * goal list * justification;;*)
+type goalstate = Log.goalstate;;
 
 (* ------------------------------------------------------------------------- *)
 (* A goalstack is just a list of goalstates. Could go for more...            *)
@@ -76,9 +80,11 @@ type refinement = goalstate -> goalstate;;
 (*    f(@) [A1@  |- g1@; ...; An@ |- gn@] = A(%;@) |- g(%;@)                 *)
 (* ------------------------------------------------------------------------- *)
 
-type tactic = goal -> goalstate;;
+(* type tactic = goal -> goalstate;;*)
+type tactic = Log.tactic;;
 
-type thm_tactic = thm -> tactic;;
+(*type thm_tactic = thm -> tactic;; *)
+type thm_tactic = Log.thm_tactic;;
 
 type thm_tactical = thm_tactic -> thm_tactic;;
 
@@ -118,15 +124,16 @@ let mk_fthm =
 (* arbitrary theorems, but "mk_fthm" brings us quite close.                  *)
 (* ------------------------------------------------------------------------- *)
 
+
 let (VALID:tactic->tactic) =
-  let fake_thm (asl,w) =
+  let fake_thm ((asl:((string*thm) list)),(w:term)) =
     let asms = itlist (union o hyp o snd) asl [] in
-    mk_fthm(asms,w)
+    mk_fthm(asms,w), Proof_log ((asl,w),Fake_log,[])
   and false_tm = `_FALSITY_` in
   fun tac (asl,w) ->
     let ((mvs,i),gls,just as res) = tac (asl,w) in
     let ths = map fake_thm gls in
-    let asl',w' = dest_thm(just null_inst ths) in
+    let asl',w' = dest_thm(fst (just null_inst ths)) in
     let asl'',w'' = inst_goal i (asl,w) in
     let maxasms =
       itlist (fun (_,th) -> union (insert (concl th) (hyp th))) asl'' [] in
@@ -138,9 +145,12 @@ let (VALID:tactic->tactic) =
 (* Various simple combinators for tactics, identity tactic etc.              *)
 (* ------------------------------------------------------------------------- *)
 
+(* type justification = instantiation -> (thm * proof_log) list -> thm * proof_log;; *)
+
+
 let (THEN),(THENL) =
   let propagate_empty i [] = []
-  and propagate_thm th i [] = INSTANTIATE_ALL i th in
+  and propagate_thm (th, log) i [] = INSTANTIATE_ALL i th, log in
   let compose_justs n just1 just2 i ths =
     let ths1,ths2 = chop_list n ths in
     (just1 i ths1)::(just2 i ths2) in
@@ -155,7 +165,7 @@ let (THEN),(THENL) =
    | _,_ -> failwith "seqapply: Length mismatch" in
   let justsequence just1 just2 insts2 i ths =
     just1 (compose_insts insts2 i) (just2 i ths) in
-  let tacsequence ((mvs1,insts1),gls1,just1) tacl =
+  let tacsequence ((mvs1,insts1),gls1,(just1:justification)) tacl =
     let ((mvs2,insts2),gls2,just2) = seqapply tacl gls1 in
     let jst = justsequence just1 just2 insts2 in
     let just = if gls2 = [] then propagate_thm (jst null_inst []) else jst in
@@ -248,10 +258,13 @@ let FIRST_TCL ttcll =
 (* just in case.                                                             *)
 (* ------------------------------------------------------------------------- *)
 
+
+
 let (LABEL_TAC: string -> thm_tactic) =
   fun s thm (asl,w) ->
     null_meta,[(s,thm)::asl,w],
-    fun i [th] -> PROVE_HYP (INSTANTIATE_ALL i thm) th;;
+    fun i [th,log] -> PROVE_HYP (INSTANTIATE_ALL i thm) th,
+                      Proof_log ((asl,w), Label_tac_log (s,thm), [log]);;
 
 let ASSUME_TAC = LABEL_TAC "";;
 
@@ -328,10 +341,10 @@ let HYP =
 (* ------------------------------------------------------------------------- *)
 
 let (ACCEPT_TAC: thm_tactic) =
-  let propagate_thm th i [] = INSTANTIATE_ALL i th in
-  fun th (asl,w) ->
+  let propagate_thm th g i [] = INSTANTIATE_ALL i th, Proof_log (g, Accept_tac_log th, []) in
+  fun th (asl,w as g) ->
     if aconv (concl th) w then
-      null_meta,[],propagate_thm th
+      null_meta,[],propagate_thm th g
     else failwith "ACCEPT_TAC";;
 
 (* ------------------------------------------------------------------------- *)
@@ -350,7 +363,8 @@ let (CONV_TAC: conv -> tactic) =
     if not(aconv l w) then failwith "CONV_TAC: bad equation" else
     if r = t_tm then ACCEPT_TAC(EQT_ELIM th) g else
     let th' = SYM th in
-    null_meta,[asl,r],fun i [th] -> EQ_MP (INSTANTIATE_ALL i th') th;;
+    null_meta,[asl,r],fun i [th,log] -> EQ_MP (INSTANTIATE_ALL i th') th,
+                                        Proof_log (g, Conv_tac_log conv, [log]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Tactics for equality reasoning.                                           *)
@@ -362,24 +376,26 @@ let (REFL_TAC: tactic) =
     with Failure _ -> failwith "REFL_TAC";;
 
 let (ABS_TAC: tactic) =
-  fun (asl,w) ->
+  fun ((asl,w) as g) ->
     try let l,r = dest_eq w in
         let lv,lb = dest_abs l
         and rv,rb = dest_abs r in
         let avoids = itlist (union o thm_frees o snd) asl (frees w) in
         let v = mk_primed_var avoids lv in
         null_meta,[asl,mk_eq(vsubst[v,lv] lb,vsubst[v,rv] rb)],
-        fun i [th] -> let ath = ABS v th in
-                      EQ_MP (ALPHA (concl ath) (instantiate i w)) ath
+        fun i [th,log] -> let ath = ABS v th in
+                          (EQ_MP (ALPHA (concl ath) (instantiate i w)) ath,
+                           Proof_log (g, Abs_tac_log, [log]))
     with Failure _ -> failwith "ABS_TAC";;
 
 let (MK_COMB_TAC: tactic) =
-  fun (asl,gl) ->
+  fun ((asl,gl) as goal) ->
     try let l,r = dest_eq gl in
         let f,x = dest_comb l
         and g,y = dest_comb r in
         null_meta,[asl,mk_eq(f,g); asl,mk_eq(x,y)],
-        fun _ [th1;th2] -> MK_COMB(th1,th2)
+        fun _ [th1,log1;th2,log2] -> (MK_COMB(th1,th2),
+                                      Proof_log (goal, Mk_comb_tac_log, [log1; log2]))
     with Failure _ -> failwith "MK_COMB_TAC";;
 
 let (AP_TERM_TAC: tactic) =
@@ -424,42 +440,48 @@ let SUBST_VAR_TAC th =
 
 let (DISCH_TAC: tactic) =
   let f_tm = `F` in
-  fun (asl,w) ->
+  fun ((asl,w) as goal) ->
     try let ant,c = dest_imp w in
         let th1 = ASSUME ant in
         null_meta,[("",th1)::asl,c],
-        fun i [th] -> DISCH (instantiate i ant) th
+        fun i [th,log] -> DISCH (instantiate i ant) th,
+                          Proof_log (goal, Disch_tac_log, [log])
     with Failure _ -> try
         let ant = dest_neg w in
         let th1 = ASSUME ant in
         null_meta,[("",th1)::asl,f_tm],
-        fun i [th] -> NOT_INTRO(DISCH (instantiate i ant) th)
+        fun i [th,log] -> NOT_INTRO(DISCH (instantiate i ant) th),
+                          Proof_log (goal, Disch_tac_log, [log])
     with Failure _ -> failwith "DISCH_TAC";;
 
 let (MP_TAC: thm_tactic) =
-  fun thm (asl,w) ->
+  fun thm ((asl,w) as goal) ->
     null_meta,[asl,mk_imp(concl thm,w)],
-    fun i [th] -> MP th (INSTANTIATE_ALL i thm);;
+    fun i [th,log] -> MP th (INSTANTIATE_ALL i thm),
+                      Proof_log (goal, Mp_tac_log thm, [log]);;
 
 let (EQ_TAC: tactic) =
-  fun (asl,w) ->
+  fun ((asl,w) as goal) ->
     try let l,r = dest_eq w in
         null_meta,[asl, mk_imp(l,r); asl, mk_imp(r,l)],
-        fun _ [th1; th2] -> IMP_ANTISYM_RULE th1 th2
+        fun _ [th1,log1; th2,log2] -> IMP_ANTISYM_RULE th1 th2,
+                                      Proof_log (goal, Eq_tac_log, [log1; log2])
     with Failure _ -> failwith "EQ_TAC";;
 
 let (UNDISCH_TAC: term -> tactic) =
- fun tm (asl,w) ->
+ fun tm ((asl,w) as goal) ->
    try let sthm,asl' = remove (fun (_,asm) -> aconv (concl asm) tm) asl in
        let thm = snd sthm in
        null_meta,[asl',mk_imp(tm,w)],
-       fun i [th] -> MP th (INSTANTIATE_ALL i thm)
+       fun i [th,log] -> MP th (INSTANTIATE_ALL i thm),
+                         Proof_log( goal, Undisch_tac_log tm, [log])
    with Failure _ -> failwith "UNDISCH_TAC";;
 
 let (SPEC_TAC: term * term -> tactic) =
-  fun (t,x) (asl,w) ->
+  fun (t,x) ((asl,w) as goal) ->
     try null_meta,[asl, mk_forall(x,subst[x,t] w)],
-        fun i [th] -> SPEC (instantiate i t) th
+        fun i [th,log] -> SPEC (instantiate i t) th,
+                          Proof_log (goal, Spec_tac_log (t,x), [log])
     with Failure _ -> failwith "SPEC_TAC";;
 
 let (X_GEN_TAC: term -> tactic),
@@ -472,7 +494,7 @@ let (X_GEN_TAC: term -> tactic),
                   string_of_type gt) in
   let X_GEN_TAC x' =
     if not(is_var x') then failwith "X_GEN_TAC: not a variable" else
-    fun (asl,w) ->
+    fun ((asl,w) as goal) ->
         let x,bod = try dest_forall w
           with Failure _ -> failwith "X_GEN_TAC: Not universally quantified" in
         let _ = tactic_type_compatibility_check "X_GEN_TAC" x x' in
@@ -480,7 +502,8 @@ let (X_GEN_TAC: term -> tactic),
         if mem x' avoids then failwith "X_GEN_TAC: invalid variable" else
         let afn = CONV_RULE(GEN_ALPHA_CONV x) in
         null_meta,[asl,vsubst[x',x] bod],
-        fun i [th] -> afn (GEN x' th)
+        fun i [th,log] -> afn (GEN x' th),
+                          Proof_log (goal, X_gen_tac_log x', [log])
   and X_CHOOSE_TAC x' xth =
         let xtm = concl xth in
         let x,bod = try dest_exists xtm
@@ -488,18 +511,20 @@ let (X_GEN_TAC: term -> tactic),
         let _ = tactic_type_compatibility_check "X_CHOOSE_TAC" x x' in
         let pat = vsubst[x',x] bod in
         let xth' = ASSUME pat in
-        fun (asl,w) ->
+        fun ((asl,w) as goal) ->
           let avoids = itlist (union o frees o concl o snd) asl
                               (union (frees w) (thm_frees xth)) in
           if mem x' avoids then failwith "X_CHOOSE_TAC: invalid variable" else
           null_meta,[("",xth')::asl,w],
-          fun i [th] -> CHOOSE(x',INSTANTIATE_ALL i xth) th
-  and EXISTS_TAC t (asl,w) =
+          fun i [th,log] -> CHOOSE(x',INSTANTIATE_ALL i xth) th,
+                            Proof_log (goal, X_choose_tac_log (x', xth), [log])
+  and EXISTS_TAC t ((asl,w) as goal) =
     let v,bod = try dest_exists w with Failure _ ->
                 failwith "EXISTS_TAC: Goal not existentially quantified" in
     let _ = tactic_type_compatibility_check "EXISTS_TAC" v t in
     null_meta,[asl,vsubst[t,v] bod],
-    fun i [th] -> EXISTS (instantiate i w,instantiate i t) th in
+    fun i [th,log] -> EXISTS (instantiate i w,instantiate i t) th,
+                      Proof_log (goal, Exists_tac_log t, [log]) in
   X_GEN_TAC,X_CHOOSE_TAC,EXISTS_TAC;;
 
 let (GEN_TAC: tactic) =
@@ -521,21 +546,27 @@ let (CHOOSE_TAC: thm_tactic) =
       with Failure _ -> failwith "CHOOSE_TAC";;
 
 let (CONJ_TAC: tactic) =
-  fun (asl,w) ->
+  fun ((asl,w) as goal) ->
     try let l,r = dest_conj w in
-        null_meta,[asl,l; asl,r],fun _ [th1;th2] -> CONJ th1 th2
+        null_meta,[asl,l; asl,r],
+        fun _ [th1,log1;th2,log2] -> CONJ th1 th2,
+                                     Proof_log (goal, Conj_tac_log, [log1;log2])
     with Failure _ -> failwith "CONJ_TAC";;
 
 let (DISJ1_TAC: tactic) =
-  fun (asl,w) ->
+  fun ((asl,w) as goal) ->
     try let l,r = dest_disj w in
-        null_meta,[asl,l],fun i [th] -> DISJ1 th (instantiate i r)
+        null_meta,[asl,l],
+        fun i [th,log] -> DISJ1 th (instantiate i r),
+                          Proof_log (goal, Disj1_tac_log, [log])
     with Failure _ -> failwith "DISJ1_TAC";;
 
 let (DISJ2_TAC: tactic) =
-  fun (asl,w) ->
+  fun ((asl,w) as goal) ->
     try let l,r = dest_disj w in
-          null_meta,[asl,r],fun i [th] -> DISJ2 (instantiate i l) th
+        null_meta,[asl,r],
+        fun i [th,log] -> DISJ2 (instantiate i l) th,
+                          Proof_log (goal, Disj2_tac_log, [log])
     with Failure _ -> failwith "DISJ2_TAC";;
 
 let (DISJ_CASES_TAC: thm_tactic) =
@@ -544,23 +575,28 @@ let (DISJ_CASES_TAC: thm_tactic) =
         let l,r = dest_disj dtm in
         let thl = ASSUME l
         and thr = ASSUME r in
-        fun (asl,w) ->
+        fun ((asl,w) as goal) ->
           null_meta,[("",thl)::asl,w; ("",thr)::asl,w],
-          fun i [th1;th2] -> DISJ_CASES (INSTANTIATE_ALL i dth) th1 th2
+          fun i [th1,log1;th2,log2] -> DISJ_CASES (INSTANTIATE_ALL i dth) th1 th2,
+                                       Proof_log (goal, Disj_cases_tac_log dth, [log1;log2])
     with Failure _ -> failwith "DISJ_CASES_TAC";;
 
 let (CONTR_TAC: thm_tactic) =
-  let propagate_thm th i [] = INSTANTIATE_ALL i th in
-  fun cth (asl,w) ->
+  let propagate_thm th g paramth i [] =
+    INSTANTIATE_ALL i th,
+    Proof_log (g, Contr_tac_log paramth, []) in
+  fun cth ((asl,w) as goal) ->
     try let th = CONTR w cth in
-        null_meta,[],propagate_thm th
+        null_meta,[],propagate_thm th goal cth
     with Failure _ -> failwith "CONTR_TAC";;
 
 let (MATCH_ACCEPT_TAC:thm_tactic) =
-  let propagate_thm th i [] = INSTANTIATE_ALL i th in
-  let rawtac th (asl,w) =
+  let propagate_thm th g paramth i [] =
+    INSTANTIATE_ALL i th,
+    Proof_log (g, Match_accept_tac_log paramth, []) in
+  let rawtac th ((asl,w) as goal) =
     try let ith = PART_MATCH I th w in
-        null_meta,[],propagate_thm ith
+        null_meta,[],propagate_thm ith goal th
     with Failure _ -> failwith "ACCEPT_TAC" in
   fun th -> REPEAT GEN_TAC THEN rawtac th;;
 
@@ -579,10 +615,11 @@ let (MATCH_MP_TAC :thm_tactic) =
           MP (DISCH tm (GEN_ALL (DISCH tm3 (UNDISCH th3)))) th
       with Failure _ -> failwith "MATCH_MP_TAC: Bad theorem" in
     let match_fun = PART_MATCH (snd o dest_imp) sth in
-    fun (asl,w) -> try let xth = match_fun w in
-                       let lant = fst(dest_imp(concl xth)) in
-                       null_meta,[asl,lant],
-                       fun i [th] -> MP (INSTANTIATE_ALL i xth) th
+    fun ((asl,w) as goal) -> try let xth = match_fun w in
+                                 let lant = fst(dest_imp(concl xth)) in
+                                 null_meta,[asl,lant],
+                                 fun i [th,log] -> MP (INSTANTIATE_ALL i xth) th,
+                                                   Proof_log (goal, Match_mp_tac_log th, [log])
                    with Failure _ -> failwith "MATCH_MP_TAC: No match";;
 
 let (TRANS_TAC:thm->term->tactic) =
@@ -605,10 +642,13 @@ let (TRANS_TAC:thm->term->tactic) =
 let (CONJUNCTS_THEN2:thm_tactic->thm_tactic->thm_tactic) =
   fun ttac1 ttac2 cth ->
       let c1,c2 = dest_conj(concl cth) in
-      fun gl -> let ti,gls,jfn = (ttac1(ASSUME c1) THEN ttac2(ASSUME c2)) gl in
+      fun gl -> let ti,gls,(jfn:justification) = (ttac1(ASSUME c1) THEN ttac2(ASSUME c2)) gl in
                 let jfn' i ths =
                   let th1,th2 = CONJ_PAIR(INSTANTIATE_ALL i cth) in
-                  PROVE_HYP th1 (PROVE_HYP th2 (jfn i ths)) in
+                  (* NOTE: (jfn i ths) will log ttac1 and ttac2, but only with concl of cth. *)
+                  let jth = jfn i ths in
+                  PROVE_HYP th1 (PROVE_HYP th2 (fst jth)),
+                  Proof_log(gl, Conjuncts_then2_log (ttac1, ttac2, cth), [snd jth]) in
                 ti,gls,jfn';;
 
 let (CONJUNCTS_THEN: thm_tactical) =
@@ -688,9 +728,13 @@ let FIRST_X_ASSUM ttac =
 (* ------------------------------------------------------------------------- *)
 
 let (SUBGOAL_THEN: term -> thm_tactic -> tactic) =
-  fun wa ttac (asl,w) ->
+  fun wa ttac ((asl,w) as goal) ->
     let meta,gl,just = ttac (ASSUME wa) (asl,w) in
-    meta,(asl,wa)::gl,fun i l -> PROVE_HYP (hd l) (just i (tl l));;
+    let just' i ((hth,hlog)::tail) =
+      let (justth, justlog) = just i tail in
+      PROVE_HYP hth justth,
+      Proof_log(goal, Subgoal_then_log (wa, ttac), [hlog; justlog]) in
+    meta,(asl,wa)::gl,just';;
 
 let SUBGOAL_TAC s tm prfs =
   match prfs with
@@ -699,20 +743,25 @@ let SUBGOAL_TAC s tm prfs =
   | [] -> failwith "SUBGOAL_TAC: no subproof given";;
 
 let (FREEZE_THEN :thm_tactical) =
-  fun ttac th (asl,w) ->
+  fun ttac th ((asl,w) as goal) ->
     let meta,gl,just = ttac (ASSUME(concl th)) (asl,w) in
-    meta,gl,fun i l -> PROVE_HYP th (just i l);;
+    let just' i l =
+      let jth = just i l in
+      PROVE_HYP th (fst jth),
+      Proof_log (goal, Freeze_then_log (ttac, th), [snd jth]) in
+    meta,gl,just';;
 
 (* ------------------------------------------------------------------------- *)
 (* Metavariable tactics.                                                     *)
 (* ------------------------------------------------------------------------- *)
 
 let (X_META_EXISTS_TAC: term -> tactic) =
-  fun t (asl,w) ->
+  fun t ((asl,w) as goal) ->
     try if not (is_var t) then fail() else
         let v,bod = dest_exists w in
         ([t],null_inst),[asl,vsubst[t,v] bod],
-        fun i [th] -> EXISTS (instantiate i w,instantiate i t) th
+        fun i [th,log] -> EXISTS (instantiate i w,instantiate i t) th,
+                          Proof_log (goal, X_meta_exists_tac_log t, [log])
     with Failure _ -> failwith "X_META_EXISTS_TAC";;
 
 let META_EXISTS_TAC ((asl,w) as gl) =
@@ -722,10 +771,11 @@ let META_EXISTS_TAC ((asl,w) as gl) =
   X_META_EXISTS_TAC v' gl;;
 
 let (META_SPEC_TAC: term -> thm -> tactic) =
-  fun t thm (asl,w) ->
+  fun t thm ((asl,w) as goal) ->
     let sth = SPEC t thm in
     ([t],null_inst),[(("",sth)::asl),w],
-    fun i [th] -> PROVE_HYP (SPEC (instantiate i t) thm) th;;
+    fun i [th,log] -> PROVE_HYP (SPEC (instantiate i t) thm) th,
+                      Proof_log (goal, Meta_spec_tac_log (t, thm), [log]);;
 
 (* ------------------------------------------------------------------------- *)
 (* If all else fails!                                                        *)
@@ -851,14 +901,16 @@ let (mk_goalstate:goal->goalstate) =
   fun (asl,w) ->
     if type_of w = bool_ty then
       null_meta,[asl,w],
-      (fun inst [th] -> INSTANTIATE_ALL inst th)
+      (fun inst [th,log] -> INSTANTIATE_ALL inst th, log)
     else failwith "mk_goalstate: Non-boolean goal";;
 
 let (TAC_PROOF : goal * tactic -> thm) =
   fun (g,tac) ->
     let gstate = mk_goalstate g in
     let _,sgs,just = by tac gstate in
-    if sgs = [] then just null_inst []
+    if sgs = [] then
+      let jth = just null_inst [] in
+      fst jth
     else failwith "TAC_PROOF: Unsolved goals";;
 
 let prove(t,tac) =

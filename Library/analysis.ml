@@ -12,6 +12,7 @@ open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
+open Log;;
 open Tactics;;
 open Simp;;
 open Theorems;;
@@ -249,7 +250,9 @@ let (IMP_SUBST_TAC:thm_tactic) =
     let pat = subst[gv,l] w in
     null_meta,
     [(asl,a); (asl,subst[(r,gv)] pat)],
-    fun i [t1;t2] -> SUBST[(SYM(MP th1 t1),gv)] pat t2;;
+    fun i [t1,l1;t2,l2] ->
+    SUBST[(SYM(MP th1 t1),gv)] pat t2,
+    Proof_log ((asl,w), Imp_subst_tac_log th, [l1;l2]);;
 
 (*---------------------------------------------------------------*)
 (* EXT_CONV `!x. f x = g x` = |- (!x. f x = g x) = (f = g)       *)

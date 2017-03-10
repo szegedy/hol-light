@@ -15,6 +15,7 @@ open Parser;;
 open Equal;;
 open Bool;;
 open Drule;;
+open Log;;
 open Tactics;;
 open Itab;;
 open Simp;;
@@ -263,15 +264,18 @@ let monotonicity_theorems = ref
 (* Attempt to backchain through the monotonicity theorems.                   *)
 (* ------------------------------------------------------------------------- *)
 
+let BACKCHAIN_TAC th =
+  let match_fn = PART_MATCH (snd o dest_imp) th in
+  fun (asl,w) ->
+  let th1 = match_fn w in
+  let ant,con = dest_imp(concl th1) in
+  null_meta,[asl,ant],
+  fun i [t,log] -> MATCH_MP (INSTANTIATE i th1) t,
+                   Proof_log ((asl,w), Backchain_tac_log th, [log]);;
+
 let MONO_TAC =
   let imp = `(==>)` and IMP_REFL = ITAUT `!p. p ==> p` in
-  let BACKCHAIN_TAC th =
-    let match_fn = PART_MATCH (snd o dest_imp) th in
-    fun (asl,w) ->
-      let th1 = match_fn w in
-      let ant,con = dest_imp(concl th1) in
-      null_meta,[asl,ant],fun i [t] -> MATCH_MP (INSTANTIATE i th1) t
-  and MONO_ABS_TAC (asl,w) =
+  let MONO_ABS_TAC (asl,w) =
     let ant,con = dest_imp w in
     let vars = snd(strip_comb con) in
     let rnum = length vars - 1 in

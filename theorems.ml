@@ -16,6 +16,7 @@ open Printer;;
 open Parser;;
 open Equal;;
 open Bool;;
+open Log;;
 open Tactics;;
 open Itab;;
 open Simp;;
