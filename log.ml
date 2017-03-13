@@ -1,3 +1,9 @@
+(* ========================================================================= *)
+(* Tactic logging machinery (for machine learning use)                       *)
+(*                                                                           *)
+(*                  (c) Copyright, Google Inc. 2017                          *)
+(* ========================================================================= *)
+
 set_jrh_lexer;;
 open Fusion;;
 open Equal;;

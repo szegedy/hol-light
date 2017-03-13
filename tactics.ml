@@ -6,6 +6,7 @@
 (*            (c) Copyright, University of Cambridge 1998                    *)
 (*              (c) Copyright, John Harrison 1998-2007                       *)
 (*                 (c) Copyright, Marco Maggesi 2012                         *)
+(*                  (c) Copyright, Google Inc. 2017                          *)
 (* ========================================================================= *)
 
 set_jrh_lexer;;
