@@ -805,51 +805,55 @@ let ANTS_TAC =
 (* ------------------------------------------------------------------------- *)
 (* A printer for goals etc.                                                  *)
 (* ------------------------------------------------------------------------- *)
-let (print_goal:goal->unit) =
+
+let pp_print_goal fmt =
   let string_of_int3 n =
     if n < 10 then "  "^string_of_int n
     else if n < 100 then " "^string_of_int n
     else string_of_int n in
   let print_hyp n (s,th) =
-    open_hbox();
-    Format.print_string(string_of_int3 n);
-    Format.print_string " [";
-    open_hvbox 0;
-    print_qterm (concl th);
-    close_box();
-    Format.print_string "]";
-    (if not (s = "") then (Format.print_string (" ("^s^")")) else ());
-    close_box();
-    Format.print_newline() in
+    Format.pp_open_hbox fmt ();
+    Format.pp_print_string fmt (string_of_int3 n);
+    Format.pp_print_string fmt " [";
+    Format.pp_open_hvbox fmt 0;
+    pp_print_term fmt (concl th);
+    Format.pp_close_box fmt ();
+    Format.pp_print_string fmt "]";
+    (if not (s = "") then (Format.pp_print_string fmt (" ("^s^")")) else ());
+    Format.pp_close_box fmt ();
+    Format.pp_print_newline fmt () in
   let rec print_hyps n asl =
     if asl = [] then () else
-      (print_hyp n (hd asl);
-       print_hyps (n + 1) (tl asl)) in
+    (print_hyp n (hd asl);
+     print_hyps (n + 1) (tl asl)) in
   fun (asl,w) ->
-  Format.print_newline();
-  if asl <> [] then (print_hyps 0 (rev asl); Format.print_newline()) else ();
-  print_qterm w; Format.print_newline();;
+    Format.pp_print_newline fmt ();
+    if asl <> [] then (print_hyps 0 (rev asl); Format.pp_print_newline fmt ()) else ();
+    pp_print_qterm fmt w; Format.pp_print_newline fmt ();;
+
+let (print_goal:goal->unit) = pp_print_goal std_formatter;;
+
 let (print_goalstack:goalstack->unit) =
   let print_goalstate k gs =
     let (_,gl,_) = gs in
     let n = length gl in
     let s = if n = 0 then "No subgoals" else
               (string_of_int k)^" subgoal"^(if k > 1 then "s" else "")
-              ^" ("^(string_of_int n)^" total)" in
+           ^" ("^(string_of_int n)^" total)" in
     Format.print_string s; Format.print_newline();
     if gl = [] then () else
-      do_list (print_goal o C el gl) (rev(0--(k-1))) in
+    do_list (print_goal o C el gl) (rev(0--(k-1))) in
   fun l ->
-  if l = [] then Format.print_string "Empty goalstack"
-  else if tl l = [] then
-    let (_,gl,_ as gs) = hd l in
-    print_goalstate 1 gs
-  else
-    let (_,gl,_ as gs) = hd l
-    and (_,gl0,_) = hd(tl l) in
-    let p = length gl - length gl0 in
-    let p' = if p < 1 then 1 else p + 1 in
-    print_goalstate p' gs;;
+    if l = [] then Format.print_string "Empty goalstack"
+    else if tl l = [] then
+      let (_,gl,_ as gs) = hd l in
+      print_goalstate 1 gs
+    else
+      let (_,gl,_ as gs) = hd l
+      and (_,gl0,_) = hd(tl l) in
+      let p = length gl - length gl0 in
+      let p' = if p < 1 then 1 else p + 1 in
+      print_goalstate p' gs;;
 
 (* ------------------------------------------------------------------------- *)
 (* Convert a tactic into a refinement on head subgoal in current state.      *)
