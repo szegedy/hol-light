@@ -76,11 +76,13 @@ let sp_print_goal fmt (gl:goal) =
 (* Parseable S-Expression printer for proof logs.                            *)
 (* ------------------------------------------------------------------------- *)
 
-let save_proof_log = true;;
-
-(* TODO figure out where to close this. *)
-let proof_log_oc = open_out "proofs.txt";;
-let proof_fmt = Format.formatter_of_out_channel proof_log_oc;;
+let proof_fmt : Format.formatter option =
+  try
+    let filename = Sys.getenv "PROOF_LOG_OUTPUT" in
+    (* TODO figure out where to close this channel. *)
+    let proof_log_oc = open_out filename in
+    Some Format.formatter_of_out_channel proof_log_oc
+  with Not_found -> None;;
 
 (* TODO move to printing *)
 let pp_print_tactic_log fmt taclog =

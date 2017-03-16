@@ -914,10 +914,10 @@ let (TAC_PROOF : goal * tactic -> thm) =
     if sgs = [] then
       let (th,log) = just null_inst [] in
       let Proof_log((asl,w),_,_) = log in
-      (if save_proof_log
-       then (sp_print_proof_log proof_fmt log; pp_print_newline proof_fmt ())
-       else ();
-      th)
+      (match proof_fmt with
+        Some fmt -> sp_print_proof_log fmt log; pp_print_newline fmt ()
+      | None -> ());
+      th
     else failwith "TAC_PROOF: Unsolved goals";;
 
 let prove(t,tac) =
