@@ -483,24 +483,27 @@ let pp_print_term =
        print_term 0 bod;
        (if prec = 0 then () else pp_print_string fmt ")");
        pp_close_box fmt ())
-  and print_clauses cls =
-    match cls with
-      [c] -> print_clause c
-    | c::cs -> (print_clause c;
-                pp_print_break fmt 1 0;
-                pp_print_string fmt "| ";
-                print_clauses cs)
-  and print_clause cl =
-    match cl with
-      [p;g;r] -> (print_term 1 p;
-                  pp_print_string fmt " when ";
-                  print_term 1 g;
+
+    and print_clauses cls =
+      match cls with
+        [c] -> print_clause c
+      | c::cs -> (print_clause c;
+                  pp_print_break fmt 1 0;
+                  pp_print_string fmt "| ";
+                  print_clauses cs)
+
+    and print_clause cl =
+      match cl with
+        [p;g;r] -> (print_term 1 p;
+                    pp_print_string fmt " when ";
+                    print_term 1 g;
+                    pp_print_string fmt " -> ";
+                    print_term 1 r)
+      | [p;r] -> (print_term 1 p;
                   pp_print_string fmt " -> ";
                   print_term 1 r)
-    | [p;r] -> (print_term 1 p;
-                pp_print_string fmt " -> ";
-                print_term 1 r)
-  in print_term 0;;
+
+    in print_term 0;;
 
 (* ------------------------------------------------------------------------- *)
 (* Print term with quotes.                                                   *)
