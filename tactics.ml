@@ -805,7 +805,6 @@ let ANTS_TAC =
 (* ------------------------------------------------------------------------- *)
 (* A printer for goals etc.                                                  *)
 (* ------------------------------------------------------------------------- *)
-
 let (print_goal:goal->unit) =
   let string_of_int3 n =
     if n < 10 then "  "^string_of_int n
@@ -824,34 +823,33 @@ let (print_goal:goal->unit) =
     Format.print_newline() in
   let rec print_hyps n asl =
     if asl = [] then () else
-    (print_hyp n (hd asl);
-     print_hyps (n + 1) (tl asl)) in
+      (print_hyp n (hd asl);
+       print_hyps (n + 1) (tl asl)) in
   fun (asl,w) ->
-    Format.print_newline();
-    if asl <> [] then (print_hyps 0 (rev asl); Format.print_newline()) else ();
-    print_qterm w; Format.print_newline();;
-
+  Format.print_newline();
+  if asl <> [] then (print_hyps 0 (rev asl); Format.print_newline()) else ();
+  print_qterm w; Format.print_newline();;
 let (print_goalstack:goalstack->unit) =
   let print_goalstate k gs =
     let (_,gl,_) = gs in
     let n = length gl in
     let s = if n = 0 then "No subgoals" else
               (string_of_int k)^" subgoal"^(if k > 1 then "s" else "")
-           ^" ("^(string_of_int n)^" total)" in
+              ^" ("^(string_of_int n)^" total)" in
     Format.print_string s; Format.print_newline();
     if gl = [] then () else
-    do_list (print_goal o C el gl) (rev(0--(k-1))) in
+      do_list (print_goal o C el gl) (rev(0--(k-1))) in
   fun l ->
-    if l = [] then Format.print_string "Empty goalstack"
-    else if tl l = [] then
-      let (_,gl,_ as gs) = hd l in
-      print_goalstate 1 gs
-    else
-      let (_,gl,_ as gs) = hd l
-      and (_,gl0,_) = hd(tl l) in
-      let p = length gl - length gl0 in
-      let p' = if p < 1 then 1 else p + 1 in
-      print_goalstate p' gs;;
+  if l = [] then Format.print_string "Empty goalstack"
+  else if tl l = [] then
+    let (_,gl,_ as gs) = hd l in
+    print_goalstate 1 gs
+  else
+    let (_,gl,_ as gs) = hd l
+    and (_,gl0,_) = hd(tl l) in
+    let p = length gl - length gl0 in
+    let p' = if p < 1 then 1 else p + 1 in
+    print_goalstate p' gs;;
 
 (* ------------------------------------------------------------------------- *)
 (* Convert a tactic into a refinement on head subgoal in current state.      *)
@@ -910,8 +908,12 @@ let (TAC_PROOF : goal * tactic -> thm) =
     let gstate = mk_goalstate g in
     let _,sgs,just = by tac gstate in
     if sgs = [] then
-      let jth = just null_inst [] in
-      fst jth
+      let (th,log) = just null_inst [] in
+      let Proof_log((asl,w),_,_) = log in
+      (if save_proof_log
+       then (sp_print_proof_log proof_fmt log; pp_print_newline proof_fmt ())
+       else ();
+      th)
     else failwith "TAC_PROOF: Unsolved goals";;
 
 let prove(t,tac) =

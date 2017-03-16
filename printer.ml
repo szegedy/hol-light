@@ -5,6 +5,7 @@
 (*                                                                           *)
 (*            (c) Copyright, University of Cambridge 1998                    *)
 (*              (c) Copyright, John Harrison 1998-2007                       *)
+(*                  (c) Copyright, Google Inc. 2017                          *)
 (* ========================================================================= *)
 
 set_jrh_lexer;;
@@ -188,6 +189,29 @@ let install_user_printer,delete_user_printer,try_user_printer =
   (fun fmt -> fun tm -> tryfind (fun (_,pr) -> pr fmt tm) (!user_printers));;
 
 (* ------------------------------------------------------------------------- *)
+(* Parseable S-Expression printer for terms.                                 *)
+(* ------------------------------------------------------------------------- *)
+
+let rec sp_print_term fmt tm =
+  match tm with
+    Var (str, ty) -> (pp_print_string fmt "(v [";
+                      pp_print_type fmt ty;
+                      pp_print_string fmt ("] "^str^")"))
+  | Const (str, ty) -> (pp_print_string fmt "(c [";
+                        pp_print_type fmt ty;
+                        pp_print_string fmt ("] "^str^")"))
+  | Comb (t1, t2) -> (pp_print_string fmt "(a ";
+                      sp_print_term fmt t1;
+                      pp_print_string fmt " ";
+                      sp_print_term fmt t2;
+                      pp_print_string fmt ")")
+  | Abs (t1, t2) -> (pp_print_string fmt "(l ";
+                     sp_print_term fmt t1;
+                     pp_print_string fmt " ";
+                     sp_print_term fmt t2;
+                     pp_print_string fmt ")")
+
+(* ------------------------------------------------------------------------- *)
 (* Printer for terms.                                                        *)
 (* ------------------------------------------------------------------------- *)
 
@@ -237,6 +261,7 @@ let pp_print_term =
     if name_of s = "_SEQPATTERN" && length args = 2 then
       dest_clause (hd args)::dest_clauses(hd(tl args))
     else [dest_clause tm] in
+
   fun fmt ->
     let rec print_term prec tm =
       try try_user_printer fmt tm with Failure _ ->
@@ -467,14 +492,14 @@ let pp_print_term =
                 print_clauses cs)
   and print_clause cl =
     match cl with
-     [p;g;r] -> (print_term 1 p;
-                 pp_print_string fmt " when ";
-                 print_term 1 g;
-                 pp_print_string fmt " -> ";
-                 print_term 1 r)
-   | [p;r] -> (print_term 1 p;
-               pp_print_string fmt " -> ";
-               print_term 1 r)
+      [p;g;r] -> (print_term 1 p;
+                  pp_print_string fmt " when ";
+                  print_term 1 g;
+                  pp_print_string fmt " -> ";
+                  print_term 1 r)
+    | [p;r] -> (print_term 1 p;
+                pp_print_string fmt " -> ";
+                print_term 1 r)
   in print_term 0;;
 
 (* ------------------------------------------------------------------------- *)
@@ -485,6 +510,30 @@ let pp_print_qterm fmt tm =
   pp_print_string fmt "`";
   pp_print_term fmt tm;
   pp_print_string fmt "`";;
+
+(* ------------------------------------------------------------------------- *)
+(* Parseable S-Expression printer for theorems.                              *)
+(* ------------------------------------------------------------------------- *)
+
+let sp_print_term_list fmt tls =
+  let rec print_list tls =
+    match tls with
+      [] -> ()
+    | t::[] -> sp_print_term fmt t
+    | t::tl -> sp_print_term fmt t;
+               pp_print_string fmt " ";
+               print_list tl
+  in pp_print_string fmt "(";
+     print_list tls;
+     pp_print_string fmt ")";;
+
+let sp_print_thm fmt th =
+  let (tls, tm) = dest_thm th in
+  pp_print_string fmt "(h ";
+  sp_print_term_list fmt tls;
+  pp_print_string fmt " ";
+  sp_print_term fmt tm;
+  pp_print_string fmt ")";;
 
 (* ------------------------------------------------------------------------- *)
 (* Printer for theorems.                                                     *)
