@@ -160,6 +160,19 @@ let name_of tm =
 (* Printer for types.                                                        *)
 (* ------------------------------------------------------------------------- *)
 
+let rec sp_print_type fmt ty =
+  let rec sp_print_type_list tyl =
+    match tyl with
+      [] -> ()
+    | t::tl -> pp_print_string fmt " ";
+               sp_print_type fmt t;
+               sp_print_type_list tl
+  in match ty with
+       Tyvar(str) -> pp_print_string fmt str
+     | Tyapp(str,tyl) -> pp_print_string fmt ("("^str);
+                         sp_print_type_list tyl;
+                         pp_print_string fmt ")"
+
 let pp_print_type,pp_print_qtype =
   let soc sep flag ss =
     if ss = [] then "" else
@@ -194,12 +207,12 @@ let install_user_printer,delete_user_printer,try_user_printer =
 
 let rec sp_print_term fmt tm =
   match tm with
-    Var (str, ty) -> (pp_print_string fmt "(v [";
-                      pp_print_type fmt ty;
-                      pp_print_string fmt ("] "^str^")"))
-  | Const (str, ty) -> (pp_print_string fmt "(c [";
-                        pp_print_type fmt ty;
-                        pp_print_string fmt ("] "^str^")"))
+    Var (str, ty) -> (pp_print_string fmt "(v ";
+                      sp_print_type fmt ty;
+                      pp_print_string fmt (" "^str^")"))
+  | Const (str, ty) -> (pp_print_string fmt "(c ";
+                        sp_print_type fmt ty;
+                        pp_print_string fmt (" "^str^")"))
   | Comb (t1, t2) -> (pp_print_string fmt "(a ";
                       sp_print_term fmt t1;
                       pp_print_string fmt " ";
