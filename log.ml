@@ -84,40 +84,123 @@ let proof_fmt : Format.formatter option =
     Some Format.formatter_of_out_channel proof_log_oc
   with Not_found -> None;;
 
-(* TODO move to printing *)
+
+(* TODO(smloos) implement this function.
+   Will need to build data structure throughout _CONV tactics. *)
+let sp_print_conv fmt conv =
+  pp_print_string fmt "Conv_printing_not_implemented";;
+
+(* TODO(smloos) implement this function. *)
+let sp_print_thm_tactic fmt th_tac =
+  pp_print_string fmt "thm_tactic_printing_not_implemented";;
+
 let pp_print_tactic_log fmt taclog =
-  let tactype =
-    match taclog with
-      Fake_log -> "(Fake_log)"
-    | Label_tac_log (st, th) -> "(Label_tac_log)"
-    | Accept_tac_log th -> "(Accept_tac_log)"
-    | Conv_tac_log c -> "(Conv_tac_log)"
-    | Abs_tac_log -> "(Abs_tac_log)"
-    | Mk_comb_tac_log -> "(Mk_comb_tac_log)"
-    | Disch_tac_log -> "(Disch_tac_log)"
-    | Mp_tac_log th -> "(Mp_tac_log)"
-    | Eq_tac_log -> "(Eq_tac_log)"
-    | Undisch_tac_log tm -> "(Undisch_tac_log)"
-    | Spec_tac_log (tm1, tm2) -> "Spec_tac_log)"
-    | X_gen_tac_log tm -> "(X_gen_tac_log)"
-    | X_choose_tac_log (tm, th) -> "(X_choose_tac_log)"
-    | Exists_tac_log tm -> "(Exists_tac_log)"
-    | Conj_tac_log -> "(Conj_tac_log)"
-    | Disj1_tac_log -> "(Disj1_tac_log)"
-    | Disj2_tac_log -> "(Disj2_tac_log)"
-    | Disj_cases_tac_log th -> "(Disj_cases_tac_log)"
-    | Contr_tac_log th -> "(Contr_tac_log)"
-    | Match_accept_tac_log th -> "(Match_accept_tac_log)"
-    | Match_mp_tac_log th -> "(Match_mp_tac_log)"
-    | Conjuncts_then2_log (thm_tac1, thm_tac2, th) -> "(Conjuncts_then2_log)"
-    | Subgoal_then_log (tm, thm_tac) -> "(Subgoal_then_log)"
-    | Freeze_then_log (thm_tac, th) -> "(Freeze_then_log)"
-    | X_meta_exists_tac_log tm -> "(X_meta_exists_tac_log)"
-    | Meta_spec_tac_log (tm, th) -> "(Meta_spec_tac_log)"
-    | Backchain_tac_log th -> "(Backchain_tac_log)"
-    | Imp_subst_tac_log th -> "(Imp_subst_tac_log)"
-    | Unknown_log -> "(Unknown)" in
-  Format.pp_print_string fmt tactype;;
+  match taclog with
+    Fake_log -> pp_print_string fmt "(Fake_log)"
+  | Label_tac_log (st, th) ->
+     pp_print_string fmt "(Label_tac_log ";
+     if ((String.length st) = 0) then () else
+       pp_print_string fmt (st^" ");
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Accept_tac_log th ->
+     pp_print_string fmt "(Accept_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Conv_tac_log c ->
+     pp_print_string fmt "(Conv_tac_log ";
+     sp_print_conv fmt c;
+     pp_print_string fmt ")"
+  | Abs_tac_log -> pp_print_string fmt "(Abs_tac_log)"
+  | Mk_comb_tac_log -> pp_print_string fmt "(Mk_comb_tac_log)"
+  | Disch_tac_log -> pp_print_string fmt "(Disch_tac_log)"
+  | Mp_tac_log th ->
+     pp_print_string fmt "(Mp_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Eq_tac_log -> pp_print_string fmt "(Eq_tac_log)"
+  | Undisch_tac_log tm ->
+     pp_print_string fmt "(Undisch_tac_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt ")"
+  | Spec_tac_log (tm1, tm2) ->
+     pp_print_string fmt "(Spec_tac_log ";
+     sp_print_term fmt tm1;
+     pp_print_string fmt " ";
+     sp_print_term fmt tm2;
+     pp_print_string fmt ")"
+  | X_gen_tac_log tm ->
+     pp_print_string fmt "(X_gen_tac_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt ")"
+  | X_choose_tac_log (tm, th) ->
+     pp_print_string fmt "(X_choose_tac_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt " ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Exists_tac_log tm ->
+     pp_print_string fmt "(Exists_tac_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt ")"
+  | Conj_tac_log -> pp_print_string fmt "(Conj_tac_log)"
+  | Disj1_tac_log -> pp_print_string fmt "(Disj1_tac_log)"
+  | Disj2_tac_log -> pp_print_string fmt "(Disj2_tac_log)"
+  | Disj_cases_tac_log th ->
+     pp_print_string fmt "(Disj_cases_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Contr_tac_log th ->
+     pp_print_string fmt "(Contr_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Match_accept_tac_log th ->
+     pp_print_string fmt "(Match_accept_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Match_mp_tac_log th ->
+     pp_print_string fmt "(Match_mp_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Conjuncts_then2_log (thm_tac1, thm_tac2, th) ->
+     pp_print_string fmt "(Conjuncts_then2_log ";
+     sp_print_thm_tactic fmt thm_tac1;
+     pp_print_string fmt " ";
+     sp_print_thm_tactic fmt thm_tac2;
+     pp_print_string fmt " ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Subgoal_then_log (tm, thm_tac) ->
+     pp_print_string fmt "(Subgoal_then_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt " ";
+     sp_print_thm_tactic fmt thm_tac;
+     pp_print_string fmt ")"
+  | Freeze_then_log (thm_tac, th) ->
+     pp_print_string fmt "(Freeze_then_log ";
+     sp_print_thm_tactic fmt thm_tac;
+     pp_print_string fmt " ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | X_meta_exists_tac_log tm ->
+     pp_print_string fmt "(X_mpeta_exists_tac_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt ")"
+  | Meta_spec_tac_log (tm, th) ->
+     pp_print_string fmt "(Meta_spec_tac_log ";
+     sp_print_term fmt tm;
+     pp_print_string fmt " ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Backchain_tac_log th ->
+     pp_print_string fmt "(Backchain_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Imp_subst_tac_log th ->
+     pp_print_string fmt "(Imp_subst_tac_log ";
+     sp_print_thm fmt th;
+     pp_print_string fmt ")"
+  | Unknown_log -> pp_print_string fmt "(Unknown_log)";;
 
 let rec sp_print_proof_log fmt plog =
   let Proof_log ((gl:goal), (taclog:tactic_log), (logl:proof_log list)) = plog in
