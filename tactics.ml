@@ -914,7 +914,7 @@ let (TAC_PROOF : goal * tactic -> thm) =
     if sgs = [] then
       let (th,log) = just null_inst [] in
       (match proof_fmt with
-        Some fmt -> sp_print_proof_log fmt log; pp_print_newline fmt ()
+        Some fmt -> sexp_print fmt (sexp_proof_log log); pp_print_newline fmt ()
       | None -> ());
       th
     else failwith "TAC_PROOF: Unsolved goals";;
