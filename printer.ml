@@ -160,18 +160,36 @@ let name_of tm =
 (* Printer for types.                                                        *)
 (* ------------------------------------------------------------------------- *)
 
-let rec sp_print_type fmt ty =
-  let rec sp_print_type_list tyl =
-    match tyl with
-      [] -> ()
-    | t::tl -> pp_print_string fmt " ";
-               sp_print_type fmt t;
-               sp_print_type_list tl
-  in match ty with
-       Tyvar(str) -> pp_print_string fmt str
-     | Tyapp(str,tyl) -> pp_print_string fmt ("("^str);
-                         sp_print_type_list tyl;
-                         pp_print_string fmt ")"
+type sexp =
+  | Sleaf of string
+  | Snode of sexp list
+
+let rec sexp_print fmt s = match s with
+    Sleaf s -> pp_print_string fmt s
+  | Snode [] -> pp_print_string fmt "()"
+  | Snode (s::sl) ->
+      pp_print_char fmt '(';
+      sexp_print fmt s;
+      List.iter (fun s -> pp_print_char fmt ' '; sexp_print fmt s) sl;
+      pp_print_char fmt ')';;
+
+(* Turn a converter raw : 'a -> sexp into a memoized converter memo : 'a -> sexp
+   that writes either (memo _n raw) or _n, where _n is fresh. *)
+let sexp_memoize : ('a -> sexp) -> ('a -> sexp) =
+  let next = ref 1 in
+  fun raw ->
+    let memo = Hashtbl.create 100 in
+    fun x ->
+      try Sleaf (Hashtbl.find memo x)
+      with Not_found ->
+        let n = Printf.sprintf "_%d" (!next) in
+        next := !next + 1;
+        Hashtbl.add memo x n;
+        Snode [Sleaf "memo"; Sleaf n; raw x]
+
+let rec sexp_type ty = match ty with
+    Tyvar str  -> Sleaf str
+  | Tyapp (str,tyl) -> Snode (Sleaf str :: map sexp_type tyl)
 
 let pp_print_type,pp_print_qtype =
   let soc sep flag ss =
@@ -205,24 +223,12 @@ let install_user_printer,delete_user_printer,try_user_printer =
 (* Parseable S-Expression printer for terms.                                 *)
 (* ------------------------------------------------------------------------- *)
 
-let rec sp_print_term fmt tm =
+let rec sexp_term tm =
   match tm with
-    Var (str, ty) -> (pp_print_string fmt "(v ";
-                      sp_print_type fmt ty;
-                      pp_print_string fmt (" "^str^")"))
-  | Const (str, ty) -> (pp_print_string fmt "(c ";
-                        sp_print_type fmt ty;
-                        pp_print_string fmt (" "^str^")"))
-  | Comb (t1, t2) -> (pp_print_string fmt "(a ";
-                      sp_print_term fmt t1;
-                      pp_print_string fmt " ";
-                      sp_print_term fmt t2;
-                      pp_print_string fmt ")")
-  | Abs (t1, t2) -> (pp_print_string fmt "(l ";
-                     sp_print_term fmt t1;
-                     pp_print_string fmt " ";
-                     sp_print_term fmt t2;
-                     pp_print_string fmt ")")
+    Var (str, ty) -> Snode [Sleaf "v"; sexp_type ty; Sleaf str]
+  | Const (str, ty) -> Snode [Sleaf "c"; sexp_type ty; Sleaf str]
+  | Comb (t1, t2) -> Snode [Sleaf "a"; sexp_term t1; sexp_term t2]
+  | Abs (t1, t2) -> Snode [Sleaf "l"; sexp_term t1; sexp_term t2]
 
 (* ------------------------------------------------------------------------- *)
 (* Printer for terms.                                                        *)
@@ -531,25 +537,9 @@ let pp_print_qterm fmt tm =
 (* Parseable S-Expression printer for theorems.                              *)
 (* ------------------------------------------------------------------------- *)
 
-let sp_print_term_list fmt tls =
-  let rec print_list tls =
-    match tls with
-      [] -> ()
-    | t::[] -> sp_print_term fmt t
-    | t::tl -> sp_print_term fmt t;
-               pp_print_string fmt " ";
-               print_list tl
-  in pp_print_string fmt "(";
-     print_list tls;
-     pp_print_string fmt ")";;
-
-let sp_print_thm fmt th =
-  let (tls, tm) = dest_thm th in
-  pp_print_string fmt "(h ";
-  sp_print_term_list fmt tls;
-  pp_print_string fmt " ";
-  sp_print_term fmt tm;
-  pp_print_string fmt ")";;
+let sexp_thm = sexp_memoize (fun th ->
+  let tls, tm = dest_thm th in
+  Snode [Sleaf "h"; Snode (map sexp_term tls); sexp_term tm])
 
 (* ------------------------------------------------------------------------- *)
 (* Printer for theorems.                                                     *)
