@@ -355,7 +355,7 @@ let (ACCEPT_TAC: thm_tactic) =
 (* ------------------------------------------------------------------------- *)
 
 let (CONV_TAC: conv -> tactic) =
-  let t_tm = `T` inxs
+  let t_tm = `T` in
   fun conv ((asl,w) as g) ->
     let th = conv w in
     let tm = concl th in
