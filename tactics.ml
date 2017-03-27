@@ -357,7 +357,7 @@ let (ACCEPT_TAC: thm_tactic) =
 let (CONV_TAC: conv -> tactic) =
   let t_tm = `T` in
   fun conv ((asl,w) as g) ->
-    let th, conv_log = conv w in
+    let th = conv w in
     let tm = concl th in
     if aconv tm w then ACCEPT_TAC th g else
     let l,r = dest_eq tm in
