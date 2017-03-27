@@ -357,7 +357,7 @@ let (ACCEPT_TAC: thm_tactic) =
 let (CONV_TAC: conv -> tactic) =
   let t_tm = `T` in
   fun conv ((asl,w) as g) ->
-    let th = conv w in
+    let th, conv_log = conv w in
     let tm = concl th in
     if aconv tm w then ACCEPT_TAC th g else
     let l,r = dest_eq tm in
@@ -913,6 +913,7 @@ let (TAC_PROOF : goal * tactic -> thm) =
     let _,sgs,just = by tac gstate in
     if sgs = [] then
       let (th,log) = just null_inst [] in
+      add_proof_stats log;
       (match proof_fmt with
         Some fmt -> sexp_print fmt (sexp_proof_log log); pp_print_newline fmt ()
       | None -> ());

@@ -136,7 +136,7 @@ clean: native-clean; rm -f pa_j.ml pa_j.cmi pa_j.cmo hol hol.multivariate hol.so
 native: core.native multivariate.native sosa.native card.native complex.native
 
 # Parameters for native builds
-OCAMLOPT=ocamlfind ocamlopt
+OCAMLOPT=ocamlopt
 OCAMLFLAGS=-w -3-8-52 -I Library -I Multivariate
 CAMLP5_WHERE=-I `camlp5 -where`
 CAMLP5_PRE=$(CAMLP5_WHERE) odyl.cmxa camlp5.cmxa
@@ -168,6 +168,9 @@ core.cmxa: $(addsuffix .cmx, system hol_native lib fusion basics nets printer pr
 multivariate.cmxa: $(addsuffix .cmx, Library/wo Library/binary Library/card Library/permutations Library/products Library/floor Multivariate/misc Library/iter Multivariate/metric Multivariate/vectors Multivariate/determinants Multivariate/topology Multivariate/convex Multivariate/paths Multivariate/polytope Multivariate/degree Multivariate/derivatives Multivariate/clifford Multivariate/integration Multivariate/measure Multivariate/multivariate_database)
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
+finish.cmxa: $(addsuffix .cmx, finish)
+	$(OCAMLOPT) -a -o $@ -linkall $^
+
 sosa.cmxa: $(addsuffix .cmx, Library/analysis Library/transc Examples/sos)
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
@@ -177,19 +180,19 @@ complex.cmxa: $(addsuffix .cmx, Library/binomial Multivariate/complexes Multivar
 card.cmxa: $(addsuffix .cmx, Library/wo Library/binary Library/card)
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
-core.native: core.cmxa
+core.native: core.cmxa finish.cmxa
 	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
 
-multivariate.native: core.cmxa multivariate.cmxa
+multivariate.native: core.cmxa multivariate.cmxa finish.cmxa
 	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
 
-sosa.native: core.cmxa sosa.cmxa
+sosa.native: core.cmxa sosa.cmxa finish.cmxa
 	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
 
-complex.native: core.cmxa multivariate.cmxa complex.cmxa
+complex.native: core.cmxa multivariate.cmxa complex.cmxa finish.cmxa
 	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
 
-card.native: core.cmxa card.cmxa
+card.native: core.cmxa card.cmxa finish.cmxa
 	$(OCAMLOPT) -o $@ $(NATIVE_PRE) $^
 
 .PHONY: depend
