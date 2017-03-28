@@ -53,7 +53,7 @@ let CSQRT = prove
                  REAL_POW_EQ_0; REAL_DIV_REFL] THEN
     REWRITE_TAC[real_div; REAL_MUL_LID; GSYM REAL_SUB_RDISTRIB] THEN
     REWRITE_TAC[REAL_ARITH `(m + r) - (m - r) = r * &2`] THEN
-    REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN CONV_TAC REAL_RAT_REDUCE_CONV THEN
+    REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[REAL_MUL_RID]; ALL_TAC] THEN
   REWRITE_TAC[real_div] THEN
   ONCE_REWRITE_TAC[AC REAL_MUL_AC
@@ -67,7 +67,7 @@ let CSQRT = prove
   REWRITE_TAC[REAL_ABS_MUL; REAL_ABS_INV; REAL_ABS_NUM] THEN
   ONCE_REWRITE_TAC[AC REAL_MUL_AC
     `&2 * (i * a') * a * h = i * (&2 * h) * a * a'`] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[REAL_MUL_LID; GSYM real_div] THEN
   ASM_SIMP_TAC[REAL_DIV_REFL; REAL_ABS_ZERO; REAL_MUL_RID]);;
 
@@ -90,7 +90,7 @@ let CEXP_0 = prove
 let CEXP_ADD = prove
  (`!w z. cexp(w + z) = cexp(w) * cexp(z)`,
   REWRITE_TAC[COMPLEX_EQ; cexp; complex_mul; complex_add; RE; IM; CX_DEF] THEN
-  REWRITE_TAC[REAL_EXP_ADD; SIN_ADD; COS_ADD] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[REAL_EXP_ADD; SIN_ADD; COS_ADD] THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 let CEXP_MUL = prove
  (`!n z. cexp(Cx(&n) * z) = cexp(z) pow n`,
@@ -104,7 +104,7 @@ let CEXP_NONZERO = prove
  (`!z. ~(cexp z = Cx(&0))`,
   GEN_TAC THEN REWRITE_TAC[cexp; COMPLEX_ENTIRE; CX_INJ; REAL_EXP_NZ] THEN
   REWRITE_TAC[CX_DEF; RE; IM; COMPLEX_EQ] THEN
-  MP_TAC(SPEC `Im z` SIN_CIRCLE) THEN CONV_TAC REAL_RING);;
+  MP_TAC(SPEC `Im z` SIN_CIRCLE) THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 let CEXP_NEG_LMUL = prove
  (`!z. cexp(--z) * cexp(z) = Cx(&1)`,
@@ -140,9 +140,9 @@ let CX_CSIN,CX_CCOS = (CONJ_PAIR o prove)
               REAL_MUL_LNEG; REAL_NEG_0; REAL_ADD_RID; complex_sub;
               SIN_NEG; COS_NEG; GSYM REAL_MUL_2; GSYM real_sub;
               complex_div; REAL_SUB_REFL; complex_inv; REAL_SUB_RNEG] THEN
-  CONJ_TAC THEN GEN_TAC THEN CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  CONJ_TAC THEN GEN_TAC THEN (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[REAL_MUL_RZERO] THEN
-  AP_TERM_TAC THEN AP_THM_TAC THEN AP_TERM_TAC THEN CONV_TAC REAL_RING);;
+  AP_TERM_TAC THEN AP_THM_TAC THEN AP_TERM_TAC THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 let CSIN_0 = prove
  (`csin(Cx(&0)) = Cx(&0)`,
@@ -157,41 +157,41 @@ let CSIN_CIRCLE = prove
   GEN_TAC THEN REWRITE_TAC[csin; ccos] THEN
   MP_TAC(SPEC `ii * z` CEXP_NEG_LMUL) THEN
   MP_TAC COMPLEX_POW_II_2 THEN REWRITE_TAC[COMPLEX_MUL_LNEG] THEN
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let CSIN_ADD = prove
  (`!w z. csin(w + z) = csin(w) * ccos(z) + ccos(w) * csin(z)`,
   REPEAT GEN_TAC THEN
   REWRITE_TAC[csin; ccos; COMPLEX_ADD_LDISTRIB; CEXP_ADD] THEN
-  MP_TAC COMPLEX_POW_II_2 THEN CONV_TAC COMPLEX_FIELD);;
+  MP_TAC COMPLEX_POW_II_2 THEN (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let CCOS_ADD = prove
  (`!w z. ccos(w + z) = ccos(w) * ccos(z) - csin(w) * csin(z)`,
   REPEAT GEN_TAC THEN
   REWRITE_TAC[csin; ccos; COMPLEX_ADD_LDISTRIB; CEXP_ADD] THEN
-  MP_TAC COMPLEX_POW_II_2 THEN CONV_TAC COMPLEX_FIELD);;
+  MP_TAC COMPLEX_POW_II_2 THEN (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let CSIN_NEG = prove
  (`!z. csin(--z) = --(csin(z))`,
   REWRITE_TAC[csin; COMPLEX_MUL_LNEG; COMPLEX_MUL_RNEG; COMPLEX_NEG_NEG] THEN
   GEN_TAC THEN MP_TAC COMPLEX_POW_II_2 THEN
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let CCOS_NEG = prove
  (`!z. ccos(--z) = ccos(z)`,
   REWRITE_TAC[ccos; COMPLEX_MUL_LNEG; COMPLEX_MUL_RNEG; COMPLEX_NEG_NEG] THEN
   GEN_TAC THEN MP_TAC COMPLEX_POW_II_2 THEN
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let CSIN_DOUBLE = prove
  (`!z. csin(Cx(&2) * z) = Cx(&2) * csin(z) * ccos(z)`,
   REWRITE_TAC[COMPLEX_RING `Cx(&2) * x = x + x`; CSIN_ADD] THEN
-  CONV_TAC COMPLEX_RING);;
+  (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let CCOS_DOUBLE = prove
  (`!z. ccos(Cx(&2) * z) = (ccos(z) pow 2) - (csin(z) pow 2)`,
   REWRITE_TAC[COMPLEX_RING `Cx(&2) * x = x + x`; CCOS_ADD] THEN
-  CONV_TAC COMPLEX_RING);;
+  (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Euler and de Moivre formulas.                                             *)
@@ -200,7 +200,7 @@ let CCOS_DOUBLE = prove
 let CEXP_EULER = prove
  (`!z. cexp(ii * z) = ccos(z) + ii * csin(z)`,
   REWRITE_TAC[ccos; csin] THEN MP_TAC COMPLEX_POW_II_2 THEN
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let DEMOIVRE = prove
  (`!z n. (ccos z + ii * csin z) pow n =
@@ -243,7 +243,7 @@ let COS_INTEGER_2PI = prove
   REWRITE_TAC[REAL_ARITH `pi * &n = &n * pi`; SIN_NPI; COS_NPI] THEN
   REWRITE_TAC[REAL_POW_POW] THEN ONCE_REWRITE_TAC[MULT_SYM] THEN
   REWRITE_TAC[GSYM REAL_POW_POW; REAL_POW_2] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[REAL_POW_ONE; REAL_SUB_RZERO]);;
 
 let SINCOS_PRINCIPAL_VALUE = prove
@@ -258,7 +258,7 @@ let SINCOS_PRINCIPAL_VALUE = prove
    SIMP_TAC[REAL_DIV_LMUL; REAL_ENTIRE; REAL_OF_NUM_EQ; ARITH; REAL_LT_IMP_NZ;
     PI_POS; REAL_ARITH `a - (a - b - c):real = b + c`; SIN_ADD; COS_ADD] THEN
    SIMP_TAC[FLOOR_FRAC; SIN_INTEGER_2PI; COS_INTEGER_2PI] THEN
-   CONV_TAC REAL_RING]);;
+   (CONV_TAC "REAL_RING") REAL_RING]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Complex logarithms (the conventional principal value).                    *)
@@ -270,7 +270,7 @@ let clog = new_definition
 let CLOG_WORKS = prove
  (`!z. ~(z = Cx(&0))
        ==> cexp(clog z) = z /\ --pi < Im(clog z) /\ Im(clog z) <= pi`,
-  GEN_TAC THEN DISCH_TAC THEN REWRITE_TAC[clog] THEN CONV_TAC SELECT_CONV THEN
+  GEN_TAC THEN DISCH_TAC THEN REWRITE_TAC[clog] THEN (CONV_TAC "SELECT_CONV") SELECT_CONV THEN
   REWRITE_TAC[cexp; EXISTS_COMPLEX] THEN
   EXISTS_TAC `ln(norm(z:complex))` THEN
   SUBGOAL_THEN `exp(ln(norm(z:complex))) = norm(z)` SUBST1_TAC THENL
@@ -298,7 +298,7 @@ let unwinding = new_definition
 
 let COMPLEX_II_NZ = prove
  (`~(ii = Cx(&0))`,
-  MP_TAC COMPLEX_POW_II_2 THEN CONV_TAC COMPLEX_RING);;
+  MP_TAC COMPLEX_POW_II_2 THEN (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let UNWINDING_2PI = prove
  (`Cx(&2 * pi) * ii * unwinding(z) = z - clog(cexp z)`,

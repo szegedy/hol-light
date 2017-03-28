@@ -86,7 +86,7 @@ let DIFF_BERNPOLY = prove
   ASM_SIMP_TAC[GSYM REAL_OF_NUM_SUB; ARITH_RULE `k <= n ==> k <= n + 1`] THEN
   UNDISCH_TAC `k <= n:num` THEN
   REWRITE_TAC[GSYM REAL_OF_NUM_ADD; GSYM REAL_OF_NUM_LE] THEN
-  ABBREV_TAC `z = x pow (n - k)` THEN CONV_TAC REAL_FIELD);;
+  ABBREV_TAC `z = x pow (n - k)` THEN (CONV_TAC "REAL_FIELD") REAL_FIELD);;
 
 (* ------------------------------------------------------------------------- *)
 (* Hence the key stepping recurrence.                                        *)
@@ -125,7 +125,7 @@ let RECURRENCE_BERNPOLY = prove
   REWRITE_TAC[real_pow; REAL_MUL_LZERO; REAL_SUB_RZERO; REAL_MUL_RID] THEN
   REWRITE_TAC[BERNOULLI; ADD1] THEN
   COND_CASES_TAC THEN ASM_REWRITE_TAC[ARITH; real_pow; REAL_MUL_LID] THEN
-  CONV_TAC SYM_CONV THEN REWRITE_TAC[REAL_ENTIRE; REAL_POW_EQ_0] THEN
+  (CONV_TAC "SYM_CONV") SYM_CONV THEN REWRITE_TAC[REAL_ENTIRE; REAL_POW_EQ_0] THEN
   ASM_REWRITE_TAC[ADD_SUB]);;
 
 (* ------------------------------------------------------------------------- *)
@@ -163,7 +163,7 @@ let SUM_CONV =
 let BINOM_CONV =
   let pth = prove
    (`a * b * x = FACT c ==> x = (FACT c) DIV (a * b)`,
-    REPEAT STRIP_TAC THEN CONV_TAC SYM_CONV THEN
+    REPEAT STRIP_TAC THEN (CONV_TAC "SYM_CONV") SYM_CONV THEN
     MATCH_MP_TAC DIV_UNIQ THEN EXISTS_TAC `0` THEN CONJ_TAC THENL
      [POP_ASSUM MP_TAC THEN ARITH_TAC;
       POP_ASSUM MP_TAC THEN ONCE_REWRITE_TAC[GSYM CONTRAPOS_THM] THEN

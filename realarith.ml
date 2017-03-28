@@ -35,11 +35,11 @@ open Calc_int;;
 
 let REAL_LTE_TOTAL = prove
  (`!x y. x < y \/ y <= x`,
-  REWRITE_TAC[real_lt] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[real_lt] THEN (CONV_TAC "TAUT") TAUT);;
 
 let REAL_LET_TOTAL = prove
  (`!x y. x <= y \/ y < x`,
-  REWRITE_TAC[real_lt] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[real_lt] THEN (CONV_TAC "TAUT") TAUT);;
 
 let REAL_LT_IMP_LE = prove
  (`!x y. x < y ==> x <= y`,

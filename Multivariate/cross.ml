@@ -26,7 +26,7 @@ let VEC3_TAC =
   SIMP_TAC[CART_EQ; LAMBDA_BETA; FORALL_3; SUM_3; DIMINDEX_3; VECTOR_3;
            vector_add; vec; dot; cross; orthogonal; basis; DET_3;
            vector_neg; vector_sub; vector_mul; ARITH] THEN
-  CONV_TAC REAL_RING;;
+  (CONV_TAC "REAL_RING") REAL_RING;;
 
 let VEC3_RULE tm = prove(tm,VEC3_TAC);;
 

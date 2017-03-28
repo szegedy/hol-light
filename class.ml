@@ -115,7 +115,7 @@ let SELECT_CONV =
 
 let SELECT_REFL = prove
  (`!x:A. (@y. y = x) = x`,
-  GEN_TAC THEN CONV_TAC SELECT_CONV THEN
+  GEN_TAC THEN (CONV_TAC "SELECT_CONV") SELECT_CONV THEN
   EXISTS_TAC `x:A` THEN REFL_TAC);;
 
 let SELECT_UNIQUE = prove
@@ -156,7 +156,7 @@ let EXCLUDED_MIDDLE = prove
   GEN_TAC THEN SUBGOAL_THEN
    `(((@x. (x <=> F) \/ t) <=> F) \/ t) /\ (((@x. (x <=> T) \/ t) <=> T) \/ t)`
   MP_TAC THENL
-   [CONJ_TAC THEN CONV_TAC SELECT_CONV THENL
+   [CONJ_TAC THEN (CONV_TAC "SELECT_CONV") SELECT_CONV THENL
      [EXISTS_TAC `F`; EXISTS_TAC `T`] THEN
     DISJ1_TAC THEN REFL_TAC;
     DISCH_THEN(STRIP_ASSUME_TAC o GSYM) THEN
@@ -238,7 +238,7 @@ let REFUTE_THEN =
   fun ttac (asl,w as gl) ->
     if w = f_tm then ALL_TAC gl
     else if is_neg w then DISCH_THEN ttac gl
-    else (CONV_TAC conv THEN DISCH_THEN ttac) gl;;
+    else ((CONV_TAC "conv") conv THEN DISCH_THEN ttac) gl;;
 
 (* ------------------------------------------------------------------------- *)
 (* Infinite de Morgan laws.                                                  *)
@@ -415,7 +415,7 @@ let COND_ELIM_CONV = HIGHER_REWRITE_CONV[COND_ELIM_THM] true;;
 
 let (COND_CASES_TAC :tactic) =
   let DENEG_RULE = GEN_REWRITE_RULE I [TAUT `~ ~ p <=> p`] in
-  CONV_TAC COND_ELIM_CONV THEN CONJ_TAC THENL
+  (CONV_TAC "COND_ELIM_CONV") COND_ELIM_CONV THEN CONJ_TAC THENL
     [DISCH_THEN(fun th -> ASSUME_TAC th THEN SUBST1_TAC(EQT_INTRO th));
      DISCH_THEN(fun th -> try let th' = DENEG_RULE th in
                               ASSUME_TAC th' THEN SUBST1_TAC(EQT_INTRO th')
@@ -430,7 +430,7 @@ let SKOLEM_THM = prove
  (`!P. (!x:A. ?y:B. P x y) <=> (?y. !x. P x (y x))`,
   REPEAT(STRIP_TAC ORELSE EQ_TAC) THENL
    [EXISTS_TAC `\x:A. @y:B. P x y` THEN GEN_TAC THEN
-    BETA_TAC THEN CONV_TAC SELECT_CONV;
+    BETA_TAC THEN (CONV_TAC "SELECT_CONV") SELECT_CONV;
     EXISTS_TAC `(y:A->B) x`] THEN
   POP_ASSUM MATCH_ACCEPT_TAC);;
 

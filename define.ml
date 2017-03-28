@@ -640,7 +640,7 @@ let instantiate_casewise_recursion,
       ==> (a /\ x = k /\ b /\ y = k /\ c ==> d)` in
     REPEAT GEN_TAC THEN
     (MATCH_MP_TAC pth1 ORELSE MATCH_MP_TAC pth0) THEN
-    CONV_TAC(RAND_CONV SIMPLIFY_WELLDEFINEDNESS_CONV) THEN
+    (CONV_TAC "(RAND_CONV SIMPLIFY_WELLDEFINEDNESS_CONV)") (RAND_CONV SIMPLIFY_WELLDEFINEDNESS_CONV) THEN
     PURE_REWRITE_TAC
       [AND_CLAUSES; IMP_CLAUSES; OR_CLAUSES; EQ_CLAUSES; NOT_CLAUSES] in
 
@@ -662,7 +662,7 @@ let instantiate_casewise_recursion,
     | "superadmissible","_MATCH" when
           name_of(repeat rator (last args)) = "_SEQPATTERN"
           -> (APPLY_PROFORMA_TAC SUPERADMISSIBLE_MATCH_SEQPATTERN THEN
-              CONV_TAC(ONCE_DEPTH_CONV EXISTS_PAT_CONV)) gl
+              (CONV_TAC "(ONCE_DEPTH_CONV EXISTS_PAT_CONV)") (ONCE_DEPTH_CONV EXISTS_PAT_CONV)) gl
     | "superadmissible","_MATCH" when
          is_pattern "_UNGUARDED_PATTERN" 2 (last args)
           -> let n = length(fst(strip_exists(body(body(last args))))) in
@@ -686,7 +686,7 @@ let instantiate_casewise_recursion,
     | "admissible","_MATCH" when
           name_of(repeat rator (last args)) = "_SEQPATTERN"
           -> (APPLY_PROFORMA_TAC ADMISSIBLE_MATCH_SEQPATTERN THEN
-              CONV_TAC(ONCE_DEPTH_CONV EXISTS_PAT_CONV)) gl
+              (CONV_TAC "(ONCE_DEPTH_CONV EXISTS_PAT_CONV)") (ONCE_DEPTH_CONV EXISTS_PAT_CONV)) gl
     | "admissible","_MATCH"
           -> APPLY_PROFORMA_TAC ADMISSIBLE_MATCH gl
     | "admissible","_UNGUARDED_PATTERN"
@@ -856,7 +856,7 @@ let instantiate_casewise_recursion,
                   (fun v -> TRY(GEN_REWRITE_TAC I [FORALL_PAIR_THM]) THEN
                             X_GEN_TAC v)
                   parms THEN
-                CONV_TAC(TOP_DEPTH_CONV GEN_BETA_CONV) THEN
+                (CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV) THEN
                 MAP_EVERY (fun v -> SPEC_TAC(v,v)) (rev parms @ [v]))) THEN
         PURE_REWRITE_TAC[FORALL_SIMP] THEN
         W(fun (asl,w) -> MAP_EVERY (fun t -> SPEC_TAC(t,t))
@@ -950,9 +950,7 @@ let instantiate_casewise_recursion,
        REWRITE_TAC[FORALL_PAIR_THM] THEN
        GUESS_MEASURE_THEN tac)) (asl,w) in
     let PRE_GUESS_TAC =
-      CONV_TAC(BINDER_CONV(DEPTH_BINOP_CONV `(/\)`
-       (TRY_CONV SIMPLIFY_WELLDEFINEDNESS_CONV THENC
-        TRY_CONV FORALL_UNWIND_CONV))) in
+      (CONV_TAC "(BINDER_CONV(DEPTH_BINOP_CONV `(/\)` (TRY_CONV SIMPLIFY_WELLDEFINEDNESS_CONV THENC TRY_CONV FORALL_UNWIND_CONV)))") (BINDER_CONV(DEPTH_BINOP_CONV `(/\)` (TRY_CONV SIMPLIFY_WELLDEFINEDNESS_CONV THENC TRY_CONV FORALL_UNWIND_CONV))) in
     let GUESS_ORDERING_TAC =
       let false_tm = `\x:A y:A. F` in
       W(fun (asl,w) ->

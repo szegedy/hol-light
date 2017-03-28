@@ -20,7 +20,7 @@ let CHEB_COS = prove
   REPEAT STRIP_TAC THEN
   ASM_REWRITE_TAC[GSYM REAL_OF_NUM_ADD; REAL_MUL_LID; REAL_ADD_RDISTRIB] THEN
   REWRITE_TAC[COS_ADD; COS_DOUBLE; SIN_DOUBLE] THEN
-  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC REAL_RING);;
+  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 let CHEB_RIPPLE = prove
  (`!x. abs(x) <= &1 ==> abs(cheb n x) <= &1`,
@@ -64,7 +64,7 @@ let CHEB_2N1 = prove
                 ARITH_RULE `n + 3 = (n + 1) + 2`;
 
                 cheb])) THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;
 
 let IVT_LEMMA1 = prove
  (`!f. (!x. f contl x)

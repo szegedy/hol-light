@@ -401,7 +401,7 @@ let countable_prod = prove_by_refinement(
   CHO 3;
   CHO 2;
   TYPE_THEN `(x',x'')` EXISTS_TAC;
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   ASM_MESON_TAC[];
   ]);;
 
@@ -600,7 +600,7 @@ let min_finite = prove_by_refinement(
   DISCH_THEN IMATCH_MP_TAC ;
   ASM_REWRITE_TAC[HAS_SIZE ];
   DISCH_THEN IMATCH_MP_TAC ;
-  CONV_TAC (quant_left_CONV "k");
+  (CONV_TAC "(quant_left_CONV \"k\")") (quant_left_CONV "k");
   INDUCT_TAC;
   REWRITE_TAC[HAS_SIZE_0];
   DISCH_ALL_TAC;
@@ -2125,7 +2125,7 @@ let open_nbd = prove_by_refinement(
   GEN_TAC;
   EXISTS_TAC `A:A->bool`;
   ASM_MESON_TAC[SUBSET];
-  CONV_TAC (quant_left_CONV "B");
+  (CONV_TAC "(quant_left_CONV \"B\")") (quant_left_CONV "B");
   DISCH_THEN CHOOSE_TAC;
   USE 1 (CONV_RULE NAME_CONFLICT_CONV);
   TYPE_THEN `UNIONS (IMAGE B A)  = A` SUBGOAL_TAC;
@@ -2137,8 +2137,8 @@ let open_nbd = prove_by_refinement(
   REWRITE_TAC[SUBSET;IN_UNIONS;IN_IMAGE];
   DISCH_ALL_TAC;
   NAME_CONFLICT_TAC;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   EXISTS_TAC `x:A`;
   TYPE_THEN `B x` EXISTS_TAC ;
   ASM_REWRITE_TAC[];
@@ -2175,11 +2175,11 @@ let open_inters = prove_by_refinement(
   UND 2;
   UND 3;
   UND 4;
-  CONV_TAC (quant_left_CONV "n");
+  (CONV_TAC "(quant_left_CONV \"n\")") (quant_left_CONV "n");
   TYPE_THEN `V` SPEC2_TAC ;
   TYPE_THEN `U` SPEC2_TAC ;
-  CONV_TAC (quant_left_CONV "n");
-  CONV_TAC (quant_left_CONV "n");
+  (CONV_TAC "(quant_left_CONV \"n\")") (quant_left_CONV "n");
+  (CONV_TAC "(quant_left_CONV \"n\")") (quant_left_CONV "n");
   INDUCT_TAC;
   DISCH_ALL_TAC;
   ASM_MESON_TAC[HAS_SIZE_0];
@@ -3271,7 +3271,7 @@ let gen_induced = prove_by_refinement(
  DISCH_TAC;
  ASM_REWRITE_TAC[];
  ASM_CASES_TAC `(Y:A->bool) (x:A)`;
- CONV_TAC (relabel_bound_conv);
+ (CONV_TAC "(relabel_bound_conv)") (relabel_bound_conv);
  EXISTS_TAC `open_ball (X,d) (x:A) r`;
  CONJ_TAC;
  MATCH_MP_TAC open_ball_intersect;
@@ -3840,7 +3840,7 @@ let complete_euclid = prove_by_refinement(
   ALL_TAC; (* #buffer "CE2"; *)
   DISCH_TAC;
   GEN_TAC;
-  CONV_TAC (quant_right_CONV "n");
+  (CONV_TAC "(quant_right_CONV \"n\")") (quant_right_CONV "n");
   DISCH_TAC;
   USE 2 (CONV_RULE (quant_left_CONV "eps"));
   USE 2 (CONV_RULE (quant_left_CONV "eps"));
@@ -3862,7 +3862,7 @@ let complete_euclid = prove_by_refinement(
   DISCH_TAC;
   ASM_SIMP_TAC[d_euclid_n];
   SUBGOAL_TAC `!(j:num). ?c. !i. (c <=| i) ==> ||. (L j 0 -. f i j) <. eps/(&.1 + &. n)`;
-  CONV_TAC (quant_left_CONV "c");
+  (CONV_TAC "(quant_left_CONV \"c\")") (quant_left_CONV "c");
   EXISTS_TAC `n':num->num`;
   REPEAT GEN_TAC;
   USE 2 ((SPEC `j:num`));
@@ -3873,7 +3873,7 @@ let complete_euclid = prove_by_refinement(
   ASM_REWRITE_TAC[];
   ASM_SIMP_TAC[euclid1_abs];
   REWRITE_TAC[proj;o_DEF];
-  CONV_TAC (quant_left_CONV "c");
+  (CONV_TAC "(quant_left_CONV \"c\")") (quant_left_CONV "c");
   DISCH_THEN CHOOSE_TAC;
   ABBREV_TAC `t = (\u. (if (u <| n) then (c u) else (0)))`;
   SUBGOAL_TAC `?M. (!j. (t:num->num) j <=| M)`;
@@ -4062,7 +4062,7 @@ let totally_bounded_subset = prove_by_refinement(
   GEN_TAC;
   USE 1 (SPEC `eps/(&.2)`);
   CHO 1;
-  CONV_TAC (quant_right_CONV "B");
+  (CONV_TAC "(quant_right_CONV \"B\")") (quant_right_CONV "B");
   DISCH_TAC;
   SUBGOAL_TAC `&.0 <. eps ==> &.0 <. eps/(&.2)`;
   DISCH_THEN (fun t-> MP_TAC (ONCE_REWRITE_RULE[GSYM REAL_HALF_DOUBLE] t));
@@ -4073,9 +4073,9 @@ let totally_bounded_subset = prove_by_refinement(
   (UND 1) THEN (ASM_REWRITE_TAC[]) THEN DISCH_ALL_TAC;
   SUBGOAL_TAC `!b. ?s. (?t. (t IN (b:A->bool) INTER S)) ==> (s IN b INTER S)`;
   GEN_TAC;
-  CONV_TAC (quant_left_CONV "t");
+  (CONV_TAC "(quant_left_CONV \"t\")") (quant_left_CONV "t");
   MESON_TAC[IN];
-  CONV_TAC (quant_left_CONV "s");
+  (CONV_TAC "(quant_left_CONV \"s\")") (quant_left_CONV "s");
   DISCH_THEN CHOOSE_TAC;
   ALL_TAC; (* #set "TB1"; *)
   EXISTS_TAC `IMAGE (\c. (open_ball ((S:A->bool),d) ((s) c) eps)) (B:(A->bool)->bool)`;
@@ -4100,8 +4100,8 @@ let totally_bounded_subset = prove_by_refinement(
   USE 7 (SPEC `b':A->bool`);
   REWRITE_TAC[IMAGE];
   REWRITE_TAC[IN_ELIM_THM'];
-  CONV_TAC (quant_left_CONV "x");
-  CONV_TAC (quant_left_CONV "x");
+  (CONV_TAC "(quant_left_CONV \"x\")") (quant_left_CONV "x");
+  (CONV_TAC "(quant_left_CONV \"x\")") (quant_left_CONV "x");
   EXISTS_TAC `b':A->bool`;
   EXISTS_TAC `open_ball((S:A->bool),d) (s (b':A->bool)) eps`;
   ASM_REWRITE_TAC[IN];
@@ -4112,8 +4112,8 @@ let totally_bounded_subset = prove_by_refinement(
   REWRITE_TAC[IN_INTER];
   ASM_MESON_TAC[IN];
   UND 7;
-  CONV_TAC (quant_left_CONV "t");
-  CONV_TAC (quant_left_CONV "t");
+  (CONV_TAC "(quant_left_CONV \"t\")") (quant_left_CONV "t");
+  (CONV_TAC "(quant_left_CONV \"t\")") (quant_left_CONV "t");
   EXISTS_TAC `u:A`;
   DISCH_TAC;
   DISCH_TAC;
@@ -4171,12 +4171,12 @@ let totally_bounded_subset = prove_by_refinement(
   REAL_ARITH_TAC;
   REWRITE_TAC[IMAGE;IN_ELIM_THM'];
   REWRITE_TAC[UNIONS;IN_ELIM_THM'];
-  CONV_TAC (quant_left_CONV "x");
-  CONV_TAC (quant_left_CONV "x");
+  (CONV_TAC "(quant_left_CONV \"x\")") (quant_left_CONV "x");
+  (CONV_TAC "(quant_left_CONV \"x\")") (quant_left_CONV "x");
   NAME_CONFLICT_TAC;
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   X_GEN_TAC `c:A->bool`;
-  CONV_TAC (quant_left_CONV "u'");
+  (CONV_TAC "(quant_left_CONV \"u'\")") (quant_left_CONV "u'");
   GEN_TAC;
   DISCH_ALL_TAC;
   UND 10;
@@ -4331,7 +4331,7 @@ let totally_bounded_cube = prove_by_refinement(
   REP_GEN_TAC;
   REWRITE_TAC[totally_bounded];
   GEN_TAC;
-  CONV_TAC (quant_right_CONV "B");
+  (CONV_TAC "(quant_right_CONV \"B\")") (quant_right_CONV "B");
   DISCH_TAC;
   ABBREV_TAC `cent = {x | euclid n x /\ (!i. (?j. abs(x i) = (eps/(&.n+. &.1))*(&.j)) /\ (abs(x i) <=. (&.N) ) ) }`;
   SUBGOAL_TAC `&.0 <. (&.n +. &.1)`;
@@ -4377,8 +4377,8 @@ let totally_bounded_cube = prove_by_refinement(
   USE 11 (CONV_RULE (quant_left_CONV "n"));
   UND 11 THEN (DISCH_THEN (X_CHOOSE_TAC `cs:real->num`));
   NAME_CONFLICT_TAC;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   ABBREV_TAC `cx = \ (i:num) . if (&.0 <=. (x i)) then &(cs (x i))* s else --. (&.(cs (--. (x i))) * s )`;
   EXISTS_TAC `cx:num->real`;
   EXISTS_TAC `open_ball(cube,d_euclid) cx eps`;
@@ -4615,9 +4615,9 @@ let center_FINITE = prove_by_refinement(
   EQ_TAC;
   DISCH_ALL_TAC;
   USE 4 (SPEC `x':A->bool`);
-  CONV_TAC (quant_left_CONV "b'");
-  CONV_TAC (quant_left_CONV "b'");
-  CONV_TAC (quant_left_CONV "b'");
+  (CONV_TAC "(quant_left_CONV \"b'\")") (quant_left_CONV "b'");
+  (CONV_TAC "(quant_left_CONV \"b'\")") (quant_left_CONV "b'");
+  (CONV_TAC "(quant_left_CONV \"b'\")") (quant_left_CONV "b'");
   EXISTS_TAC `x':(A->bool)`;
   EXISTS_TAC `(x:(A->bool)->A) x'`;
   REWRITE_TAC[];
@@ -4774,7 +4774,7 @@ let subsequence_rec = prove_by_refinement(
   ASM_REWRITE_TAC [];
   DISCH_THEN CHOOSE_TAC;
   EXISTS_TAC `C INTER (b:A->bool)`;
-  CONV_TAC (quant_right_CONV "s'");
+  (CONV_TAC "(quant_right_CONV \"s'\")") (quant_right_CONV "s'");
   SUBCONJ_TAC;
   REWRITE_TAC[INTER_SUBSET];
   DISCH_TAC;
@@ -4892,7 +4892,7 @@ let cauchy_subseq = prove_by_refinement(
   SUBGOAL_TAC ` (X SUBSET X) /\ (cond ((X:A->bool),0) 0)`;
   REWRITE_TAC[SUBSET_REFL];
   EXPAND_TAC "cond";
-  CONV_TAC (TOP_DEPTH_CONV  GEN_BETA_CONV);
+  (CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV);
   USE 2 (REWRITE_RULE[sequence;SUBSET;IN_IMAGE;IN_UNIV]);
   USE 2 (REWRITE_RULE[IN]);
   USE 2 (CONV_RULE (NAME_CONFLICT_CONV));
@@ -4917,7 +4917,7 @@ let cauchy_subseq = prove_by_refinement(
   DISCH_ALL_TAC;
   SUBGOAL_TAC `!cs n. ?cs' . (FST cs SUBSET X) /\ (cond cs n)==>( (FST cs' SUBSET (FST cs)) /\(SND cs <| ((SND:((A->bool)#num)->num) cs') /\ (cond cs' (SUC n))) )`;
   DISCH_ALL_TAC;
-  CONV_TAC (quant_right_CONV "cs'");
+  (CONV_TAC "(quant_right_CONV \"cs'\")") (quant_right_CONV "cs'");
   DISCH_TAC;
   AND 11;
   H_REWRITE_RULE[GSYM o (HYP "6")] (HYP "11");
@@ -4934,7 +4934,7 @@ let cauchy_subseq = prove_by_refinement(
   EXISTS_TAC `(C':A->bool,s':num)`;
   ASM_REWRITE_TAC[FST;SND];
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   ASM_REWRITE_TAC[];
   DISCH_TAC;
   ALL_TAC; (* "cs4" *)
@@ -5005,7 +5005,7 @@ let cauchy_subseq = prove_by_refinement(
   ONCE_REWRITE_TAC[REAL_MUL_AC];
   ASM_SIMP_TAC[REAL_INV_LT];
   ASM_SIMP_TAC[GSYM REAL_LT_LDIV_EQ];
-  CONV_TAC (quant_right_CONV "n");
+  (CONV_TAC "(quant_right_CONV \"n\")") (quant_right_CONV "n");
   DISCH_ALL_TAC;
   ASSUME_TAC (SPEC `R'/e` REAL_ARCH_SIMPLE);
   CHO 14;
@@ -5024,21 +5024,21 @@ let cauchy_subseq = prove_by_refinement(
   AND 3;
   UND 3;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   DISCH_ALL_TAC;
   COPY 15;
   USE 15 (SPEC `i:num`);
   AND 15;
   UND 15;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   DISCH_ALL_TAC;
   COPY 20;
   USE 20 (SPEC `j:num`);
   AND 20;
   UND 20;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   DISCH_ALL_TAC;
   ABBREV_TAC `e2 = R * twopow (--: (&:n))`;
   REWRITE_TAC[o_DEF];
@@ -5173,7 +5173,7 @@ let countable_dense = prove_by_refinement(
   ASM_REWRITE_TAC[];
   ASM_SIMP_TAC[FINITE_COUNTABLE];
   ASM_MESON_TAC[];
-  CONV_TAC (quant_left_CONV "z");
+  (CONV_TAC "(quant_left_CONV \"z\")") (quant_left_CONV "z");
   DISCH_THEN CHOOSE_TAC;
   TYPE_THEN  `UNIONS (IMAGE z (UNIV:num->bool))` EXISTS_TAC;
   CONJ_TAC;
@@ -5401,7 +5401,7 @@ let compact_closed = prove_by_refinement(
   ONCE_ASM_SIMP_TAC[open_nbd];
   TYPE_THEN `C = UNIONS U DIFF K` ABBREV_TAC;
   GEN_TAC;
-  CONV_TAC (quant_right_CONV "B");
+  (CONV_TAC "(quant_right_CONV \"B\")") (quant_right_CONV "B");
   DISCH_ALL_TAC;
   (* cc1 *)
   TYPE_THEN `!y. (K y) ==> (?A B. (U A /\ U B /\ A x /\ B y /\ (A INTER B = {})))` SUBGOAL_TAC;
@@ -5442,8 +5442,8 @@ let compact_closed = prove_by_refinement(
   ASM_MESON_TAC[];
   REWRITE_TAC[SUBSET;IN_IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   ASM_MESON_TAC[IN];
   DISCH_TAC;
   REWR 3;
@@ -5575,7 +5575,7 @@ let compact_totally_bounded = prove_by_refinement(
   REWRITE_TAC[totally_bounded;compact];
   DISCH_ALL_TAC;
   DISCH_ALL_TAC;
-  CONV_TAC (quant_right_CONV "B");
+  (CONV_TAC "(quant_right_CONV \"B\")") (quant_right_CONV "B");
   DISCH_TAC;
   TYPE_THEN `IMAGE (\x. open_ball(X,d) x eps) X` (USE 2 o SPEC);
   TYPE_THEN `X SUBSET UNIONS (IMAGE (\x. open_ball (X,d) x eps) X)` SUBGOAL_TAC;
@@ -5584,8 +5584,8 @@ let compact_totally_bounded = prove_by_refinement(
   NAME_CONFLICT_TAC;
   REWRITE_TAC[IN];
   DISCH_TAC;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   TYPE_THEN `x` EXISTS_TAC;
   TYPE_THEN `open_ball (X,d) x eps` EXISTS_TAC;
   ASM_REWRITE_TAC[];
@@ -5656,8 +5656,8 @@ let finite_inters = prove_by_refinement(
   USE 2 (REWRITE_RULE[INTERS_EQ_EMPTY]);
   TYPE_THEN `x` (USE 2 o SPEC);
   CHO 2;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   TYPE_THEN `a` EXISTS_TAC;
   TYPE_THEN `UNIONS U DIFF a` EXISTS_TAC ;
   ASM_REWRITE_TAC[IN];
@@ -5828,7 +5828,7 @@ let cauchy_subseq_sublemma = prove_by_refinement(
   SUBGOAL_TAC ` (X SUBSET X) /\ (cond ((X:A->bool),0) 0)`;
   REWRITE_TAC[SUBSET_REFL];
   EXPAND_TAC "cond";
-  CONV_TAC (TOP_DEPTH_CONV  GEN_BETA_CONV);
+  (CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV);
   USE 2 (REWRITE_RULE[sequence;SUBSET;IN_IMAGE;IN_UNIV]);
   USE 2 (REWRITE_RULE[IN]);
   USE 2 (CONV_RULE (NAME_CONFLICT_CONV));
@@ -5853,7 +5853,7 @@ let cauchy_subseq_sublemma = prove_by_refinement(
   DISCH_ALL_TAC;
   SUBGOAL_TAC `!cs n. ?cs' . (FST cs SUBSET X) /\ (cond cs n)==>( (FST cs' SUBSET (FST cs)) /\(SND cs <| ((SND:((A->bool)#num)->num) cs') /\ (cond cs' (SUC n))) )`;
   DISCH_ALL_TAC;
-  CONV_TAC (quant_right_CONV "cs'");
+  (CONV_TAC "(quant_right_CONV \"cs'\")") (quant_right_CONV "cs'");
   DISCH_TAC;
   AND 11;
   H_REWRITE_RULE[GSYM o (HYP "6")] (HYP "11");
@@ -5870,7 +5870,7 @@ let cauchy_subseq_sublemma = prove_by_refinement(
   EXISTS_TAC `(C':A->bool,s':num)`;
   ASM_REWRITE_TAC[FST;SND];
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   ASM_REWRITE_TAC[];
   DISCH_TAC;
   ALL_TAC; (* "cs4" *)
@@ -5951,7 +5951,7 @@ let subseq_cauchy = prove_by_refinement(
   TYPE_THEN `eps/(&.2)` (USE 4 o SPEC);
   CHO 4;
   CHO 2;
-  CONV_TAC (quant_right_CONV "n");
+  (CONV_TAC "(quant_right_CONV \"n\")") (quant_right_CONV "n");
   DISCH_ALL_TAC;
   USE 2 (REWRITE_RULE[REAL_LT_HALF1]);
   USE 4 (REWRITE_RULE[REAL_LT_HALF1]);
@@ -6081,7 +6081,7 @@ let compact_complete = prove_by_refinement(
   USE 12 (SPEC `m:num`);
   UND 12;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   REWRITE_TAC[SUBSET];
   MESON_TAC[IN;REAL_ARITH `x <. y ==> x <=. y`];
   REWRITE_TAC[SUBSET;IN];
@@ -6097,7 +6097,7 @@ let compact_complete = prove_by_refinement(
   AND 12;
   UND 12;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   MESON_TAC[];
   ASM_REWRITE_TAC [NOT_IN_EMPTY];
   DISCH_TAC;
@@ -6117,7 +6117,7 @@ let compact_complete = prove_by_refinement(
   ASM_REWRITE_TAC[];
   DISCH_ALL_TAC;
   DISCH_ALL_TAC;
-  CONV_TAC (quant_right_CONV "n");
+  (CONV_TAC "(quant_right_CONV \"n\")") (quant_right_CONV "n");
   DISCH_ALL_TAC;
   TYPEL_THEN [`(&.2)*R`;`eps`] (fun t-> ASSUME_TAC (ISPECL t twopow_eps));
   CHO 18;
@@ -6144,7 +6144,7 @@ let compact_complete = prove_by_refinement(
   USE 12 (SPEC `n:num`);
   UND 12;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   REWRITE_TAC[SUBSET];
   MESON_TAC[IN;REAL_ARITH `x <. y ==> x <=. y`];
   DISCH_TAC;
@@ -6158,7 +6158,7 @@ let compact_complete = prove_by_refinement(
   AND 12;
   UND 12;
   EXPAND_TAC "cond";
-  (CONV_TAC (TOP_DEPTH_CONV GEN_BETA_CONV));
+  ((CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)") (TOP_DEPTH_CONV GEN_BETA_CONV));
   DISCH_ALL_TAC;
   TYPE_THEN `((f o sn) i)  IN closed_ball (X,d) (f (sn n)) (R * twopow (--: (&:n)))` SUBGOAL_TAC;
   KILL 1;
@@ -6327,7 +6327,7 @@ let countable_cover = prove_by_refinement(
   ALL_TAC ; (* "cc4"; *)
   SUBCONJ_TAC ;
   TYPE_THEN `open_ball (X,d) z (twopow (--: (&:(n +| 1)))) SUBSET (open_ball (X,d) x (twopow (--: (&:n))))`  SUBGOAL_TAC ;
-  CONV_TAC (RAND_CONV (ONCE_REWRITE_CONV [(GSYM twopow_double)]));
+  (CONV_TAC "(RAND_CONV (ONCE_REWRITE_CONV [(GSYM twopow_double)]))") (RAND_CONV (ONCE_REWRITE_CONV [(GSYM twopow_double)]));
   IMATCH_MP_TAC  ball_subset_ball;
   ASM_REWRITE_TAC[];
   UND 0;
@@ -6550,7 +6550,7 @@ let compact_uniformly_continuous = prove_by_refinement(
   ASM_SIMP_TAC[GSYM top_of_metric_unions;SUBSET_REFL ];
   DISCH_TAC;
   TYPE_THEN `cov` (USE 3 o SPEC);
-  CONV_TAC (quant_right_CONV  "delta");
+  (CONV_TAC "(quant_right_CONV \"delta\")") (quant_right_CONV "delta");
   DISCH_TAC;
   WITH 6 (ONCE_REWRITE_RULE [GSYM REAL_LT_HALF1]);
   REWR 0;
@@ -6643,7 +6643,7 @@ let compact_uniformly_continuous = prove_by_refinement(
   DISCH_TAC;
   ALL_TAC ; (* cc3 *)
   TYPE_THEN `dX x' y < delta x'` SUBGOAL_TAC;
-  CONV_TAC (RAND_CONV (ONCE_REWRITE_CONV [GSYM REAL_HALF_DOUBLE]));
+  (CONV_TAC "(RAND_CONV (ONCE_REWRITE_CONV [GSYM REAL_HALF_DOUBLE]))") (RAND_CONV (ONCE_REWRITE_CONV [GSYM REAL_HALF_DOUBLE]));
   IMATCH_MP_TAC  (REAL_ARITH `(dX x' x <. u) /\ (dX x y <. u) /\ (dX x' y <= dX x' x +. dX x y) ==> (dX x' y <. u + u)`);
   ASM_REWRITE_TAC[];
   CONJ_TAC;
@@ -6662,7 +6662,7 @@ let compact_uniformly_continuous = prove_by_refinement(
   TYPE_THEN `X` EXISTS_TAC;
   ASM_REWRITE_TAC[];
   DISCH_ALL_TAC;
-  CONV_TAC (RAND_CONV (ONCE_REWRITE_CONV [GSYM REAL_HALF_DOUBLE]));
+  (CONV_TAC "(RAND_CONV (ONCE_REWRITE_CONV [GSYM REAL_HALF_DOUBLE]))") (RAND_CONV (ONCE_REWRITE_CONV [GSYM REAL_HALF_DOUBLE]));
   TYPE_THEN `(dY (f x) (f x') <. u0) /\ (dY (f x') (f y) <. u0) /\ (dY (f x) (f y) <= (dY (f x) (f x')) + (dY (f x') (f y))) ==> ((dY (f x) (f y)) < u0 + u0)` (fun t-> (IMATCH_MP_TAC    (REAL_ARITH t)));
   TYPE_THEN `x'` (USE 0 o SPEC);
   AND 0;
@@ -6751,8 +6751,8 @@ let image_compact = prove_by_refinement(
   REWRITE_TAC[IN_ELIM_THM';IN ];
   DISCH_ALL_TAC;
   CHO 5;
-  CONV_TAC (quant_left_CONV "x");
-  CONV_TAC (quant_left_CONV "x");
+  (CONV_TAC "(quant_left_CONV \"x\")") (quant_left_CONV "x");
+  (CONV_TAC "(quant_left_CONV \"x\")") (quant_left_CONV "x");
   TYPE_THEN `u` EXISTS_TAC;
   NAME_CONFLICT_TAC;
   TYPE_THEN `preimage (UNIONS U) f u` EXISTS_TAC;
@@ -6779,8 +6779,8 @@ let image_compact = prove_by_refinement(
   REWRITE_TAC[SUBSET;IN_IMAGE];
   REWRITE_TAC[IN;UNIONS;IN_ELIM_THM' ];
   NAME_CONFLICT_TAC;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   DISCH_ALL_TAC;
   ASM_REWRITE_TAC[];
   AND 1;
@@ -6903,8 +6903,8 @@ let induced_compact = prove_by_refinement(
   REWR 2;
   X_CHO 2 `v:A->bool`;
   NAME_CONFLICT_TAC;
-  CONV_TAC (quant_left_CONV "x'");
-  CONV_TAC (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
+  (CONV_TAC "(quant_left_CONV \"x'\")") (quant_left_CONV "x'");
   TYPE_THEN `v` EXISTS_TAC;
   TYPE_THEN `u v` EXISTS_TAC;
   ASM_REWRITE_TAC[];

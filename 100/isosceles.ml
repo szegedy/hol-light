@@ -123,7 +123,7 @@ let ISOSCELES_TRIANGLE_3 = prove
    `a:real = a' /\ b = b'
     ==> a + x + b = p ==> a' + x' + b' = p ==> x' = x`) THEN
   CONJ_TAC THENL [ALL_TAC; ASM_MESON_TAC[ANGLE_SYM]] THEN
-  CONV_TAC SYM_CONV THEN
+  (CONV_TAC "SYM_CONV") SYM_CONV THEN
   UNDISCH_TAC `angle(C:real^N,A,B) = angle (A,B,C)` THEN
   MATCH_MP_TAC EQ_IMP THEN BINOP_TAC THENL
    [MATCH_MP_TAC ANGLE_EQ_0_LEFT;

@@ -43,7 +43,7 @@ let basic_rewrite_bak = basic_rewrites();;
 let basic_net_bak = basic_net();;
 let PARTIAL_REWRITE_CONV thl =
   GENERAL_REWRITE_CONV true TOP_DEPTH_CONV (basic_net_bak) thl;;
-let PARTIAL_REWRITE_TAC thl = CONV_TAC(PARTIAL_REWRITE_CONV thl);;
+let PARTIAL_REWRITE_TAC thl = (CONV_TAC "(PARTIAL_REWRITE_CONV thl)") (PARTIAL_REWRITE_CONV thl);;
 
 let reset() = (set_basic_rewrites basic_rewrite_bak);;
 extend_basic_rewrites
@@ -976,13 +976,13 @@ let euclid_xy = prove_by_refinement(
   EXPAND_TAC "u";
   UND 0;
   DISCH_THEN IMATCH_MP_TAC ;
-  CONV_TAC REAL_RAT_REDUCE_CONV;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV;
   DISCH_TAC;
   TYPE_THEN `euclid n v` SUBGOAL_TAC;
   EXPAND_TAC "v";
   UND 0;
   DISCH_THEN IMATCH_MP_TAC ;
-  CONV_TAC REAL_RAT_REDUCE_CONV;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV;
   DISCH_TAC;
   TYPE_THEN `x = (&.2)*# v - (&.1) *# u` SUBGOAL_TAC;
   EXPAND_TAC "u";
@@ -1048,7 +1048,7 @@ let closure_segment = prove_by_refinement(
   TYPE_THEN `?t. (&.0 <. t) /\ (t <. &.1) /\ (t *. (d_euclid x y) <. r)` SUBGOAL_TAC;
   TYPE_THEN  `(&.1/(&.2))*. d_euclid x y < r` ASM_CASES_TAC;
   TYPE_THEN `(&.1/(&.2))` EXISTS_TAC;
-  CONV_TAC (REAL_RAT_REDUCE_CONV);
+  (CONV_TAC "(REAL_RAT_REDUCE_CONV)") (REAL_RAT_REDUCE_CONV);
   ASM_REWRITE_TAC[];
   TYPE_THEN `(r/(&.2))/(d_euclid x y)` EXISTS_TAC;
   ASM_SIMP_TAC[REAL_LT_DIV;REAL_LT_HALF1];
@@ -1961,7 +1961,7 @@ let square_disj = prove_by_refinement(
   DISCH_THEN_REWRITE;
   REWRITE_TAC[squ];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "u''");
+  (CONV_TAC "(dropq_conv \"u''\")") (dropq_conv "u''");
   TYPE_THEN `real_of_int (FST q) + (&.1/(&.2))` EXISTS_TAC;
   TYPE_THEN `real_of_int (SND q) + (&.1/(&.2))` EXISTS_TAC;
   REWRITE_TAC[int_suc];
@@ -2861,8 +2861,8 @@ let h_edge_closure = prove_by_refinement(
   TYPE_THEN `(pointI m)+point(&.1,&.0)` EXISTS_TAC;
   DISCH_ALL_TAC;
   ASM_REWRITE_TAC[h_edge;pointI;point_add;point_scale;PAIR_SPLIT;point_inj;];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REDUCE_TAC;
   ASM_REWRITE_TAC[int_suc];
   TYPE_THEN `a = real_of_int(FST m)` ABBREV_TAC;
@@ -2872,8 +2872,8 @@ let h_edge_closure = prove_by_refinement(
   TYPE_THEN `pointI m` EXISTS_TAC;
   DISCH_ALL_TAC;
   ASM_REWRITE_TAC[h_edge;pointI;point_add;point_scale;PAIR_SPLIT;point_inj;];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REDUCE_TAC;
   ASM_REWRITE_TAC[int_suc];
   TYPE_THEN `a = real_of_int(FST m)` ABBREV_TAC;
@@ -2924,15 +2924,15 @@ let v_edge_inter = prove_by_refinement(
   CHO 0;
   CHO 0;
   ASM_REWRITE_TAC[point_inj];
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "p");
-  CONV_TAC (dropq_conv "p'");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p'\")") (dropq_conv "p'");
   ASM_REWRITE_TAC[];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[point_split;];
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   ASM_MESON_TAC[FST;SND;PAIR;coord01;euclid_point;point_onto];
   ]);;
   (* }}} *)
@@ -3057,8 +3057,8 @@ let v_edge_closure = prove_by_refinement(
   TYPE_THEN `(pointI m)+point(&.0,&.1)` EXISTS_TAC;
   DISCH_ALL_TAC;
   ASM_REWRITE_TAC[v_edge;pointI;point_add;point_scale;PAIR_SPLIT;point_inj;];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REDUCE_TAC;
   ASM_REWRITE_TAC[int_suc];
   TYPE_THEN `a = real_of_int(FST m)` ABBREV_TAC;
@@ -3068,8 +3068,8 @@ let v_edge_closure = prove_by_refinement(
   TYPE_THEN `pointI m` EXISTS_TAC;
   DISCH_ALL_TAC;
   ASM_REWRITE_TAC[v_edge;pointI;point_add;point_scale;PAIR_SPLIT;point_inj;];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REDUCE_TAC;
   ASM_REWRITE_TAC[int_suc];
   TYPE_THEN `a = real_of_int(FST m)` ABBREV_TAC;
@@ -3834,8 +3834,8 @@ let midpoint_h_edge = prove_by_refinement(
   REWRITE_TAC[plus_e12];
   REWRITE_TAC[h_edge;pointI;point_add;point_scale;point_inj;PAIR_SPLIT;int_suc];
   GEN_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   TYPE_THEN `a = real_of_int(SND m)` ABBREV_TAC;
   TYPE_THEN `b = real_of_int(FST  m)` ABBREV_TAC;
   CONJ_TAC;
@@ -3854,8 +3854,8 @@ let midpoint_v_edge = prove_by_refinement(
   REWRITE_TAC[plus_e12];
   REWRITE_TAC[v_edge;pointI;point_add;point_scale;point_inj;PAIR_SPLIT;int_suc];
   GEN_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   TYPE_THEN `a = real_of_int(SND m)` ABBREV_TAC;
   TYPE_THEN `b = real_of_int(FST  m)` ABBREV_TAC;
   CONJ_TAC;
@@ -3922,7 +3922,7 @@ let midpoint_unique = prove_by_refinement(
   UND 11;
   DISCH_THEN IMATCH_MP_TAC  ;
   TYPE_THEN `&1/ &2` EXISTS_TAC;
-  CONV_TAC REAL_RAT_REDUCE_CONV;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV;
   EXPAND_TAC "b";
   MESON_TAC[];
   EXPAND_TAC "b";
@@ -3965,7 +3965,7 @@ let midpoint_unique = prove_by_refinement(
   UND 11;
   DISCH_THEN IMATCH_MP_TAC  ;
   TYPE_THEN `&1/ &2` EXISTS_TAC;
-  CONV_TAC REAL_RAT_REDUCE_CONV;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV;
   EXPAND_TAC "b";
   MESON_TAC[];
   EXPAND_TAC "b";
@@ -4599,7 +4599,7 @@ let endpoint_size2 = prove_by_refinement(
   DISCH_ALL_TAC;
   TYPE_THEN `?n. G HAS_SIZE n` SUBGOAL_TAC;
   REWRITE_TAC[HAS_SIZE];
-  CONV_TAC (dropq_conv "n");
+  (CONV_TAC "(dropq_conv \"n\")") (dropq_conv "n");
   ASM_MESON_TAC[psegment;segment];
   DISCH_THEN CHOOSE_TAC;
   ASM_MESON_TAC[];
@@ -5218,7 +5218,7 @@ let rectagon_h_edge = prove_by_refinement(
   ASM_REWRITE_TAC[];
   EXPAND_TAC "Y";
   REWRITE_TAC[IMAGE;EMPTY_EXISTS ];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   AND 4;
   USE 4 (REWRITE_RULE[EMPTY_EXISTS]);
   CHO 4;
@@ -5353,7 +5353,7 @@ let rectagon_v_edge = prove_by_refinement(
   ASM_REWRITE_TAC[];
   EXPAND_TAC "Y";
   REWRITE_TAC[IMAGE;EMPTY_EXISTS ];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   AND 4;
   USE 4 (REWRITE_RULE[EMPTY_EXISTS]);
   CHO 4;
@@ -5439,7 +5439,7 @@ let part_below_h = prove_by_refinement(
   REWRITE_TAC[h_edge_closure;hc_edge;UNION ;h_edge_pointI];
   REWRITE_TAC[hv_edgeV2;plus_e12;INR IN_SING ;pointI_inj ;PAIR_SPLIT ];
   REWRITE_TAC[h_edge_inj];
-  CONV_TAC (dropq_conv "n'");
+  (CONV_TAC "(dropq_conv \"n'\")") (dropq_conv "n'");
   REWRITE_TAC[INT_ARITH `(x = y+: &:1) <=> (x -: (&:1) = y)`];
   ASM_MESON_TAC[];
   ]);;
@@ -5552,7 +5552,7 @@ let fibre_card = prove_by_refinement(
   DISCH_ALL_TAC;
   TYPE_THEN `f x` EXISTS_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "y");
+  (CONV_TAC "(dropq_conv \"y\")") (dropq_conv "y");
   SUBCONJ_TAC;
   UND 1;
   REWRITE_TAC[IMAGE;SUBSET];
@@ -5584,7 +5584,7 @@ let fibre_card = prove_by_refinement(
   GEN_TAC;
   NAME_CONFLICT_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   NAME_CONFLICT_TAC;
   GEN_TAC;
   LEFT_TAC  "x''";
@@ -7366,12 +7366,12 @@ let rectangle_inter = prove_by_refinement(
   CHO 0;
   CHO 0;
   ASM_REWRITE_TAC[point_inj];
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "r'");
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r'\")") (dropq_conv "r'");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ASM_REWRITE_TAC[];
   DISCH_ALL_TAC;
   CHO 0;
@@ -7385,8 +7385,8 @@ let rectangle_inter = prove_by_refinement(
   USE 3(REWRITE_RULE[point_inj]);
   USE 3(CONV_RULE (dropq_conv "r'"));
   REWRITE_TAC[point_inj;PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   ASM_MESON_TAC[];
   ]);;
 
@@ -7718,8 +7718,8 @@ let pointI_inter = prove_by_refinement(
   EQ_TAC;
   DISCH_THEN_REWRITE;
   REWRITE_TAC[point_inj];
-  CONV_TAC (dropq_conv "r");
-  CONV_TAC (dropq_conv "r'");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r'\")") (dropq_conv "r'");
   DISCH_ALL_TAC;
   CHO 0;
   REWR 1;
@@ -7769,7 +7769,7 @@ let long_v_union = prove_by_refinement(
   MESON_TAC[];
   DISCH_THEN CHOOSE_TAC;
   ASM_REWRITE_TAC[point_inj];
-  CONV_TAC (dropq_conv "r'");
+  (CONV_TAC "(dropq_conv \"r'\")") (dropq_conv "r'");
   REAL_ARITH_TAC;
   DISCH_THEN_REWRITE;
   ONCE_REWRITE_TAC[EQ_SYM_EQ];
@@ -7868,7 +7868,7 @@ let two_two_union = prove_by_refinement(
   DISCH_THEN (CHOOSE_THEN MP_TAC);
   DISCH_THEN_REWRITE;
   REWRITE_TAC [point_inj];
-  CONV_TAC (dropq_conv "r'");
+  (CONV_TAC "(dropq_conv \"r'\")") (dropq_conv "r'");
   REAL_ARITH_TAC;
   MESON_TAC[];
   DISCH_TAC;
@@ -7949,7 +7949,7 @@ let curve_cell_point = prove_by_refinement(
   DISCH_THEN CHOOSE_TAC;
   DISJ2_TAC;
   REWRITE_TAC[eq_sing;INR IN_SING;pointI_inj;];
-  CONV_TAC (dropq_conv "n'") ;
+  (CONV_TAC "(dropq_conv \"n'\")") (dropq_conv "n'") ;
   TYPE_THEN `closure top2 e SUBSET closure top2 (UNIONS G)` SUBGOAL_TAC;
   IMATCH_MP_TAC  subset_of_closure;
   REWRITE_TAC[top2_top];
@@ -8069,7 +8069,7 @@ let curve_closure = prove_by_refinement(
   CONJ_TAC;
   REWRITE_TAC[SUBSET;IMAGE;UNIONS];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   NAME_CONFLICT_TAC;
   CHO 4;
   TYPE_THEN `u` EXISTS_TAC;
@@ -8078,7 +8078,7 @@ let curve_closure = prove_by_refinement(
   (* // *)
   TYPE_THEN `A = UNIONS (IMAGE (closure top2) G)` ABBREV_TAC ;
   REWRITE_TAC[UNIONS;SUBSET ];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[INR IN_SING];
   MESON_TAC[];
   ]);;
@@ -8258,7 +8258,7 @@ let par_cell_h = prove_by_refinement(
   REWRITE_TAC[par_cell;eq_sing;h_edge_inj;hv_edgeV2;h_edge_pointI;];
   REWRITE_TAC[square_h_edgeV2];
   ASM_SIMP_TAC[curve_cell_h_inter];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   MESON_TAC[];
   ]);;
   (* }}} *)
@@ -8272,7 +8272,7 @@ let par_cell_v = prove_by_refinement(
   REWRITE_TAC[par_cell;eq_sing;v_edge_inj;hv_edgeV2;v_edge_pointI;];
   REWRITE_TAC[square_v_edgeV2];
   ASM_SIMP_TAC[curve_cell_v_inter];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   MESON_TAC[];
   ]);;
   (* }}} *)
@@ -8286,7 +8286,7 @@ let par_cell_squ = prove_by_refinement(
   REWRITE_TAC[par_cell;eq_sing;square_h_edgeV2;square_v_edgeV2;squ_inj];
   ASM_SIMP_TAC[curve_cell_squ_inter];
   REWRITE_TAC[square_pointI];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   ]);;
   (* }}} *)
 
@@ -8303,7 +8303,7 @@ let par_cell_point = prove_by_refinement(
   DISCH_THEN (fun t-> REWRITE_TAC[t]);
   REWRITE_TAC[eq_sing;INR IN_SING ;h_edge_pointI; v_edge_pointI; square_pointI;];
   REWRITE_TAC[pointI_inj; REWRITE_RULE[not_eq] single_inter];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   ASM_SIMP_TAC [curve_point_unions;curve_cell_not_point];
   MESON_TAC[];
   ]);;
@@ -9556,21 +9556,21 @@ let squc_inter = prove_by_refinement(
   CHO 0;
   CHO 0;
   ASM_REWRITE_TAC[point_inj;];
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "r'");
+  (CONV_TAC "(dropq_conv \"r'\")") (dropq_conv "r'");
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ASM_REWRITE_TAC[];
   DISCH_ALL_TAC;
   CHO 0;
   AND 0;
   REWR 1;
   REWRITE_TAC[point_inj;PAIR_SPLIT ;];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   USE 1 (REWRITE_RULE[point_inj;]);
   USE 1 (CONV_RULE (dropq_conv "r'"));
   REWR 2;
@@ -9648,18 +9648,18 @@ let squc_union_lemma1 = prove_by_refinement(
   DISJ2_TAC ;
   DISJ1_TAC ;
   REWRITE_TAC[point_inj; PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v'\")") (dropq_conv "v'");
   ASM_REWRITE_TAC[];
   ASM_REWRITE_TAC[int_suc];
   REP_CASES_TAC;
   ASM_REWRITE_TAC[pointI;point_inj;];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   USE 0 (REWRITE_RULE[v_edge]);
   CHO 0;
   CHO 0;
@@ -9667,22 +9667,22 @@ let squc_union_lemma1 = prove_by_refinement(
   REWRITE_TAC[point_inj];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v'\")") (dropq_conv "v'");
   AND  0;
   UND 0;
   REWRITE_TAC[int_suc];
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   (* LAST *)
   ASM_REWRITE_TAC[pointI;point_inj;];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWRITE_TAC[int_suc];
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   ]);;
   (* }}} *)
 
@@ -9726,9 +9726,9 @@ let squc_union_lemma2 = prove_by_refinement(
   DISJ2_TAC ;
   DISJ1_TAC ;
   REWRITE_TAC[point_inj; PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[int_suc];
-  CONV_TAC (dropq_conv "v'");
+  (CONV_TAC "(dropq_conv \"v'\")") (dropq_conv "v'");
   ASM_REWRITE_TAC[];
   (* second half  *)
   ASM_REWRITE_TAC[int_suc];
@@ -9736,11 +9736,11 @@ let squc_union_lemma2 = prove_by_refinement(
   ASM_REWRITE_TAC[pointI;point_inj;];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   ASM_REWRITE_TAC[int_suc];
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   REWRITE_TAC[int_suc];
   (* 2 LEFT *)
   USE 0 (REWRITE_RULE[v_edge]);
@@ -9750,23 +9750,23 @@ let squc_union_lemma2 = prove_by_refinement(
   REWRITE_TAC[point_inj];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v'\")") (dropq_conv "v'");
   AND  0;
   UND 0;
   REWRITE_TAC[int_suc];
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   REWRITE_TAC[int_suc];
   (* LAST *)
   ASM_REWRITE_TAC[pointI;point_inj;];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWRITE_TAC[int_suc];
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   REWRITE_TAC[int_suc];
   ]);;
   (* }}} *)
@@ -9805,22 +9805,22 @@ let squc_union_lemma3 = prove_by_refinement(
   DISJ2_TAC;
   REWRITE_TAC[point_inj;];
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u'");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u'\")") (dropq_conv "u'");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   ASM_REWRITE_TAC[int_suc];
   (* 3 to go *)
   ASM_REWRITE_TAC[];
   DISJ1_TAC;
   REWRITE_TAC[h_edge;point_inj;PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u'");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u'\")") (dropq_conv "u'");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   ASM_REWRITE_TAC[int_suc];
   (* 2 to go *)
   DISJ2_TAC;
   DISJ1_TAC;
   REWRITE_TAC[squ;point_inj;PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u'");
-  CONV_TAC (dropq_conv "v'");
+  (CONV_TAC "(dropq_conv \"u'\")") (dropq_conv "u'");
+  (CONV_TAC "(dropq_conv \"v'\")") (dropq_conv "v'");
   ASM_REWRITE_TAC[int_suc];
   (* 2nd half *)
   DISCH_TAC;
@@ -9829,8 +9829,8 @@ let squc_union_lemma3 = prove_by_refinement(
   ASM_REWRITE_TAC[point_inj];
   CONJ_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWR 0;
   UND 0;
   REWRITE_TAC[h_edge;squ;up;int_suc ;point_inj; PAIR_SPLIT ;];
@@ -9847,7 +9847,7 @@ let squc_union_lemma3 = prove_by_refinement(
   USE 0 (CONV_RULE (dropq_conv "v"));
   UND 0;
   REAL_ARITH_TAC ;
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   REWR 0;
   UND 0;
   REWRITE_TAC[h_edge;squ;up;int_suc ;point_inj; PAIR_SPLIT ;];
@@ -9888,7 +9888,7 @@ let squc_lemma4 = prove_by_refinement(
   CHO 0;
   ASM_REWRITE_TAC[point_inj ;];
   LEFT_TAC "r";
-  CONV_TAC (dropq_conv "r");
+  (CONV_TAC "(dropq_conv \"r\")") (dropq_conv "r");
   UND 0;
   DISCH_ALL_TAC;
   UND 1;
@@ -9946,8 +9946,8 @@ let squ_closure_h = prove_by_refinement(
   USE 0 (CONV_RULE (dropq_conv "u"));
   USE 0 (CONV_RULE (dropq_conv "v"));
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   UND 0;
   REWRITE_TAC[int_suc];
   ASSUME_TAC (real_poly_conv `t *x + (&1 - t)* x`);
@@ -9991,8 +9991,8 @@ let squ_closure_up_h = prove_by_refinement(
   USE 0 (CONV_RULE (dropq_conv "u"));
   USE 0 (CONV_RULE (dropq_conv "v"));
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   UND 0;
   REWRITE_TAC[int_suc];
   ASSUME_TAC (real_poly_conv `t *x + (&1 - t)* x`);
@@ -10050,8 +10050,8 @@ let squ_closure_v = prove_by_refinement(
   USE 0 (CONV_RULE (dropq_conv "u"));
   USE 0 (CONV_RULE (dropq_conv "v"));
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   UND 0;
   REWRITE_TAC[int_suc];
   ASSUME_TAC (real_poly_conv `t *x + (&1 - t)* x`);
@@ -10095,8 +10095,8 @@ let squ_closure_right_v = prove_by_refinement(
   USE 0 (CONV_RULE (dropq_conv "u"));
   USE 0 (CONV_RULE (dropq_conv "v"));
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   UND 0;
   REWRITE_TAC[int_suc];
   ASSUME_TAC (real_poly_conv `t *x + (&1 - t)* x`);
@@ -10226,7 +10226,7 @@ let adj_edge_left = prove_by_refinement(
   INT_ARITH_TAC;
   TYPE_THEN `v_edge m` EXISTS_TAC;
   REWRITE_TAC[edge;v_edge_inj;];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   REWRITE_TAC[squc_union; SUBSET;UNION ;];
   REWRITE_TAC[right_left];
   ASM_MESON_TAC[];
@@ -10245,7 +10245,7 @@ let adj_edge_right = prove_by_refinement(
   INT_ARITH_TAC;
   TYPE_THEN `v_edge (right  m)` EXISTS_TAC;
   REWRITE_TAC[edge;v_edge_inj;];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   REWRITE_TAC[squc_union; SUBSET;UNION ;];
   ASM_MESON_TAC[];
   ]);;
@@ -10263,7 +10263,7 @@ let adj_edge_down = prove_by_refinement(
   INT_ARITH_TAC;
   TYPE_THEN `h_edge m` EXISTS_TAC;
   REWRITE_TAC[edge;h_edge_inj;];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   REWRITE_TAC[squc_union; SUBSET;UNION ;];
   REWRITE_TAC[right_left];
   ASM_MESON_TAC[];
@@ -10282,7 +10282,7 @@ let adj_edge_right = prove_by_refinement(
   INT_ARITH_TAC;
   TYPE_THEN `h_edge (up  m)` EXISTS_TAC;
   REWRITE_TAC[edge;h_edge_inj;];
-  CONV_TAC (dropq_conv "m'");
+  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   REWRITE_TAC[squc_union; SUBSET;UNION ;];
   ASM_MESON_TAC[];
   ]);;
@@ -11505,7 +11505,7 @@ let reflA_cont = prove_by_refinement(
   TYPE_THEN `(IMAGE (reflAf r) (euclid 2)) SUBSET (euclid 2) /\ (metric_space (euclid 2,d_euclid))` SUBGOAL_TAC;
   REWRITE_TAC[IMAGE;SUBSET];
   ASM_SIMP_TAC[metric_euclid];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   REWRITE_TAC[reflAf;euclid_point];
   DISCH_TAC;
   ASM_SIMP_TAC[metric_continuous_continuous;metric_continuous;metric_continuous_pt;];
@@ -11537,7 +11537,7 @@ let reflB_cont = prove_by_refinement(
   TYPE_THEN `(IMAGE (reflBf r) (euclid 2)) SUBSET (euclid 2) /\ (metric_space (euclid 2,d_euclid))` SUBGOAL_TAC;
   REWRITE_TAC[IMAGE;SUBSET];
   ASM_SIMP_TAC[metric_euclid];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   REWRITE_TAC[reflBf;euclid_point];
   DISCH_TAC;
   ASM_SIMP_TAC[metric_continuous_continuous;metric_continuous;metric_continuous_pt;];
@@ -11568,7 +11568,7 @@ let reflC_cont = prove_by_refinement(
   TYPE_THEN `(IMAGE (reflCf) (euclid 2)) SUBSET (euclid 2) /\ (metric_space (euclid 2,d_euclid))` SUBGOAL_TAC;
   REWRITE_TAC[IMAGE;SUBSET];
   ASM_SIMP_TAC[metric_euclid];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   REWRITE_TAC[reflCf;euclid_point];
   DISCH_TAC;
   ASM_SIMP_TAC[metric_continuous_continuous;metric_continuous;metric_continuous_pt;];
@@ -11649,8 +11649,8 @@ let reflA_h_edge = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[h_edge];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWRITE_TAC[coord01];
   EQ_TAC;
   DISCH_THEN CHOOSE_TAC;
@@ -11683,8 +11683,8 @@ let reflA_v_edge = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[v_edge];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[coord01];
   REWRITE_TAC[int_sub_th;int_mul_th;int_of_num_th;];
   MESON_TAC[];
@@ -11716,8 +11716,8 @@ let reflB_v_edge = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[v_edge];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[coord01];
   EQ_TAC;
   DISCH_THEN CHOOSE_TAC;
@@ -11750,8 +11750,8 @@ let reflB_h_edge = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[h_edge];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWRITE_TAC[coord01];
   REWRITE_TAC[int_sub_th;int_mul_th;int_of_num_th;];
   MESON_TAC[];
@@ -11783,9 +11783,9 @@ let reflC_vh_edge = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[v_edge;h_edge];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWRITE_TAC[coord01];
   ASM_MESON_TAC[];
   ]);;
@@ -11800,9 +11800,9 @@ let reflC_hv_edge = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[v_edge;h_edge];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   REWRITE_TAC[coord01];
   ASM_MESON_TAC[];
   ]);;
@@ -11914,7 +11914,7 @@ let homeo_bij = prove_by_refinement(
   CONJ_TAC;
   REWRITE_TAC[IMAGE;SUBSET ;];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   MESON_TAC[];
   REWRITE_TAC[SUBSET;IMAGE];
   DISCH_ALL_TAC;
@@ -12367,7 +12367,7 @@ let image_inv_image = prove_by_refinement(
   REP_BASIC_TAC;
   REWRITE_TAC[];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   EQ_TAC;
   REP_BASIC_TAC;
   TYPE_THEN `x = x'` SUBGOAL_TAC;
@@ -12405,7 +12405,7 @@ let homeo_adj_eq = prove_by_refinement(
   TYPE_THEN `IMAGE f X SUBSET euclid 2 /\ IMAGE f Y SUBSET euclid 2` SUBGOAL_TAC;
   REWRITE_TAC[IMAGE;SUBSET];
   NAME_CONFLICT_TAC;
-  CONJ_TAC THEN (CONV_TAC (dropq_conv "x''")) THEN (RULE_ASSUM_TAC  (REWRITE_RULE[BIJ;SURJ]));
+  CONJ_TAC THEN ((CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''")) THEN (RULE_ASSUM_TAC  (REWRITE_RULE[BIJ;SURJ]));
   ASM_MESON_TAC[ISUBSET];
   ASM_MESON_TAC[ISUBSET];
   DISCH_TAC;
@@ -13186,10 +13186,10 @@ let reflA_squ = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   REWRITE_TAC[coord01;];
   REWRITE_TAC[point_x];
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   EQ_TAC ;
   REP_BASIC_TAC;
   TYPE_THEN `&2 * real_of_int r - u` EXISTS_TAC;
@@ -13220,10 +13220,10 @@ let reflB_squ = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   REWRITE_TAC[coord01;];
   REWRITE_TAC[point_x];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   EQ_TAC ;
   REP_BASIC_TAC;
   TYPE_THEN `&2 * real_of_int r - v` EXISTS_TAC;
@@ -13254,11 +13254,11 @@ let reflC_squ = prove_by_refinement(
   IMATCH_MP_TAC EQ_EXT;
   REWRITE_TAC[];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   REWRITE_TAC[coord01;];
   REWRITE_TAC[point_x];
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   MESON_TAC[];
   ]);;
   (* }}} *)
@@ -13271,7 +13271,7 @@ let image_sing = prove_by_refinement(
   (* {{{ proof *)
   [
   REWRITE_TAC[IMAGE;INSERT];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   ]);;
   (* }}} *)
 
@@ -13287,7 +13287,7 @@ let image_unions = prove_by_refinement(
   REWRITE_TAC[];
   EQ_TAC;
   REP_BASIC_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   ASM_REWRITE_TAC[];
   NAME_CONFLICT_TAC;
   ASM_MESON_TAC[];
@@ -13370,14 +13370,14 @@ let image_curve_cell_reflA  = prove_by_refinement(
   DISCH_THEN_REWRITE;
   (*  *)
   REWRITE_TAC[IMAGE;];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
 (**** Modified by JRH to avoid GSPEC
   REWRITE_TAC[INR IN_SING;GSPEC;];
  ****)
   REWRITE_TAC[INR IN_SING; UNWIND_THM2];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "y'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"y'\")") (dropq_conv "y'");
 (**** Removed by JRH
   REWRITE_TAC[GSPEC];
  ****)
@@ -13455,15 +13455,15 @@ let image_curve_cell_reflB  = prove_by_refinement(
   DISCH_THEN_REWRITE;
   (*  *)
   REWRITE_TAC[IMAGE;];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
 
 (*** JRH changed this line to avoid GSPEC
   REWRITE_TAC[INR IN_SING;GSPEC;];
  ***)
   REWRITE_TAC[INR IN_SING; UNWIND_THM2];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "y'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"y'\")") (dropq_conv "y'");
 (*** JRH removed this to avoid GSPEC
   REWRITE_TAC[GSPEC];
  ***)
@@ -13541,14 +13541,14 @@ let image_curve_cell_reflC  = prove_by_refinement(
   DISCH_THEN_REWRITE;
   (*  *)
   REWRITE_TAC[IMAGE;];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
 (*** This line changed by JRH to avoid GSPEC
   REWRITE_TAC[INR IN_SING;GSPEC;];
  ***)
   REWRITE_TAC[INR IN_SING; UNWIND_THM2];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x'");
-  CONV_TAC (dropq_conv "y'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"y'\")") (dropq_conv "y'");
  (*** Removed by JRH to avoid GSPEC
   REWRITE_TAC[GSPEC];
  ***)
@@ -13615,7 +13615,7 @@ let homeomorphism_induced_top = prove_by_refinement(
   TYPE_THEN `g = IMAGE f` ABBREV_TAC ;
   REWRITE_TAC[IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   (*  *)
   TYPE_THEN `!t. U t ==> (g (t INTER A)  = g t INTER g A)` SUBGOAL_TAC;
   REP_BASIC_TAC;
@@ -13796,7 +13796,7 @@ let connected_homeo = prove_by_refinement(
   REWRITE_TAC[IMAGE];
   EXPAND_TAC "g";
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   RULE_ASSUM_TAC (REWRITE_RULE[homeomorphism]);
   REP_BASIC_TAC;
   TYPE_THEN `!x'. (UNIONS U x') ==> (INV f (UNIONS U) (UNIONS V) (f x') = x')` SUBGOAL_TAC;
@@ -13851,7 +13851,7 @@ let connected_homeo = prove_by_refinement(
   REP_BASIC_TAC;
   ASM_REWRITE_TAC[SUBSET;IMAGE;];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   ASM_MESON_TAC[ISUBSET;];
   ]);;
   (* }}} *)
@@ -13878,7 +13878,7 @@ let component_homeo = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT ;
   REP_BASIC_TAC;
   REWRITE_TAC[];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   EQ_TAC;
   REP_BASIC_TAC;
   TYPE_THEN `IMAGE f Z` EXISTS_TAC;
@@ -14182,7 +14182,7 @@ let cell_clauses = prove_by_refinement(
   REP_BASIC_TAC;
   ASM_REWRITE_TAC[INTER_ACI;notrr v_edge_disj;notrr h_edge_disj;interc square_h_edge;square_h_edge;interc square_v_edge;square_v_edge;square_disj;single_inter;h_edge_inj;v_edge_inj;notrr squ_inj;INR IN_SING;hv_edgeV2; square_h_edgeV2; square_v_edgeV2;hv_edge;square_pointIv2;v_edge_pointIv2;h_edge_pointIv2;notrr single_inter;v_edge_pointI;h_edge_pointI;square_pointI;pointI_inj;squ_disj];
   REWRITE_TAC[eq_sing;INR IN_SING;pointI_inj;];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   ASM_MESON_TAC[pointI_inj];
   ])));;
   (* }}} *)
@@ -15385,7 +15385,7 @@ let mk_line_fin_inter = prove_by_refinement(
   EXPAND_TAC "E3";
   EXPAND_TAC "E2";
   REWRITE_TAC[IMAGE];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   REP_BASIC_TAC;
   ASM_REWRITE_TAC[];
   TYPE_THEN `e` (WITH 0 o ISPEC);
@@ -15408,8 +15408,8 @@ let mk_line_fin_inter = prove_by_refinement(
   EXPAND_TAC "E2";
   REWRITE_TAC[IMAGE];
   REWRITE_TAC[UNIONS];
-  CONV_TAC (dropq_conv "x");
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[INTER];
   TYPE_THEN `e` EXISTS_TAC;
   TYPE_THEN `f` EXISTS_TAC;
@@ -15975,7 +15975,7 @@ let compose_image = prove_by_refinement(
   GEN_TAC;
   NAME_CONFLICT_TAC;
   REWRITE_TAC[compose];
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   ]);;
   (* }}} *)
 
@@ -17409,7 +17409,7 @@ let pconn_trans = prove_by_refinement(
   ASM_SIMP_TAC[GSYM top_of_metric_unions;metric_euclid];
   EXPAND_TAC "Z";
   REWRITE_TAC[EMPTY_EXISTS;INTER;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `&1` EXISTS_TAC;
   EXPAND_TAC "Cg";
   ASM_REWRITE_TAC[IMAGE;];
@@ -18263,7 +18263,7 @@ let graph_isomorphic_graph = prove_by_refinement(
   REP_BASIC_TAC;
   REWRITE_TAC[SUBSET;IMAGE;];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   REP_BASIC_TAC;
   TYPE_THEN `?y'. (graph_edge G y' /\ (v y' = x'))` SUBGOAL_TAC;
   UND 1;
@@ -18294,7 +18294,7 @@ let graph_isomorphic_graph = prove_by_refinement(
   UND 5;
   REWRITE_TAC[SUBSET;IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   UND 8;
   MESON_TAC[];
   DISCH_TAC;
@@ -19860,7 +19860,7 @@ let compact_distance = prove_by_refinement(
   IMATCH_MP_TAC  convergent_subseq;
   ASM_REWRITE_TAC[sequence;SUBSET;UNIV;IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   RIGHT 13 "p'";
   ASM_MESON_TAC[];
   REWRITE_TAC[converge];
@@ -19912,7 +19912,7 @@ let compact_distance = prove_by_refinement(
   IMATCH_MP_TAC  convergent_subseq;
   ASM_REWRITE_TAC[sequence;SUBSET;UNIV;IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   ASM_MESON_TAC[];
   REWRITE_TAC[converge];
   REP_BASIC_TAC;
@@ -21371,7 +21371,7 @@ let graph_disk = prove_by_refinement(
   REWRITE_TAC[];
   EXPAND_TAC "A";
   REWRITE_TAC[EMPTY_EXISTS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `v` EXISTS_TAC;
   TYPE_THEN `v'` EXISTS_TAC ;
   ASM_REWRITE_TAC[];
@@ -21413,7 +21413,7 @@ let graph_disk = prove_by_refinement(
   EXPAND_TAC "A";
   REWRITE_TAC[IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
 (*** Next steps removed by JRH: now paired beta-conversion automatic ***)
   DISCH_TAC;
   (* -- *)
@@ -21423,7 +21423,7 @@ let graph_disk = prove_by_refinement(
   EXPAND_TAC "B";
   REWRITE_TAC[IMAGE];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
 (*** Next steps removed by JRH: now paired beta-conversion automatic ***)
   DISCH_TAC;
   (* -- [temp] *)
@@ -22238,7 +22238,7 @@ let simple_arc_end_trans  = prove_by_refinement(
   REWRITE_TAC[IMAGE;INR IN_SING;];
   NAME_CONFLICT_TAC;
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   GEN_TAC;
   DISCH_THEN_REWRITE;
   UND 27;
@@ -23637,7 +23637,7 @@ let simple_closed_curve_pt = prove_by_refinement(
   MESON_TAC[];
   REWRITE_TAC[EQ_EMPTY;IMAGE;INTER;image_sing;INR IN_SING;];
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   REP_GEN_TAC;
   REP_BASIC_TAC;
   TYPE_THEN `x' = &0` SUBGOAL_TAC;
@@ -24357,7 +24357,7 @@ let simple_arc_sep3 = prove_by_refinement(
   CONJ_TAC;
   IMATCH_MP_TAC  simple_arc_end_end_closed2;
   ASM_MESON_TAC[];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   REWRITE_TAC[DE_MORGAN_THM];
   DISJ2_TAC;
   EXPAND_TAC "K";
@@ -31932,7 +31932,7 @@ let graph_rad_pt_center_piece = prove_by_refinement(
   REWRITE_TAC[];
   DISJ2_TAC;
   DISJ1_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `v''` EXISTS_TAC;
   ASM_REWRITE_TAC[];
   REP_BASIC_TAC;
@@ -32551,7 +32551,7 @@ let simp_ss =
 
 let RSIMP_CONV thl = ONCE_SIMPLIFY_CONV (simp_ss ([]:thm list)) thl;;
 
-let (RSIMP_TAC:thm list -> tactic) = fun (thl:thm list) -> CONV_TAC(RSIMP_CONV thl);;
+let (RSIMP_TAC:thm list -> tactic) = fun (thl:thm list) -> (CONV_TAC "(RSIMP_CONV thl)") (RSIMP_CONV thl);;
 
 let ASM_RSIMP_TAC = ASM RSIMP_TAC;;
 
@@ -33636,8 +33636,8 @@ let h_translate_h = prove_by_refinement(
   REWRITE_TAC[point_inj;PAIR_SPLIT ];
   REAL_ARITH_TAC;
   TYPE_THEN `x'` UNABBREV_TAC;
-  CONV_TAC (dropq_conv "x");
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x = FST x,SND x` SUBAGOAL_TAC;
   TYPE_THEN `y = FST y,SND y` SUBAGOAL_TAC;
   TYPE_THEN `t` EXISTS_TAC;
@@ -33666,8 +33666,8 @@ let v_translate_v = prove_by_refinement(
   REWRITE_TAC[point_inj;PAIR_SPLIT ];
   REAL_ARITH_TAC;
   TYPE_THEN `x'` UNABBREV_TAC;
-  CONV_TAC (dropq_conv "x");
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x = FST x,SND x` SUBAGOAL_TAC;
   TYPE_THEN `y = FST y,SND y` SUBAGOAL_TAC;
   TYPE_THEN `t` EXISTS_TAC;
@@ -33697,8 +33697,8 @@ let h_translate_v = prove_by_refinement(
   REWRITE_TAC[point_inj;PAIR_SPLIT ];
   REAL_ARITH_TAC;
   TYPE_THEN `x'` UNABBREV_TAC;
-  CONV_TAC (dropq_conv "x");
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x = FST x,SND x` SUBAGOAL_TAC;
   TYPE_THEN `y = FST y,SND y` SUBAGOAL_TAC;
   TYPE_THEN `t` EXISTS_TAC;
@@ -33726,8 +33726,8 @@ let v_translate_h = prove_by_refinement(
   REWRITE_TAC[point_inj;PAIR_SPLIT ];
   REAL_ARITH_TAC;
   TYPE_THEN `x'` UNABBREV_TAC;
-  CONV_TAC (dropq_conv "x");
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x = FST x,SND x` SUBAGOAL_TAC;
   TYPE_THEN `y = FST y,SND y` SUBAGOAL_TAC;
   TYPE_THEN `t` EXISTS_TAC;
@@ -33818,11 +33818,11 @@ let h_compat_bij = prove_by_refinement(
   REAL_ARITH_TAC;
   (* - *)
   REWRITE_TAC[mk_line;SUBSET;IMAGE];
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x'` UNABBREV_TAC;
   TYPE_THEN `?u. (euclid_plus (t' *# point (f (point x) 0,t + SND y))  ((&1 - t') *# point (f (point y) 0,t + SND y))) = point (u , t + SND y)` SUBAGOAL_TAC;
   REWRITE_TAC[point_scale;point_add ;point_inj ; PAIR_SPLIT ;];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REAL_ARITH_TAC;
   KILL 6;
   (* - *)
@@ -33929,11 +33929,11 @@ let h_compat_bij2 = prove_by_refinement(
   REAL_ARITH_TAC;
   (* - *)
   REWRITE_TAC[mk_line;SUBSET;IMAGE];
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x'` UNABBREV_TAC;
   TYPE_THEN `?u. (euclid_plus (t *# point (f (point x) 0,s(SND y)))  ((&1 - t) *# point (f (point y) 0,s(SND y)))) = point (u , s(SND y))` SUBAGOAL_TAC;
   REWRITE_TAC[point_scale;point_add ;point_inj ; PAIR_SPLIT ;];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REAL_ARITH_TAC;
   ONCE_ASM_REWRITE_TAC [];
   UND 7 THEN DISCH_THEN (fun t-> ONCE_REWRITE_TAC[t]);
@@ -34058,12 +34058,12 @@ let v_compat_bij2 = prove_by_refinement(
   UND 6 THEN REAL_ARITH_TAC;
   (* - *)
   REWRITE_TAC[mk_line;SUBSET;IMAGE];
-  CONV_TAC (dropq_conv "x''");
+  (CONV_TAC "(dropq_conv \"x''\")") (dropq_conv "x''");
   TYPE_THEN `x'` UNABBREV_TAC;
   TYPE_THEN `?u. (euclid_plus (t *# (f (point x)))  ((&1 - t) *# (f (point y)))) = point ( s(FST  y), u)` SUBAGOAL_TAC;
   ONCE_ASM_REWRITE_TAC[];
   REWRITE_TAC[point_scale;point_add ;point_inj ; PAIR_SPLIT ;];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
     REAL_ARITH_TAC;
   (* - *)
   TYPE_THEN `?x'. point( s(FST  y),u) = f (point x')` SUBAGOAL_TAC;
@@ -34247,7 +34247,7 @@ let hv_line_hyper2 = prove_by_refinement(
   TYPE_THEN `IMAGE h E` EXISTS_TAC;
   CONJ_TAC;
   REWRITE_TAC[UNIONS;SUBSET;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   NAME_CONFLICT_TAC;
   TYPE_THEN `u` EXISTS_TAC;
   ASM_MESON_TAC[ISUBSET];
@@ -34400,7 +34400,7 @@ let graph_near_support = prove_by_refinement(
   UNIFY_EXISTS_TAC;
   IMATCH_MP_TAC  UNIONS_UNIONS;
   REWRITE_TAC[SUBSET;UNIONS;IMAGE;];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   UNIFY_EXISTS_TAC;
   (* - *)
   CONJ_TAC;
@@ -34482,9 +34482,9 @@ let hyperplane2_h_translate = prove_by_refinement(
   REWRITE_TAC[mk_line_hyper2_e2;];
   REWRITE_TAC[GSYM line2D_S;e2;point_inj ];
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
    RULE_ASSUM_TAC (REWRITE_RULE[PAIR_SPLIT]);
   UND 1 THEN REAL_ARITH_TAC;
   ]);;
@@ -34520,9 +34520,9 @@ let hyperplane1_v_translate = prove_by_refinement(
   REWRITE_TAC[mk_line_hyper2_e1;];
   REWRITE_TAC[GSYM line2D_F;e1;point_inj ];
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
    RULE_ASSUM_TAC (REWRITE_RULE[PAIR_SPLIT]);
   UND 1 THEN REAL_ARITH_TAC;
   (* Thu Sep  9 13:43:45 EDT 2004 *)
@@ -34568,9 +34568,9 @@ let hyperplane2_r_scale = prove_by_refinement(
   REWRITE_TAC[mk_line_hyper2_e2;];
   REWRITE_TAC[GSYM line2D_S;e2;point_inj ];
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   RULE_ASSUM_TAC (REWRITE_RULE[PAIR_SPLIT;REAL_ARITH `r * &1 = r`]);
   UND 3 THEN UND 0 THEN REAL_ARITH_TAC;
   ]);;
@@ -34609,9 +34609,9 @@ let hyperplane1_u_scale = prove_by_refinement(
   REWRITE_TAC[mk_line_hyper2_e1;];
   REWRITE_TAC[GSYM line2D_F;e1;point_inj ];
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   CONJ_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   RULE_ASSUM_TAC (REWRITE_RULE[PAIR_SPLIT;REAL_ARITH `r * &1 = r`]);
   UND 3 THEN UND 0 THEN REAL_ARITH_TAC;
   ]);;
@@ -34669,7 +34669,7 @@ let hyperplane1_inj = prove_by_refinement(
   RULE_ASSUM_TAC (REWRITE_RULE[point_inj]);
   USE 0 SYM;
   TYPE_THEN `(?p. (z,&0 = p) /\ (FST p = z))` SUBAGOAL_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   ASM_MESON_TAC[];
   ]);;
   (* }}} *)
@@ -34685,7 +34685,7 @@ let hyperplane2_inj = prove_by_refinement(
   RULE_ASSUM_TAC (REWRITE_RULE[point_inj]);
   USE 0 SYM;
   TYPE_THEN `(?p. (z,z = p) /\ (SND p = z))` SUBAGOAL_TAC;
-  CONV_TAC (dropq_conv "p");
+  (CONV_TAC "(dropq_conv \"p\")") (dropq_conv "p");
   ASM_MESON_TAC[];
   ]);;
   (* }}} *)
@@ -38211,8 +38211,8 @@ let segment_end_trans = prove_by_refinement(
   TYPE_THEN `(R,S,b)` EXISTS_TAC;
   TYPE_THEN `SS` UNABBREV_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "U");
-  CONV_TAC (dropq_conv "V");
+  (CONV_TAC "(dropq_conv \"U\")") (dropq_conv "U");
+  (CONV_TAC "(dropq_conv \"V\")") (dropq_conv "V");
   TYPE_THEN `b` EXISTS_TAC;
   REWRITE_TAC[SUBSET;UNION];
   (* - *)
@@ -39138,7 +39138,7 @@ let cls_h = prove_by_refinement(
   REWRITE_TAC[cls];
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[INR in_pair;INR IN_SING;];
-  CONV_TAC (dropq_conv "e");
+  (CONV_TAC "(dropq_conv \"e\")") (dropq_conv "e");
   REWRITE_TAC[edge_h;edge_v;v_edge_closure;h_edge_closure;right  ;up; vc_edge;hc_edge;UNION;plus_e12; INR IN_SING; PAIR_SPLIT;cell_clauses;];
   MESON_TAC[];
   ]);;
@@ -39151,7 +39151,7 @@ let cls_v = prove_by_refinement(
   REWRITE_TAC[cls];
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[INR in_pair;INR IN_SING;];
-  CONV_TAC (dropq_conv "e");
+  (CONV_TAC "(dropq_conv \"e\")") (dropq_conv "e");
   REWRITE_TAC[edge_h;edge_v;v_edge_closure;h_edge_closure;right  ;up; vc_edge;hc_edge;UNION;plus_e12; INR IN_SING; PAIR_SPLIT;cell_clauses;];
   MESON_TAC[];
   ]);;
@@ -39601,7 +39601,7 @@ let curve_closure_ver2 = prove_by_refinement(
   CONJ_TAC;
   REWRITE_TAC[SUBSET;IMAGE;UNIONS];
   DISCH_ALL_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   NAME_CONFLICT_TAC;
   TYPE_THEN `u` EXISTS_TAC;
   ASM_MESON_TAC[subset_closure;ISUBSET ];
@@ -39898,7 +39898,7 @@ let curve_cell_sing = prove_by_refinement(
   REWRITE_TAC[v_edge_closure;vc_edge;plus_e12];
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[UNION;UNIONS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[INR IN_SING;cell_clauses;pointI_inj];
   RIGHT_TAC "n";
   TYPE_THEN `v_edge m x` ASM_CASES_TAC;
@@ -39907,7 +39907,7 @@ let curve_cell_sing = prove_by_refinement(
   REWRITE_TAC[h_edge_closure;hc_edge;plus_e12];
   IMATCH_MP_TAC  EQ_EXT;
   REWRITE_TAC[UNION;UNIONS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[INR IN_SING;cell_clauses;pointI_inj];
   RIGHT_TAC "n";
   TYPE_THEN `h_edge m x` ASM_CASES_TAC;
@@ -45277,7 +45277,7 @@ let rectagon_graph_k33_false = prove_by_refinement(
   IMATCH_MP_TAC  SUBSET_ANTISYM;
   CONJ_TAC;
   REWRITE_TAC[SUBSET;UNION;UNIONS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   UND 5 THEN REP_CASES_TAC THEN UNIFY_EXISTS_TAC;
   REWRITE_TAC[SUBSET;UNION;UNIONS];
   TYPE_THEN `u` UNABBREV_TAC;
@@ -45525,7 +45525,7 @@ let iso_support_eps_nonempty = prove_by_refinement(
   REWRITE_TAC[iso_support_eps_pair];
   TH_INTRO_TAC [`G`] graph_support_init;
   UND 0 THEN REWRITE_TAC[EMPTY_EXISTS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   REWRITE_TAC[graph_support_eps];
   UNIFY_EXISTS_TAC;
   (* - *)
@@ -45599,7 +45599,7 @@ let iso_eps_support0 = prove_by_refinement(
   PROOF_BY_CONTR_TAC;
   USE 2 (MATCH_MP (REAL_ARITH `~( z <= &0) ==> (&0 < z)`));
   UND 3 THEN REWRITE_TAC[EMPTY_EXISTS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   UNIFY_EXISTS_TAC;
   ]);;
   (* }}} *)
@@ -45703,7 +45703,7 @@ let graph_eps_scale_image = prove_by_refinement(
   UND 3 THEN DISCH_THEN (THM_INTRO_TAC[`x`]);
   FULL_REWRITE_TAC [SUBSET;UNIONS];
   REWRITE_TAC[IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `im` UNABBREV_TAC;
   USE 3(CONV_RULE NAME_CONFLICT_CONV);
   USE 13 (REWRITE_RULE[IMAGE]);
@@ -45818,7 +45818,7 @@ let graph_eps_scale_image = prove_by_refinement(
   UND 3 THEN DISCH_THEN (THM_INTRO_TAC[`x`]);
   FULL_REWRITE_TAC [SUBSET;UNIONS];
   REWRITE_TAC[IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `im` UNABBREV_TAC;
   USE 3(CONV_RULE NAME_CONFLICT_CONV);
   USE 13 (REWRITE_RULE[IMAGE]);
@@ -45936,7 +45936,7 @@ let graph_eps_translate_image = prove_by_refinement(
   UND 3 THEN DISCH_THEN (THM_INTRO_TAC[`x`]);
   FULL_REWRITE_TAC [SUBSET;UNIONS];
   REWRITE_TAC[IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `im` UNABBREV_TAC;
   USE 3(CONV_RULE NAME_CONFLICT_CONV);
   USE 14 (REWRITE_RULE[IMAGE]);
@@ -46122,7 +46122,7 @@ let count_iso_scale = prove_by_refinement(
   FIRST_ASSUM IMATCH_MP_TAC ;
   ASM_MESON_TAC[];
   (* - *)
-  CONV_TAC (dropq_conv "y");
+  (CONV_TAC "(dropq_conv \"y\")") (dropq_conv "y");
   TYPE_THEN `x` UNABBREV_TAC;
   LEFT_TAC "eps";
   TYPE_THEN `eps'` EXISTS_TAC;
@@ -46244,7 +46244,7 @@ let count_iso_translate = prove_by_refinement(
   TYPE_THEN `x` UNABBREV_TAC;
   TYPE_THEN `A` UNABBREV_TAC;
   REWRITE_TAC[DELETE];
-  CONV_TAC (dropq_conv "y");  (* -// *)
+  (CONV_TAC "(dropq_conv \"y\")") (dropq_conv "y");  (* -// *)
   LEFT_TAC "eps";
   TYPE_THEN `eps'` EXISTS_TAC;
   KILL 18;
@@ -46407,8 +46407,8 @@ let iso_int_model_lemma = prove_by_refinement(
   TYPE_THEN `H''` UNABBREV_TAC;
   TYPE_THEN `E''` UNABBREV_TAC;
   REWRITE_TAC[iso_support_eps_pair;PAIR_SPLIT];
-  CONV_TAC (dropq_conv "H");
-  CONV_TAC (dropq_conv "E");
+  (CONV_TAC "(dropq_conv \"H\")") (dropq_conv "H");
+  (CONV_TAC "(dropq_conv \"E\")") (dropq_conv "E");
   (* -- *)
   CONJ_TAC;
   TYPE_THEN `graph_isomorphic H' (plane_graph_image (eps_translate eps (-- &1)) H')` SUBAGOAL_TAC;
@@ -47286,8 +47286,8 @@ let connect_real_open = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   IMATCH_MP_TAC  EQ_ANTISYM;
   CONJ_TAC;
-  CONV_TAC (dropq_conv "u");
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   TYPE_THEN `u < x` ASM_CASES_TAC;
   TYPE_THEN `(a + u)/ &2` EXISTS_TAC;
   TYPE_THEN `x` EXISTS_TAC;
@@ -47572,8 +47572,8 @@ let mk_segment_vc = prove_by_refinement(
   TYPE_THEN `t = real_of_int (SND m) + &1` ASM_CASES_TAC;
   REWRITE_TAC[INR IN_SING];
   DISJ1_TAC;
-  CONV_TAC (dropq_conv "u");
-CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+(CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   FULL_REWRITE_TAC[int_add_th;int_of_num_th;];
   UND 5 THEN UND 4 THEN UND 2 THEN UND 3 THEN REAL_ARITH_TAC;
   (* - *)
@@ -47612,8 +47612,8 @@ let mk_segment_hc = prove_by_refinement(
   REWRITE_TAC[point_inj;PAIR_SPLIT ];
   TYPE_THEN `t = real_of_int (FST  m)` ASM_CASES_TAC;
   TYPE_THEN `t = real_of_int (FST  m) + &1` ASM_CASES_TAC;
-  CONV_TAC (dropq_conv "u");
-CONV_TAC (dropq_conv "v");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
+(CONV_TAC "(dropq_conv \"v\")") (dropq_conv "v");
   UND 5 THEN UND 4 THEN UND 2 THEN UND 3 THEN REAL_ARITH_TAC;
   (* - *)
   UND 1 THEN REP_CASES_TAC ;
@@ -48427,7 +48427,7 @@ let psegment_cls = prove_by_refinement(
   THM_INTRO_TAC[`S`;`top2`] closure_unions;
   FULL_REWRITE_TAC[top2_top;psegment;segment];
   REWRITE_TAC[UNIONS;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   UNIFY_EXISTS_TAC;
   ]);;
   (* }}} *)
@@ -48992,7 +48992,7 @@ let grid_conn2_induct_lemma = prove_by_refinement(
   IMATCH_MP_TAC  EQ_EXT;
   NAME_CONFLICT_TAC;
   REWRITE_TAC[INR IN_SING];
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   REWRITE_TAC[grid33_conn2];
   (* - *)
   UND 3 THEN DISCH_THEN (THM_INTRO_TAC[`f`;`N`]);
@@ -49283,7 +49283,7 @@ let rectangle_grid_subset = prove_by_refinement(
   (* {{{ proof *)
   [
   REWRITE_TAC[SUBSET;rectangle_grid];
-  FIRST_ASSUM DISJ_CASES_TAC THEN REP_BASIC_TAC THEN ASM_REWRITE_TAC[cell_clauses] THEN  CONV_TAC (dropq_conv "m'");
+  FIRST_ASSUM DISJ_CASES_TAC THEN REP_BASIC_TAC THEN ASM_REWRITE_TAC[cell_clauses] THEN  (CONV_TAC "(dropq_conv \"m'\")") (dropq_conv "m'");
   UND 5 THEN UND 6 THEN UND 7 THEN UND 8 THEN UND 1 THEN UND 2 THEN UND 3 THEN UND 4 THEN INT_ARITH_TAC;
   UND 5 THEN UND 6 THEN UND 7 THEN UND 8 THEN UND 1 THEN UND 2 THEN UND 3 THEN UND 4 THEN INT_ARITH_TAC;
   ]);;
@@ -50492,7 +50492,7 @@ let conn2_sequence = prove_by_refinement(
   USEH 4802 (REWRITE_RULE[IMAGE_UNION;image_sing;UNIONS_UNION]);
   USEH 5681 (REWRITE_RULE[SUBSET;UNION;UNIONS;IMAGE]);
   REWRITE_TAC[SUBSET;UNIONS;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   NAME_CONFLICT_TAC;
   TSPECH `x` 7945;
   LEFTH 1695 "ei";
@@ -50524,7 +50524,7 @@ let conn2_sequence = prove_by_refinement(
   UNDH 3810 THEN ARITH_TAC;
   CONJ_TAC;
   UNDH 5153 THEN ARITH_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   NAME_CONFLICT_TAC;
   TSPECH `x` 5663;
   LEFTH 6587 "ej";
@@ -50632,7 +50632,7 @@ let conn2_sequence = prove_by_refinement(
   TSPECH `{(pointI m)}` 6278;
   TYPE_THEN `!r. (r <=| N) ==> (G r SUBSET UNIONS (IMAGE G {i | i <=| N}))` SUBAGOAL_TAC;
   REWRITE_TAC[UNIONS;IMAGE;SUBSET];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `r` EXISTS_TAC;
   (* --- *)
   TYPE_THEN `!r. (r <=| N) ==> (curve_cell (G r) {(pointI m)} <=> (?e. G r e /\ closure top2 e (pointI m)))` SUBAGOAL_TAC;
@@ -50964,7 +50964,7 @@ let conn2_sequence = prove_by_refinement(
   TYPE_THEN `A UNION B` UNABBREV_TAC;
   REWRITE_TAC[union_subset];
   REWRITE_TAC[SUBSET;UNIONS;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `SUC i` EXISTS_TAC;
   USEH 343 (REWRITE_RULE[SUBSET]);
   UNDH 3810 THEN ARITH_TAC;
@@ -51004,7 +51004,7 @@ let conn2_sequence = prove_by_refinement(
   TYPE_THEN `A UNION B` UNABBREV_TAC;
   REWRITE_TAC[union_subset];
   REWRITE_TAC[SUBSET;UNIONS;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `SUC i` EXISTS_TAC;
   USEH 343 (REWRITE_RULE[SUBSET]);
   UNDH 3810 THEN ARITH_TAC;
@@ -51058,7 +51058,7 @@ let conn2_sequence = prove_by_refinement(
   REWRITE_TAC[union_subset];
   CONJ_TAC;
   REWRITE_TAC[SUBSET;UNIONS;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `(SUC i)` EXISTS_TAC;
   USEH 343 (REWRITE_RULE[SUBSET]);
   UNDH 3810 THEN UNDH 5153 THEN ARITH_TAC;
@@ -51305,7 +51305,7 @@ let simple_arc_constants = prove_by_refinement(
   REWRITE_TAC[IMAGE];
   IMATCH_MP_TAC  EQ_ANTISYM;
   CONJ_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   NAME_CONFLICT_TAC;
   LEFT_TAC "x''";
   LEFT_TAC "x''";
@@ -51379,8 +51379,8 @@ let simple_arc_constants = prove_by_refinement(
   (* - *)
   TYPE_THEN `!k. ?dij. !i j. (k = (i,j)) /\ SUC i < j /\ j < N' ==> (&0 < dij /\ (!x y. B i x /\ B j y ==> dij <= d_euclid x y))` SUBAGOAL_TAC;
   REWRITE_TAC[PAIR_SPLIT];
-  CONV_TAC (dropq_conv "i");
-  CONV_TAC (dropq_conv "j");
+  (CONV_TAC "(dropq_conv \"i\")") (dropq_conv "i");
+  (CONV_TAC "(dropq_conv \"j\")") (dropq_conv "j");
   TYPE_THEN `i = FST k` ABBREV_TAC ;
   TYPE_THEN `j = SND k` ABBREV_TAC ;
   RIGHT_TAC "y";
@@ -51441,7 +51441,7 @@ let simple_arc_constants = prove_by_refinement(
   POP_ASSUM_LIST (fun t->ALL_TAC);
   IMATCH_MP_TAC  EQ_ANTISYM;
   CONJ_TAC;
-  CONV_TAC (dropq_conv "x'");
+  (CONV_TAC "(dropq_conv \"x'\")") (dropq_conv "x'");
   ASM_MESON_TAC[];
   TYPE_THEN `x'` UNABBREV_TAC;
   ASM_MESON_TAC[];
@@ -52268,26 +52268,26 @@ let grid33_unions = prove_by_refinement(
   FIRST_ASSUM DISJ_CASES_TAC;
   TYPE_THEN `x` UNABBREV_TAC;
   FULL_REWRITE_TAC[cell_clauses];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   TYPE_THEN `m'` UNABBREV_TAC;
   UNDH 3867 THEN INT_ARITH_TAC;
   (* -- *)
   TYPE_THEN `x` UNABBREV_TAC;
   FULL_REWRITE_TAC[cell_clauses];
-  CONV_TAC (dropq_conv "x");
+  (CONV_TAC "(dropq_conv \"x\")") (dropq_conv "x");
   TYPE_THEN `m'` UNABBREV_TAC;
   UNDH 2244 THEN INT_ARITH_TAC;
   (* - *)
   FIRST_ASSUM DISJ_CASES_TAC;
   TYPE_THEN `x` UNABBREV_TAC;
   FULL_REWRITE_TAC[cell_clauses];
-  CONV_TAC (dropq_conv "m");
+  (CONV_TAC "(dropq_conv \"m\")") (dropq_conv "m");
   TYPE_THEN `x'` UNABBREV_TAC;
   UNDH 6786 THEN INT_ARITH_TAC;
   (* - *)
   TYPE_THEN `x` UNABBREV_TAC;
   FULL_REWRITE_TAC[cell_clauses];
-  CONV_TAC (dropq_conv "m");
+  (CONV_TAC "(dropq_conv \"m\")") (dropq_conv "m");
   TYPE_THEN `x'` UNABBREV_TAC;
   UNDH 2096 THEN INT_ARITH_TAC;
   ]);;
@@ -52381,8 +52381,8 @@ let int2_range_finite = prove_by_refinement(
   IMATCH_MP_TAC  EQ_ANTISYM;
   CONJ_TAC;
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "t'");
-  CONV_TAC (dropq_conv "u'");
+  (CONV_TAC "(dropq_conv \"t'\")") (dropq_conv "t'");
+  (CONV_TAC "(dropq_conv \"u'\")") (dropq_conv "u'");
   REWRITE_TAC[PAIR_SPLIT];
   ASM_MESON_TAC[];
   ASM_REWRITE_TAC[];
@@ -52406,8 +52406,8 @@ let int2_range_finite = prove_by_refinement(
   IMATCH_MP_TAC  EQ_ANTISYM;
   CONJ_TAC;
   NAME_CONFLICT_TAC;
-  CONV_TAC (dropq_conv "t'");
-  CONV_TAC (dropq_conv "u'");
+  (CONV_TAC "(dropq_conv \"t'\")") (dropq_conv "t'");
+  (CONV_TAC "(dropq_conv \"u'\")") (dropq_conv "u'");
   REWRITE_TAC[PAIR_SPLIT];
   ASM_MESON_TAC[];
   ASM_REWRITE_TAC[];
@@ -52600,7 +52600,7 @@ let simple_arc_grid_properties = prove_by_refinement(
   REWRITE_TAC[grid];
   TYPE_THEN `a` UNABBREV_TAC;
   REWRITE_TAC[IMAGE;UNIONS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `0` EXISTS_TAC;
   CONJ_TAC;
   UNDH 3476 THEN ARITH_TAC;
@@ -52611,7 +52611,7 @@ let simple_arc_grid_properties = prove_by_refinement(
   REWRITE_TAC[grid];
   TYPE_THEN `b` UNABBREV_TAC;
   REWRITE_TAC[IMAGE;UNIONS];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `n` EXISTS_TAC;
   CONJ_TAC;
   ARITH_TAC;
@@ -53357,7 +53357,7 @@ let simple_arc_conn_complement = prove_by_refinement(
   TYPE_THEN `E'` EXISTS_TAC;
   TYPE_THEN `E'` UNABBREV_TAC;
   REWRITE_TAC[SUBSET;UNIONS;IMAGE];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `x` EXISTS_TAC;
   UNDH 5971 THEN ARITH_TAC;
   (* -D *)
@@ -53446,7 +53446,7 @@ let simple_arc_conn_complement = prove_by_refinement(
   TYPE_THEN `!p. (euclid 2 p) /\ (!i. (SUC i <= (N-1)) ==> (&8 * d <= d_euclid (a (SUC i)) p)) ==> (unbounded_set E' p)` BACK_TAC;
   TYPE_THEN `!i. (SUC i <= (N-1)) ==> C' (a (SUC i))` SUBAGOAL_TAC;
   REWRITE_TAC[UNIONS;IMAGE];
-  CONV_TAC (dropq_conv ("u"));
+  (CONV_TAC "(dropq_conv (\"u\"))") (dropq_conv ("u"));
   TYPE_THEN `i` EXISTS_TAC;
   CONJ_TAC;
   UNDH 1989 THEN ARITH_TAC;
@@ -54180,7 +54180,7 @@ let jordan_curve_access = prove_by_refinement(
   ASM_MESON_TAC[subset_imp];
   REWRITE_TAC[EMPTY_EXISTS;INTER];
   CONJ_TAC;
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   USEH 384 (MATCH_MP simple_arc_end_end);
   TSPECH `A'` 1640;
   FULL_REWRITE_TAC[EMPTY_EXISTS;INTER];
@@ -54573,7 +54573,7 @@ let k33_planar_graph_data_expand = prove_by_refinement(
   TSPECH `UNIONS (IMAGE (CA i) (UNIV))` 1295;
   UNDH 3086 THEN DISCH_THEN (THM_INTRO_TAC[]);
   REWRITE_TAC[SUBSET;UNIONS;IMAGE ];
-  CONV_TAC (dropq_conv ("u"));
+  (CONV_TAC "(dropq_conv (\"u\"))") (dropq_conv ("u"));
   UNIFY_EXISTS_TAC;
  ASM_REWRITE_TAC[];
   TSPECH `j` 7352;
@@ -54629,7 +54629,7 @@ let k33_planar_graph_data_expand = prove_by_refinement(
   TSPECH `UNIONS (IMAGE (transpose CB j) (UNIV))` 6357;
   UNDH 3701 THEN DISCH_THEN (THM_INTRO_TAC[]);
   REWRITE_TAC[SUBSET;UNIONS;IMAGE;transpose ];
-  CONV_TAC (dropq_conv ("u"));
+  (CONV_TAC "(dropq_conv (\"u\"))") (dropq_conv ("u"));
   UNIFY_EXISTS_TAC;
  ASM_REWRITE_TAC[];
   TSPECH `i` 8438;
@@ -55427,7 +55427,7 @@ let jordan_curve_no_inj3 = prove_by_refinement(
   TYPE_THEN `p i` EXISTS_TAC;
   REWRITE_TAC[INTER;UNIONS;IMAGE];
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   THM_INTRO_TAC[`j`] three_t_not_sing;
   TYPE_THEN `j'` EXISTS_TAC;
   ASM_REWRITE_TAC[];
@@ -55538,7 +55538,7 @@ let jordan_curve_no_inj3 = prove_by_refinement(
   TYPE_THEN `x = u i j` SUBAGOAL_TAC;
   FIRST_ASSUM IMATCH_MP_TAC ;
   ASM_REWRITE_TAC[];
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `k` EXISTS_TAC;
   ASM_REWRITE_TAC[];
   TYPE_THEN `x` UNABBREV_TAC;
@@ -56752,11 +56752,11 @@ let simple_closed_curve_mk_C = prove_by_refinement(
   IMATCH_MP_TAC  simple_closed_curve_euclid;
   ASM_REWRITE_TAC[];
   (* -- *)
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `Ca` UNABBREV_TAC;
   ASM_SIMP_TAC[mk_segment_h];
   REWRITE_TAC[point_inj; PAIR_SPLIT;];
-  CONV_TAC (dropq_conv "t");
+  (CONV_TAC "(dropq_conv \"t\")") (dropq_conv "t");
   ASM_REWRITE_TAC[];
   REAL_ARITH_TAC;
   (* -A *)
@@ -56822,11 +56822,11 @@ let simple_closed_curve_mk_C = prove_by_refinement(
   IMATCH_MP_TAC  simple_closed_curve_euclid;
   ASM_REWRITE_TAC[];
   (* -- *)
-  CONV_TAC (dropq_conv "u");
+  (CONV_TAC "(dropq_conv \"u\")") (dropq_conv "u");
   TYPE_THEN `Cb` UNABBREV_TAC;
   ASM_SIMP_TAC[mk_segment_h];
   REWRITE_TAC[point_inj; PAIR_SPLIT;];
-  CONV_TAC (dropq_conv "t");
+  (CONV_TAC "(dropq_conv \"t\")") (dropq_conv "t");
   ASM_REWRITE_TAC[];
   REAL_ARITH_TAC;
   (* -B *)

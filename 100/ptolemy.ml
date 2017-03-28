@@ -36,7 +36,7 @@ let DIST_SEGMENT_LEMMA = prove
   REWRITE_TAC[REAL_ARITH `(&2 * x - &2 * y) / &2 = x - y`] THEN
   REWRITE_TAC[SIN_SUB; SIN_DOUBLE; COS_DOUBLE] THEN
   MP_TAC(SPEC `a1 / &2` SIN_CIRCLE) THEN MP_TAC(SPEC `a2 / &2` SIN_CIRCLE) THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Hence the overall theorem.                                                *)
@@ -66,4 +66,4 @@ let PTOLEMY = prove
   MAP_EVERY (fun t -> MP_TAC(SPEC t SIN_CIRCLE))
    [`a / &2`; `b / &2`; `c / &2`; `d / &2`] THEN
   REWRITE_TAC[SIN_SUB; SIN_ADD; COS_ADD; SIN_PI; COS_PI] THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;

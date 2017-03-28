@@ -265,7 +265,7 @@ let COMP_UNITY_cor2 = prove_thm
          REWRITE_TAC [UNLESS]
         ;
          REWRITE_TAC [UNLESS;UNLESS_STMT] THEN
-         CONV_TAC (DEPTH_CONV BETA_CONV) THEN
+         (CONV_TAC "(DEPTH_CONV BETA_CONV)") (DEPTH_CONV BETA_CONV) THEN
          REPEAT STRIP_TAC THENL
            [
             RES_TAC THEN

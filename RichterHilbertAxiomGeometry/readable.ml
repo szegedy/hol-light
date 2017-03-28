@@ -239,7 +239,7 @@ let assume statement lab tac (asl, w as gl) =
   [ALL_TAC; FIRST_ASSUM MP_TAC THEN tac] THEN HYP SIMP_TAC lab []) gl;;
 
 let eq_tac string tac =
-  if string = "Right" then CONV_TAC SYM_CONV THEN EQ_TAC THENL [tac; ALL_TAC]
+  if string = "Right" then (CONV_TAC "SYM_CONV") SYM_CONV THEN EQ_TAC THENL [tac; ALL_TAC]
   else if string = "Left" then EQ_TAC THENL [tac; ALL_TAC]
   else raise (Readable_fail
     ("eq_tac requires " ^  string ^" to be either Left or Right"));;
@@ -275,8 +275,8 @@ let rewriteRLDepth = GEN_REWRITE_TAC (RAND_CONV o LAND_CONV o DEPTH_CONV);;
 let TACtoThmTactic tac = fun  ths -> MAP_EVERY MP_TAC ths THEN tac;;
 let arithmetic = TACtoThmTactic ARITH_TAC;;
 let real_arithmetic = TACtoThmTactic REAL_ARITH_TAC;;
-let num_ring = TACtoThmTactic (CONV_TAC NUM_RING);;
-let real_ring = TACtoThmTactic (CONV_TAC REAL_RING);;
+let num_ring = TACtoThmTactic ((CONV_TAC "NUM_RING") NUM_RING);;
+let real_ring = TACtoThmTactic ((CONV_TAC "REAL_RING") REAL_RING);;
 
 let ws = "[ \t\n]+";;
 let ws0 = "[ \t\n]*";;

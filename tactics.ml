@@ -354,9 +354,9 @@ let (ACCEPT_TAC: thm_tactic) =
 (* the form "T" automatically.                                               *)
 (* ------------------------------------------------------------------------- *)
 
-let (CONV_TAC: conv -> tactic) =
+let (CONV_TAC: string -> conv -> tactic) =
   let t_tm = `T` in
-  fun conv ((asl,w) as g) ->
+  fun descr conv ((asl,w) as g) ->
     let th = conv w in
     let tm = concl th in
     if aconv tm w then ACCEPT_TAC th g else
@@ -365,7 +365,8 @@ let (CONV_TAC: conv -> tactic) =
     if r = t_tm then ACCEPT_TAC(EQT_ELIM th) g else
     let th' = SYM th in
     null_meta,[asl,r],fun i [th,log] -> EQ_MP (INSTANTIATE_ALL i th') th,
-                                        Proof_log (g, Conv_tac_log conv, [log]);;
+                                        Proof_log (g, Conv_tac_log (descr, conv),
+                                                   [log]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Tactics for equality reasoning.                                           *)
@@ -412,12 +413,12 @@ let (BINOP_TAC: tactic) =
   fun gl -> try tac gl with Failure _ -> failwith "AP_THM_TAC";;
 
 let (SUBST1_TAC: thm_tactic) =
-  fun th -> CONV_TAC(SUBS_CONV [th]);;
+  fun th -> (CONV_TAC "(SUBS_CONV [th])") (SUBS_CONV [th]);;
 
 let SUBST_ALL_TAC rth =
   SUBST1_TAC rth THEN RULE_ASSUM_TAC (SUBS [rth]);;
 
-let BETA_TAC = CONV_TAC(REDEPTH_CONV BETA_CONV);;
+let BETA_TAC = (CONV_TAC "(REDEPTH_CONV BETA_CONV)") (REDEPTH_CONV BETA_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Just use an equation to substitute if possible and uninstantiable.        *)

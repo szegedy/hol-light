@@ -1853,9 +1853,7 @@ let TARGET_REWRITE_IMPCONV : thm list -> term list -> imp_conv =
 let TARGET_REWRITE_TAC sths th =
   let sths' = flat (map preprocess sths) in
   let ths = preprocess th and (+) = THEN_IMPCONV in
-  IMPCONV_TAC
-  (TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths)
-    + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))
+  IMPCONV_TAC (TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))
 
 let HINT_EXISTS_TAC = CTXIMPCONV_TAC (TOP_DEPTH_CTXIMPCONV EXISTS_CTXIMPCONV)
 

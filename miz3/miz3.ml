@@ -2,7 +2,7 @@ needs "Examples/holby.ml";;
 
 let horizon = ref 1;;
 let timeout = ref 1;;
-let default_prover = ref ("HOL_BY", CONV_TAC o HOL_BY);;
+let default_prover = ref ("HOL_BY", (CONV_TAC "o") o HOL_BY);;
 let renumber_labels = ref true;;
 let extra_labels = ref 0;;
 let start_label = ref 1;;
@@ -298,7 +298,7 @@ let rec by_item_of_toks toks =
     try Tactic (s, exec_thmlist_tactic s) with _ ->
     try Tactic (s, (exec_thmtactic s) o hd) with _ ->
     try Tactic (s, use_thms (exec_tactic s)) with _ ->
-    try Tactic (s, use_thms (CONV_TAC (exec_conv s))) with _ ->
+    try Tactic (s, use_thms ((CONV_TAC "(exec_conv s)") (exec_conv s))) with _ ->
     match toks with
     | [_,Ident s,_] -> Label s
     | _ -> failwith "by_item_of_toks" in
@@ -1243,7 +1243,7 @@ let PURE_EXACTLY_ONCE_REWRITE_TAC =
   let PURE_EXACTLY_ONCE_REWRITE_CONV thl =
     GENERAL_REWRITE_CONV false EXACTLY_ONCE_DEPTH_QCONV empty_net thl in
   fun thl ->
-    CONV_TAC(PURE_EXACTLY_ONCE_REWRITE_CONV thl);;
+    (CONV_TAC "(PURE_EXACTLY_ONCE_REWRITE_CONV thl)") (PURE_EXACTLY_ONCE_REWRITE_CONV thl);;
 
 let EQTF_INTRO =
   let lemma = TAUT `(~t <=> T) <=> (t <=> F)` in
@@ -1276,7 +1276,7 @@ let rec tactic_of_step fake step (asl,w as g) =
   let SUBGOAL_THEN' tm tac =
     let th = fix_dots' asl tm in
     let lhs,_ = dest_eq (concl th) in
-    SUBGOAL_THEN lhs tac THENL [MIZAR_NEXT' (CONV_TAC (K th)); ALL_TAC] in
+    SUBGOAL_THEN lhs tac THENL [MIZAR_NEXT' ((CONV_TAC "(K th)") (K th)); ALL_TAC] in
   let fix_thesis tm = vsubst [w,thesis_var] tm in
   let e,src,substep = step in
     match substep with
@@ -1882,7 +1882,7 @@ at_exit (fun _ -> !exit_proc ());;
 let reset_miz3 h =
   horizon := h;
   timeout := 1;
-  default_prover := ("HOL_BY", CONV_TAC o HOL_BY);
+  default_prover := ("HOL_BY", (CONV_TAC "o") o HOL_BY);
   sketch_mode := false;
   just_cache := undefined;
   by_item_cache := undefined;

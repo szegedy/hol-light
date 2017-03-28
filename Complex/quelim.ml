@@ -172,7 +172,7 @@ let CONSTANT_DEGREE = prove
    [DISCH_THEN(ASSUME_TAC o GSYM o SPEC `Cx(&0)`) THEN
     SUBGOAL_THEN `degree [poly p (Cx(&0))] = 0` MP_TAC THENL
      [REWRITE_TAC[degree; normalize] THEN
-      COND_CASES_TAC THEN REWRITE_TAC[LENGTH] THEN CONV_TAC NUM_REDUCE_CONV;
+      COND_CASES_TAC THEN REWRITE_TAC[LENGTH] THEN (CONV_TAC "NUM_REDUCE_CONV") NUM_REDUCE_CONV;
       ALL_TAC] THEN
     MATCH_MP_TAC(ARITH_RULE `(x = y) ==> (x = 0) ==> (y = 0)`) THEN
     MATCH_MP_TAC DEGREE_WELLDEF THEN
@@ -639,7 +639,7 @@ let BASIC_QUELIM_CONV =
     REWRITE_TAC[LAST] THEN
     LIST_INDUCT_TAC THEN REWRITE_TAC[LAST; ALL; NOT_CONS_NIL] THEN
     POP_ASSUM MP_TAC THEN COND_CASES_TAC THEN ASM_SIMP_TAC[ALL] THEN
-    CONV_TAC TAUT) in
+    (CONV_TAC "TAUT") TAUT) in
   let APPLY_pth3 = PART_MATCH (lhand o rand) pth_3 in
   let POLY_EXP_DIVIDES_CONV =
     let pth_4 = prove
@@ -734,7 +734,7 @@ let COMPLEX_QUELIM_CONV =
     REWRITE_TAC[poly])
   and pth_2 = prove
    (`(p ==> (q <=> r)) ==> (p /\ q <=> p /\ r)`,
-    CONV_TAC TAUT)
+    (CONV_TAC "TAUT") TAUT)
   and zero_tm = `Cx(&0)`
   and true_tm = `T` in
   let ELIM_ZERO_RULE = GEN_REWRITE_RULE RAND_CONV [pth_0]

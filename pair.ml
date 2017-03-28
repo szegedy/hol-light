@@ -464,4 +464,4 @@ let (LET_TAC:tactic) =
                   SUBST_ALL_TAC th' THEN ASSUME_TAC th')) deprths THEN
      W(fun (asl',w') ->
         let tm' = follow_path path w' in
-        CONV_TAC(PATH_CONV path (K(let_CONV tm'))))) gl;;
+        (CONV_TAC "(PATH_CONV path (K(let_CONV tm')))") (PATH_CONV path (K(let_CONV tm'))))) gl;;

@@ -35,7 +35,7 @@ let NORM_ELIM_CONV =
                          (BINDER_CONV(RAND_CONV BETA_CONV))) th1;;
 
 let NORM_ELIM_TAC =
-  CONV_TAC NORM_ELIM_CONV THEN GEN_TAC;;
+  (CONV_TAC "NORM_ELIM_CONV") NORM_ELIM_CONV THEN GEN_TAC;;
 
 let SOLOVAY_TAC =
   REWRITE_TAC[orthogonal; GSYM DOT_EQ_0] THEN
@@ -303,7 +303,7 @@ let PYTHAGORAS = prove
  (`!A B C:real^N.
         orthogonal (A - B) (C - B)
         ==> norm(C - A) pow 2 = norm(B - A) pow 2 + norm(C - B) pow 2`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_RING);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 (*** Actually in this case we can fairly easily do things manually, though
      we do need to explicitly use symmetry of the dot product.
@@ -313,7 +313,7 @@ let PYTHAGORAS = prove
         orthogonal (A - B) (C - B)
         ==> norm(C - A) pow 2 = norm(B - A) pow 2 + norm(C - B) pow 2`,
   REWRITE_TAC[NORM_POW_2; orthogonal; DOT_LSUB; DOT_RSUB; DOT_SYM] THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;
 
  ***)
 
@@ -325,27 +325,27 @@ needs "Examples/sos.ml";;
 
 let EXAMPLE_1 = prove
  (`!x y:real^N. x dot y <= norm x * norm y`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 
 let EXAMPLE_2 = prove
  (`!x y:real^N. a % (x + y) = a % x + a % y`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 
 (*** Takes a few minutes but does work
 
 let EXAMPLE_3 = prove
  (`!x y:real^N. norm (x + y) <= norm x + norm y`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 
 ****)
 
 let EXAMPLE_4 = prove
  (`!x y z. x dot (y + z) = (x dot y) + (x dot z)`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 
 let EXAMPLE_5 = prove
  (`!x y. (x dot x = &0) ==> (x dot y = &0)`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* This is NORM_INCREASES_ONLINE.                                            *)
@@ -356,7 +356,7 @@ g `!a d:real^N.
 
 time e SOLOVAY_VECTOR_TAC;;
 
-time e (CONV_TAC REAL_SOS);;
+time e ((CONV_TAC "REAL_SOS") REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* DIST_INCREASES_ONLINE                                                     *)
@@ -367,7 +367,7 @@ g `!b a d:real^N.
 
 time e SOLOVAY_VECTOR_TAC;;
 
-time e (CONV_TAC REAL_SOS);;
+time e ((CONV_TAC "REAL_SOS") REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* This one doesn't seem to work easily, but I think it does eventually.     *)
@@ -376,18 +376,18 @@ time e (CONV_TAC REAL_SOS);;
 (****
 let EXAMPLE_6 = prove
  (`!a x. norm(a % x) = abs(a) * norm x`;;
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
  ****)
 
 let EXAMPLE_7 = prove
  (`!x. abs(norm x) = norm x`,
-   SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+   SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 
 (*** But this is (at least) really slow
 
 let EXAMPLE_8 = prove
  (`!x y. abs(norm(x) - norm(y)) <= abs(norm(x - y))`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN (CONV_TAC "REAL_SOS") REAL_SOS);;
 ****)
 
 (* ------------------------------------------------------------------------- *)
@@ -400,7 +400,7 @@ let EXAMPLE_9 = prove
  (`!x:real^N y. x dot y > &0 ==> ?u. &0 < u /\ norm(u % y - x) < norm x`,
   SOLOVAY_VECTOR_TAC THEN
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC REAL_QELIM_CONV);;
+  (CONV_TAC "REAL_QELIM_CONV") REAL_QELIM_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Even richer set of quantifier alternations.                               *)
@@ -413,4 +413,4 @@ let EXAMPLE_10 = prove
                 !v. &0 < v /\ v <= u ==> norm(v % y - x) < norm x`,
   SOLOVAY_VECTOR_TAC THEN
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC REAL_QELIM_CONV);;
+  (CONV_TAC "REAL_QELIM_CONV") REAL_QELIM_CONV);;

@@ -79,7 +79,7 @@ let ENSURES_lemma1 = TAC_PROOF
       (!s. (p /\* p') s /\ ~((p /\* q' \/* p' /\* q) \/* q /\* q') s
                ==> ((p /\* q' \/* p' /\* q) \/* q /\* q') (h s))`),
     REWRITE_TAC [UNLESS_STMT; AND_def; OR_def] THEN
-    CONV_TAC (DEPTH_CONV BETA_CONV) THEN
+    (CONV_TAC "(DEPTH_CONV BETA_CONV)") (DEPTH_CONV BETA_CONV) THEN
     MESON_TAC []);;
 
 let ENSURES_lemma2 = TAC_PROOF
@@ -157,11 +157,11 @@ let EXIST_TRANSITION_thm2 = prove_thm
      UNDISCH_TAC (`!s:'a. ((p:'a->bool) s) /\ ~(False s)
                           ==> (False ((h:'a->'a) s))`) THEN
      REWRITE_TAC [FALSE_def] THEN
-     CONV_TAC (DEPTH_CONV BETA_CONV)
+     (CONV_TAC "(DEPTH_CONV BETA_CONV)") (DEPTH_CONV BETA_CONV)
     ;
      UNDISCH_TAC (`!s:'a. (Not (p:'a->bool)) s`) THEN
      REWRITE_TAC [NOT_def1] THEN
-     CONV_TAC (DEPTH_CONV BETA_CONV)
+     (CONV_TAC "(DEPTH_CONV BETA_CONV)") (DEPTH_CONV BETA_CONV)
    ]);;
 
 (*
@@ -463,7 +463,7 @@ let ENSURES_thm3 = prove_thm
    [
      UNDISCH_TAC `!s:'a. (p:'a->bool) s /\ ~(False s) ==> False ((h:'a->'a) s)` THEN
      REWRITE_TAC [FALSE_def; NOT_def1] THEN
-     CONV_TAC (DEPTH_CONV BETA_CONV)
+     (CONV_TAC "(DEPTH_CONV BETA_CONV)") (DEPTH_CONV BETA_CONV)
     ;
      IMP_RES_TAC EXIST_TRANSITION_thm2
    ]);;

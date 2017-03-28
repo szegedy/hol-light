@@ -123,7 +123,7 @@ let COMPLEX = prove
 let COMPLEX_EQ_0 = prove
  (`z = Cx(&0) <=> Re(z) pow 2 + Im(z) pow 2 = &0`,
   REWRITE_TAC[COMPLEX_EQ; CX_DEF; RE; IM] THEN
-  EQ_TAC THEN SIMP_TAC[] THEN CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  EQ_TAC THEN SIMP_TAC[] THEN (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   DISCH_THEN(MP_TAC o MATCH_MP (REAL_ARITH
    `!x y:real. x + y = &0 ==> &0 <= x /\ &0 <= y ==> x = &0 /\ y = &0`)) THEN
   REWRITE_TAC[REAL_POW_2; REAL_LE_SQUARE; REAL_ENTIRE]);;
@@ -170,7 +170,7 @@ let SIMPLE_COMPLEX_ARITH_TAC =
   REWRITE_TAC[COMPLEX_EQ; RE; IM; CX_DEF;
               complex_add; complex_neg; complex_sub; complex_mul;
               complex_inv; complex_div] THEN
-  CONV_TAC REAL_FIELD;;
+  (CONV_TAC "REAL_FIELD") REAL_FIELD;;
 
 let SIMPLE_COMPLEX_ARITH tm = prove(tm,SIMPLE_COMPLEX_ARITH_TAC);;
 
@@ -479,13 +479,13 @@ let COMPLEX_POW_MUL = prove
 let COMPLEX_POW_II_2 = prove
  (`ii pow 2 = --Cx(&1)`,
   REWRITE_TAC[ii; COMPLEX_POW_2; complex_mul; CX_DEF; RE; IM; complex_neg] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV);;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV);;
 
 let COMPLEX_POW_EQ_0 = prove
  (`!x n. (x pow n = Cx(&0)) <=> (x = Cx(&0)) /\ ~(n = 0)`,
   GEN_TAC THEN INDUCT_TAC THEN
   ASM_REWRITE_TAC[NOT_SUC; complex_pow; COMPLEX_ENTIRE] THENL
-   [SIMPLE_COMPLEX_ARITH_TAC; CONV_TAC TAUT]);;
+   [SIMPLE_COMPLEX_ARITH_TAC; (CONV_TAC "TAUT") TAUT]);;
 
 let COMPLEX_POW_ZERO = prove
  (`!n. Cx(&0) pow n = if n = 0 then Cx(&1) else Cx(&0)`,
@@ -515,8 +515,8 @@ let CX_INV = prove
  (`!x. Cx(inv x) = inv(Cx x)`,
   GEN_TAC THEN REWRITE_TAC[CX_DEF; complex_inv; RE; IM; COMPLEX_EQ] THEN
   ASM_CASES_TAC `x = &0` THEN ASM_REWRITE_TAC[] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN
-  POP_ASSUM MP_TAC THEN CONV_TAC REAL_FIELD);;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
+  POP_ASSUM MP_TAC THEN (CONV_TAC "REAL_FIELD") REAL_FIELD);;
 
 let CX_MUL = prove
  (`!x y. Cx(x * y) = Cx(x) * Cx(y)`,
@@ -617,7 +617,7 @@ let IM_MUL_II = prove
 let COMPLEX_NORM_II = prove
  (`norm ii = &1`,
   REWRITE_TAC[complex_norm; RE_II; IM_II] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[SQRT_1]);;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[SQRT_1]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Limited "multiplicative" theorems for Re and Im.                          *)
@@ -824,7 +824,7 @@ let COMPLEX_INV_MUL = prove
   ASM_REWRITE_TAC[COMPLEX_INV_0; COMPLEX_MUL_LZERO; COMPLEX_MUL_RZERO] THEN
   REPEAT(POP_ASSUM MP_TAC) THEN
   REWRITE_TAC[complex_mul; complex_inv; RE; IM; COMPLEX_EQ; CX_DEF] THEN
-  REWRITE_TAC[GSYM REAL_SOS_EQ_0] THEN CONV_TAC REAL_FIELD);;
+  REWRITE_TAC[GSYM REAL_SOS_EQ_0] THEN (CONV_TAC "REAL_FIELD") REAL_FIELD);;
 
 let COMPLEX_POW_INV = prove
  (`!x n. (inv x) pow n = inv(x pow n)`,
@@ -838,7 +838,7 @@ let COMPLEX_INV_INV = prove
   POP_ASSUM MP_TAC THEN
   MAP_EVERY (fun t -> MP_TAC(SPEC t COMPLEX_MUL_RINV))
    [`x:complex`; `inv(x):complex`] THEN
-  CONV_TAC COMPLEX_RING);;
+  (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let COMPLEX_INV_DIV = prove
  (`!w z:complex. inv(w / z) = z / w`,
@@ -874,11 +874,11 @@ let RE_COMPLEX_INV_GE_0 = prove
 
 let COMPLEX_EQ_MUL_LCANCEL = prove
  (`!x y z. (x * y = x * z) <=> (x = Cx(&0)) \/ (y = z)`,
-  CONV_TAC COMPLEX_RING);;
+  (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let COMPLEX_EQ_MUL_RCANCEL = prove
  (`!x y z. (x * z = y * z) <=> (x = y) \/ (z = Cx(&0))`,
-  CONV_TAC COMPLEX_RING);;
+  (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let COMPLEX_FIELD =
   let norm_net =
@@ -935,31 +935,31 @@ let COMPLEX_FIELD =
 
 let COMPLEX_DIV_1 = prove
  (`!z. z / Cx(&1) = z`,
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_DIV_LMUL = prove
  (`!x y. ~(y = Cx(&0)) ==> y * x / y = x`,
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_DIV_RMUL = prove
  (`!x y. ~(y = Cx(&0)) ==> x / y * y = x`,
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_INV_II = prove
  (`inv ii = --ii`,
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_INV_EQ_0 = prove
  (`!x. inv x = Cx(&0) <=> x = Cx(&0)`,
   GEN_TAC THEN ASM_CASES_TAC `x = Cx(&0)` THEN
   ASM_REWRITE_TAC[COMPLEX_INV_0] THEN POP_ASSUM MP_TAC THEN
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_INV_NEG = prove
  (`!x:complex. inv(--x) = --(inv x)`,
   GEN_TAC THEN ASM_CASES_TAC `x = Cx(&0)` THEN
   ASM_REWRITE_TAC[COMPLEX_INV_0; COMPLEX_NEG_0] THEN
-  POP_ASSUM MP_TAC THEN CONV_TAC COMPLEX_FIELD);;
+  POP_ASSUM MP_TAC THEN (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_NEG_INV = prove
  (`!x:complex. --(inv x) = inv(--x)`,
@@ -969,7 +969,7 @@ let COMPLEX_INV_EQ_1 = prove
  (`!x. inv x = Cx(&1) <=> x = Cx(&1)`,
   GEN_TAC THEN ASM_CASES_TAC `x = Cx(&0)` THEN
   ASM_REWRITE_TAC[COMPLEX_INV_0] THEN POP_ASSUM MP_TAC THEN
-  CONV_TAC COMPLEX_FIELD);;
+  (CONV_TAC "COMPLEX_FIELD") COMPLEX_FIELD);;
 
 let COMPLEX_DIV_EQ_0 = prove
  (`!w z. w / z = Cx(&0) <=> w = Cx(&0) \/ z = Cx(&0)`,
@@ -1041,7 +1041,7 @@ let COMPLEX_NORM_INV = prove
                           (r * r + i * i) * d * d:real`] THEN
   ASM_CASES_TAC `Re z * Re z + Im z * Im z = &0` THENL
    [ASM_REWRITE_TAC[REAL_INV_0; SQRT_0; REAL_MUL_LZERO]; ALL_TAC] THEN
-  CONV_TAC SYM_CONV THEN MATCH_MP_TAC REAL_MUL_RINV_UNIQ THEN
+  (CONV_TAC "SYM_CONV") SYM_CONV THEN MATCH_MP_TAC REAL_MUL_RINV_UNIQ THEN
   SIMP_TAC[GSYM SQRT_MUL; REAL_LE_MUL; REAL_LE_INV_EQ; REAL_LE_ADD;
            REAL_LE_SQUARE] THEN
   ONCE_REWRITE_TAC[AC REAL_MUL_AC
@@ -1070,7 +1070,7 @@ let COMPLEX_POW_EQ_1 = prove
   REPEAT GEN_TAC THEN
   DISCH_THEN(MP_TAC o AP_TERM `norm:complex->real`) THEN
   SIMP_TAC[COMPLEX_NORM_POW; COMPLEX_NORM_CX; REAL_POW_EQ_1; REAL_ABS_NUM] THEN
-  SIMP_TAC[REAL_ABS_NORM] THEN CONV_TAC TAUT);;
+  SIMP_TAC[REAL_ABS_NORM] THEN (CONV_TAC "TAUT") TAUT);;
 
 (* ------------------------------------------------------------------------- *)
 (* Complex conjugate.                                                        *)
@@ -1144,7 +1144,7 @@ let IM_CNJ = prove
 let CNJ_EQ_CX = prove
  (`!x z. cnj z = Cx x <=> z = Cx x`,
   REWRITE_TAC[COMPLEX_EQ; RE_CNJ; IM_CNJ; RE_CX; IM_CX] THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;
 
 let CNJ_EQ_0 = prove
  (`!z. cnj z = Cx(&0) <=> z = Cx(&0)`,
@@ -1186,14 +1186,14 @@ let COMPLEX_NORM_POW_2 = prove
  (`!z. Cx(norm z) pow 2 = z * cnj z`,
   GEN_TAC THEN REWRITE_TAC [GSYM CX_POW; COMPLEX_SQNORM] THEN
   REWRITE_TAC [cnj; complex_mul; CX_DEF; RE; IM; COMPLEX_EQ] THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;
 
 let COMPLEX_MUL_CNJ = prove
  (`!z. cnj z * z = Cx(norm(z)) pow 2 /\ z * cnj z = Cx(norm(z)) pow 2`,
   GEN_TAC THEN REWRITE_TAC[COMPLEX_MUL_SYM] THEN
   REWRITE_TAC[cnj; complex_mul; RE; IM; GSYM CX_POW; COMPLEX_SQNORM] THEN
   REWRITE_TAC[CX_DEF] THEN AP_TERM_TAC THEN BINOP_TAC THEN
-  CONV_TAC REAL_RING);;
+  (CONV_TAC "REAL_RING") REAL_RING);;
 
 let COMPLEX_INV_CNJ = prove
  (`!z. inv z = cnj z / Cx(norm z) pow 2`,
@@ -1374,7 +1374,7 @@ let CSQRT = prove
                  REAL_POW_EQ_0; REAL_DIV_REFL] THEN
     REWRITE_TAC[real_div; REAL_MUL_LID; GSYM REAL_SUB_RDISTRIB] THEN
     REWRITE_TAC[REAL_ARITH `(m + r) - (m - r) = r * &2`] THEN
-    REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN CONV_TAC REAL_RAT_REDUCE_CONV THEN
+    REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[REAL_MUL_RID]; ALL_TAC] THEN
   REWRITE_TAC[real_div] THEN
   ONCE_REWRITE_TAC[AC REAL_MUL_AC
@@ -1388,7 +1388,7 @@ let CSQRT = prove
   REWRITE_TAC[REAL_ABS_MUL; REAL_ABS_INV; REAL_ABS_NUM] THEN
   ONCE_REWRITE_TAC[AC REAL_MUL_AC
     `&2 * (i * a') * a * h = i * (&2 * h) * a * a'`] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[REAL_MUL_LID; GSYM real_div] THEN
   ASM_SIMP_TAC[REAL_DIV_REFL; REAL_ABS_ZERO; REAL_MUL_RID]);;
 
@@ -1447,7 +1447,7 @@ let POW_2_CSQRT = prove
 
 let CSQRT_EQ_0 = prove
  (`!z. csqrt z = Cx(&0) <=> z = Cx(&0)`,
-  GEN_TAC THEN MP_TAC (SPEC `z:complex` CSQRT) THEN CONV_TAC COMPLEX_RING);;
+  GEN_TAC THEN MP_TAC (SPEC `z:complex` CSQRT) THEN (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* A few more complex-specific cases of vector notions.                      *)
@@ -1465,11 +1465,11 @@ let DOT_CNJ = prove
 
 let LINEAR_COMPLEX_MUL = prove
  (`!c. linear (\x. c * x)`,
-   REWRITE_TAC[linear; COMPLEX_CMUL] THEN CONV_TAC COMPLEX_RING);;
+   REWRITE_TAC[linear; COMPLEX_CMUL] THEN (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let BILINEAR_COMPLEX_MUL = prove
  (`bilinear( * )`,
-  REWRITE_TAC[bilinear; linear; COMPLEX_CMUL] THEN  CONV_TAC COMPLEX_RING);;
+  REWRITE_TAC[bilinear; linear; COMPLEX_CMUL] THEN  (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let LINEAR_CNJ = prove
  (`linear cnj`,
@@ -1482,7 +1482,7 @@ let ORTHOGONAL_TRANSFORMATION_CNJ = prove
 let LINEAR_COMPLEX_LMUL = prove
  (`!f:real^N->complex c. linear f ==> linear (\x. c * f x)`,
   SIMP_TAC[linear; COMPLEX_CMUL] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC COMPLEX_RING);;
+  REPEAT STRIP_TAC THEN (CONV_TAC "COMPLEX_RING") COMPLEX_RING);;
 
 let LINEAR_COMPLEX_RMUL = prove
  (`!f:real^N->complex c. linear f ==> linear (\x. f x * c)`,
@@ -1557,7 +1557,7 @@ let COMPLEX_ORTHOGONAL_ROTATION = prove
     REWRITE_TAC[GSYM ORTHOGONAL_TRANSFORMATION] THEN
     REWRITE_TAC[ORTHOGONAL_TRANSFORMATION_MATRIX] THEN
     REWRITE_TAC[GSYM CONJ_ASSOC] THEN AP_TERM_TAC THEN
-    REWRITE_TAC[ORTHOGONAL_MATRIX_2; DET_2] THEN CONV_TAC REAL_RING;
+    REWRITE_TAC[ORTHOGONAL_MATRIX_2; DET_2] THEN (CONV_TAC "REAL_RING") REAL_RING;
     REWRITE_TAC[RIGHT_AND_EXISTS_THM] THEN
     AP_TERM_TAC THEN GEN_REWRITE_TAC I [FUN_EQ_THM] THEN
     X_GEN_TAC `c:complex` THEN REWRITE_TAC[] THEN
@@ -1591,7 +1591,7 @@ let COMPLEX_ORTHOGONAL_ROTOINVERSION = prove
   SIMP_TAC[DET_2; MATRIX_COMPONENT; DIMINDEX_2; ARITH] THEN
   REWRITE_TAC[COMPLEX_BASIS; CNJ_II; CNJ_CX] THEN
   REWRITE_TAC[GSYM IM_DEF; GSYM RE_DEF; IM; RE; CX_DEF; ii; complex_neg] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV);;
+  (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV);;
 
 let COMPLEX_ORTHOGONAL_TRANSFORMATION = prove
  (`!f:complex->complex.
@@ -1782,7 +1782,7 @@ let IN_SEGMENT_CX = prove
      [ASM_REAL_ARITH_TAC;
       EXISTS_TAC `(a - x:real) / (a - b)`]] THEN
   (CONJ_TAC THENL
-    [ALL_TAC; UNDISCH_TAC `~(a:real = b)` THEN CONV_TAC REAL_FIELD]) THEN
+    [ALL_TAC; UNDISCH_TAC `~(a:real = b)` THEN (CONV_TAC "REAL_FIELD") REAL_FIELD]) THEN
   ASM_SIMP_TAC[REAL_LE_LDIV_EQ; REAL_LE_RDIV_EQ] THEN
   ASM_REAL_ARITH_TAC);;
 
@@ -1835,7 +1835,7 @@ let INTERIOR_REAL = prove
 
 let REAL_NORM = prove
  (`!z. real z ==> norm(z) = abs(Re z)`,
-  SIMP_TAC[real; complex_norm] THEN CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  SIMP_TAC[real; complex_norm] THEN (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[POW_2_SQRT_ABS; REAL_ADD_RID]);;
 
 let REAL_NORM_POS = prove
@@ -2079,7 +2079,7 @@ let COMPLEX_POLYFUN_ROOTBOUND = prove
   REWRITE_TAC[COMPLEX_VEC_0; COMPLEX_MUL_RZERO; COMPLEX_NORM_NUM] THEN
   REWRITE_TAC[COMPLEX_MUL_RID; real_ge; EVENTUALLY_AT_INFINITY] THEN
   REPEAT STRIP_TAC THENL [ASM_MESON_TAC[LE_1]; ALL_TAC] THEN
-  FIRST_X_ASSUM(MP_TAC o SPEC `&1`) THEN CONV_TAC REAL_RAT_REDUCE_CONV THEN
+  FIRST_X_ASSUM(MP_TAC o SPEC `&1`) THEN (CONV_TAC "REAL_RAT_REDUCE_CONV") REAL_RAT_REDUCE_CONV THEN
   MATCH_MP_TAC(TAUT `~a ==> a ==> b`) THEN
   REWRITE_TAC[NOT_EXISTS_THM; NOT_FORALL_THM] THEN X_GEN_TAC `b:real` THEN
   MP_TAC(SPEC `b:real` (INST_TYPE [`:2`,`:N`] VECTOR_CHOOSE_SIZE)) THEN
@@ -2259,7 +2259,7 @@ let CNJ_CPRODUCT = prove
 
 let CX_PRODUCT = prove
  (`!f s. FINITE s ==> Cx(product s f) = cproduct s (\i. Cx(f i))`,
-  GEN_TAC THEN CONV_TAC(ONCE_DEPTH_CONV SYM_CONV) THEN
+  GEN_TAC THEN (CONV_TAC "(ONCE_DEPTH_CONV SYM_CONV)") (ONCE_DEPTH_CONV SYM_CONV) THEN
   MATCH_MP_TAC FINITE_INDUCT_STRONG THEN
   SIMP_TAC[CPRODUCT_CLAUSES; PRODUCT_CLAUSES; GSYM CX_MUL]);;
 

@@ -150,7 +150,7 @@ let LAW_OF_SINES = prove
     a * b - a * b * x = c * d - c * d * y`] THEN
   REWRITE_TAC[GSYM REAL_POW_MUL; GSYM ANGLE] THEN
   REWRITE_TAC[REAL_POW_MUL; dist; NORM_POW_2] THEN
-  REWRITE_TAC[DOT_LSUB; DOT_RSUB; DOT_SYM] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[DOT_LSUB; DOT_RSUB; DOT_SYM] THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Hence the sum of the angles of a triangle.                                *)
@@ -170,7 +170,7 @@ let TRIANGLE_ANGLE_SUM_LEMMA = prove
   REWRITE_TAC[COS_ADD; SIN_ADD; dist; NORM_SUB] THEN
   MAP_EVERY (fun t -> MP_TAC(SPEC t SIN_CIRCLE))
    [`angle(B:real^N,A,C)`; `angle(A:real^N,B,C)`; `angle(B:real^N,C,A)`] THEN
-  REWRITE_TAC[COS_ADD; SIN_ADD; ANGLE_SYM] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[COS_ADD; SIN_ADD; ANGLE_SYM] THEN (CONV_TAC "REAL_RING") REAL_RING);;
 
 let COS_MINUS1_LEMMA = prove
  (`!x. cos(x) = -- &1 /\ &0 <= x /\ x < &3 * pi ==> x = pi`,
@@ -179,7 +179,7 @@ let COS_MINUS1_LEMMA = prove
    (X_CHOOSE_THEN `nn:real` (CONJUNCTS_THEN2 ASSUME_TAC SUBST_ALL_TAC)) THEN
   REWRITE_TAC[GSYM SIN_EQ_0] THENL
    [MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN ASM_REWRITE_TAC[] THEN
-    CONV_TAC REAL_RING;
+    (CONV_TAC "REAL_RING") REAL_RING;
     ALL_TAC] THEN
   SUBGOAL_THEN `?n. nn = &n` (X_CHOOSE_THEN `n:num` SUBST_ALL_TAC) THENL
    [FIRST_X_ASSUM(MP_TAC o GEN_REWRITE_RULE I [REAL_MUL_POS_LE]) THEN
