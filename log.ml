@@ -88,7 +88,8 @@ let sexp_thm_tactic th_tac = Sleaf "thm_tactic_printing_not_implemented";;
 (* Statistics *)
 let proof_stats : (string, int) Hashtbl.t = Hashtbl.create 40
 let num_total_tactics : int ref = ref 0
-let tactics_per_proof : int list ref = ref []
+(* Each proof has tactic_count, thms_referenced, old_thms_referenced *)
+let proof_info : (int * int * int) list ref = ref []
 
 let increment_proof_stats (name:string) =
   if Hashtbl.mem proof_stats name then
@@ -103,21 +104,25 @@ let print_statistics () =
   (* let pairs = Hashtbl.fold (fun k v acc -> (k, v) :: acc) h []; *)
   Hashtbl.iter (fun name count ->
                  Printf.printf "%s: %d\n" name count) proof_stats;
-  let proofs = length !tactics_per_proof in
+  let proofs = length !proof_info in
   Printf.printf "\ntotal proofs: %d\n" proofs;
   Printf.printf "total tactics: %d\n" !num_total_tactics;
   if proofs != 0 then
-    let counts = List.sort compare !tactics_per_proof in
-    let mean = float_of_int (fold_left (+) 0 counts) /. float_of_int proofs in
-    let dev = sqrt (fold_left (+.) 0. (map (fun x ->
-        let s = float_of_int x -. mean in s *. s) counts) /.
-        float_of_int proofs) in
-    Printf.printf "tactics per proof: mean %g +- %g\n" mean dev;
-    Printf.printf "tactics per proof quantiles:";
-    let quantile q = List.nth counts (min (proofs - 1) (proofs * q / 100)) in
-    List.iter (fun q -> Printf.printf " %d%%:%d" q (quantile q))
-              [0;10;20;30;40;50;60;70;80;90;100];
-    Printf.printf "\n"
+    let stats name counts =
+      let mean = float_of_int (fold_left (+) 0 counts) /. float_of_int proofs in
+      let dev = sqrt (fold_left (+.) 0. (map (fun x ->
+          let s = float_of_int x -. mean in s *. s) counts) /.
+          float_of_int proofs) in
+      Printf.printf "%s:\n  mean %g +- %g\n  quantiles:" name mean dev;
+      let sorted = List.sort compare counts in
+      let quantile q = List.nth sorted (min (proofs - 1) (proofs * q / 100)) in
+      List.iter (fun q -> Printf.printf " %d%%:%d" q (quantile q))
+                [0;10;20;30;40;50;60;70;80;90;100];
+      Printf.printf "\n" in
+    stats "tactics per proof" (map (fun (t,_,_) -> t) !proof_info);
+    stats "thm refs per proof" (map (fun (_,t,_) -> t) !proof_info);
+    stats "old thm refs per proof" (map (fun (_,_,t) -> t) !proof_info);
+    Printf.printf "total thm objects: %d\n" (thm_count ())
 
 let tactic_name taclog =
   match taclog with
@@ -194,12 +199,54 @@ let rec sexp_proof_log plog =
   let Proof_log ((gl:goal), (taclog:tactic_log), (logl:proof_log list)) = plog in
   Snode [Sleaf "p"; sexp_goal gl; sexp_tactic_log taclog; Snode (map sexp_proof_log logl)]
 
-let add_proof_stats plog =
+let referenced_thms plog =
+  let seen : (int, unit) Hashtbl.t = Hashtbl.create 1 in
+  let visit th = Hashtbl.replace seen (thm_id th) () in
+  let rec visit_plog (Proof_log (_,tac,logs)) =
+    visit_tac tac;
+    List.iter visit_plog logs
+  and visit_tac tac = match tac with
+    | Fake_log -> ()
+    | Label_tac_log (_,th) -> visit th
+    | Accept_tac_log th -> visit th
+    | Conv_tac_log _ -> ()
+    | Abs_tac_log -> ()
+    | Mk_comb_tac_log -> ()
+    | Disch_tac_log -> ()
+    | Mp_tac_log th -> visit th
+    | Eq_tac_log -> ()
+    | Undisch_tac_log _ -> ()
+    | Spec_tac_log _ -> ()
+    | X_gen_tac_log _ -> ()
+    | X_choose_tac_log (_,th) -> visit th
+    | Exists_tac_log _ -> ()
+    | Conj_tac_log -> ()
+    | Disj1_tac_log -> ()
+    | Disj2_tac_log -> ()
+    | Disj_cases_tac_log th -> visit th
+    | Contr_tac_log th -> visit th
+    | Match_accept_tac_log th -> visit th
+    | Match_mp_tac_log th -> visit th
+    | Conjuncts_then2_log (_,_,th) -> visit th
+    | Subgoal_then_log _ -> ()
+    | Freeze_then_log (_,th) -> visit th
+    | X_meta_exists_tac_log _ -> ()
+    | Meta_spec_tac_log (_,th) -> visit th
+    | Backchain_tac_log th -> visit th
+    | Imp_subst_tac_log th -> visit th
+    | Unknown_log -> ()
+  in
+    visit_plog plog;
+    Hashtbl.fold (fun i () l -> i :: l) seen []
+
+let add_proof_stats before_thms plog =
   let rec loop plog =
     let Proof_log ((gl:goal), (taclog:tactic_log), (logl:proof_log list)) = plog in
     increment_proof_stats (tactic_name taclog);
     List.iter loop logl in
-  let before = !num_total_tactics in
+  let before_tactics = !num_total_tactics in
   loop plog;
-  let after = !num_total_tactics in
-  tactics_per_proof := (after - before) :: !tactics_per_proof;;
+  let after_tactics = !num_total_tactics in
+  let thl = referenced_thms plog in
+  let old_thl = filter (fun th_id -> th_id <= before_thms) thl in
+  proof_info := (after_tactics - before_tactics, length thl, length old_thl) :: !proof_info
