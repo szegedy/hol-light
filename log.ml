@@ -25,7 +25,7 @@ and tactic_log =
   | Fake_log (* see VALID *)
   | Label_tac_log of string * thm
   | Accept_tac_log of thm
-  | Conv_tac_log of conv (* TODO will need to expand since conv:term->thm *)
+  | Conv_tac_log of string * conv (* TODO will need to expand since conv:term->thm *)
   | Abs_tac_log
   | Mk_comb_tac_log
   | Disch_tac_log
@@ -108,7 +108,7 @@ let tactic_name taclog =
     Fake_log -> "Fake_log"
   | Label_tac_log (st, th) -> "Label_tac_log"
   | Accept_tac_log th -> "Accept_tac_log"
-  | Conv_tac_log c -> "Conv_tac_log"
+  | Conv_tac_log (_, c) -> "Conv_tac_log"
   | Abs_tac_log -> "Abs_tac_log"
   | Mk_comb_tac_log -> "Mk_comb_tac_log"
   | Disch_tac_log -> "Disch_tac_log"
@@ -143,7 +143,7 @@ let sexp_tactic_log taclog =
     Fake_log -> simple "Fake_log"
   | Label_tac_log (st, th) -> Snode [Sleaf "Label_tac_log"; Sleaf st; sexp_thm th]
   | Accept_tac_log th -> thm "Accept_tac_log" th
-  | Conv_tac_log c -> Snode [Sleaf "Conv_tac_log"; sexp_conv c]
+  | Conv_tac_log (s, c) -> Snode [Sleaf "Conv_tac_log"; Sleaf s; sexp_conv c]
   | Abs_tac_log -> simple "Abs_tac_log"
   | Mk_comb_tac_log -> simple "Mk_comb_tac_log"
   | Disch_tac_log -> simple "Disch_tac_log"
@@ -173,7 +173,7 @@ let sexp_tactic_log taclog =
   | Backchain_tac_log th -> thm "Backchain_tac_log" th
   | Imp_subst_tac_log th -> thm "Imp_subst_tac_log" th
   | Unknown_log -> simple "Unknown_log";;
-
+ 
 let rec sexp_proof_log plog =
   let Proof_log ((gl:goal), (taclog:tactic_log), (logl:proof_log list)) = plog in
   Snode [Sleaf "p"; sexp_goal gl; sexp_tactic_log taclog; Snode (map sexp_proof_log logl)]
