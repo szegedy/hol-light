@@ -86,6 +86,10 @@ module type Hol_kernel =
       val new_basic_definition : term -> thm
       val new_basic_type_definition :
               string -> string * string -> thm -> thm * thm
+
+      (* Counters for tracking thm creation *)
+      val thm_count : unit -> int
+      val thm_id : thm -> int
 end;;
 
 (* ------------------------------------------------------------------------- *)
@@ -102,7 +106,17 @@ module Hol : Hol_kernel = struct
             | Comb of term * term
             | Abs of term * term
 
-  type thm = Sequent of (term list * term)
+  (* Final int is a counter that lets us track when thms are made *)
+  type thm = Sequent of term list * term * int
+
+  (* thm counters *)
+  let next_thm_id = ref 0
+  let thm_count () = !next_thm_id
+  let thm_id (Sequent (_, _, i)) = i
+  let sequent (h,c) =
+    let i = !next_thm_id in
+    next_thm_id := succ i;
+    Sequent(h,c,i)
 
 (* ------------------------------------------------------------------------- *)
 (* List of current type constants with their arities.                        *)
@@ -486,43 +500,43 @@ module Hol : Hol_kernel = struct
 (* Basic theorem destructors.                                                *)
 (* ------------------------------------------------------------------------- *)
 
-  let dest_thm (Sequent(asl,c)) = (asl,c)
+  let dest_thm (Sequent(asl,c,_)) = (asl,c)
 
-  let hyp (Sequent(asl,c)) = asl
+  let hyp (Sequent(asl,c,_)) = asl
 
-  let concl (Sequent(asl,c)) = c
+  let concl (Sequent(asl,c,_)) = c
 
 (* ------------------------------------------------------------------------- *)
 (* Basic equality properties; TRANS is derivable but included for efficiency *)
 (* ------------------------------------------------------------------------- *)
 
   let REFL tm =
-    Sequent([],safe_mk_eq tm tm)
+    sequent([],safe_mk_eq tm tm)
 
-  let TRANS (Sequent(asl1,c1)) (Sequent(asl2,c2)) =
+  let TRANS (Sequent(asl1,c1,_)) (Sequent(asl2,c2,_)) =
     match (c1,c2) with
       Comb((Comb(Const("=",_),_) as eql),m1),Comb(Comb(Const("=",_),m2),r)
-        when alphaorder m1 m2 = 0 -> Sequent(term_union asl1 asl2,Comb(eql,r))
+        when alphaorder m1 m2 = 0 -> sequent(term_union asl1 asl2,Comb(eql,r))
     | _ -> failwith "TRANS"
 
 (* ------------------------------------------------------------------------- *)
 (* Congruence properties of equality.                                        *)
 (* ------------------------------------------------------------------------- *)
 
-  let MK_COMB(Sequent(asl1,c1),Sequent(asl2,c2)) =
+  let MK_COMB(Sequent(asl1,c1,_),Sequent(asl2,c2,_)) =
      match (c1,c2) with
        Comb(Comb(Const("=",_),l1),r1),Comb(Comb(Const("=",_),l2),r2) ->
         (match type_of r1 with
            Tyapp("fun",[ty;_]) when Pervasives.compare ty (type_of r2) = 0
-             -> Sequent(term_union asl1 asl2,
+             -> sequent(term_union asl1 asl2,
                         safe_mk_eq (Comb(l1,l2)) (Comb(r1,r2)))
          | _ -> failwith "MK_COMB: types do not agree")
      | _ -> failwith "MK_COMB: not both equations"
 
-  let ABS v (Sequent(asl,c)) =
+  let ABS v (Sequent(asl,c,_)) =
     match (v,c) with
       Var(_,_),Comb(Comb(Const("=",_),l),r) when not(exists (vfree_in v) asl)
-         -> Sequent(asl,safe_mk_eq (Abs(v,l)) (Abs(v,r)))
+         -> sequent(asl,safe_mk_eq (Abs(v,l)) (Abs(v,r)))
     | _ -> failwith "ABS";;
 
 (* ------------------------------------------------------------------------- *)
@@ -532,7 +546,7 @@ module Hol : Hol_kernel = struct
   let BETA tm =
     match tm with
       Comb(Abs(v,bod),arg) when Pervasives.compare arg v = 0
-        -> Sequent([],safe_mk_eq tm bod)
+        -> sequent([],safe_mk_eq tm bod)
     | _ -> failwith "BETA: not a trivial beta-redex"
 
 (* ------------------------------------------------------------------------- *)
@@ -540,30 +554,30 @@ module Hol : Hol_kernel = struct
 (* ------------------------------------------------------------------------- *)
 
   let ASSUME tm =
-    if Pervasives.compare (type_of tm) bool_ty = 0 then Sequent([tm],tm)
+    if Pervasives.compare (type_of tm) bool_ty = 0 then sequent([tm],tm)
     else failwith "ASSUME: not a proposition"
 
-  let EQ_MP (Sequent(asl1,eq)) (Sequent(asl2,c)) =
+  let EQ_MP (Sequent(asl1,eq,_)) (Sequent(asl2,c,_)) =
     match eq with
       Comb(Comb(Const("=",_),l),r) when alphaorder l c = 0
-        -> Sequent(term_union asl1 asl2,r)
+        -> sequent(term_union asl1 asl2,r)
     | _ -> failwith "EQ_MP"
 
-  let DEDUCT_ANTISYM_RULE (Sequent(asl1,c1)) (Sequent(asl2,c2)) =
+  let DEDUCT_ANTISYM_RULE (Sequent(asl1,c1,_)) (Sequent(asl2,c2,_)) =
     let asl1' = term_remove c2 asl1 and asl2' = term_remove c1 asl2 in
-    Sequent(term_union asl1' asl2',safe_mk_eq c1 c2)
+    sequent(term_union asl1' asl2',safe_mk_eq c1 c2)
 
 (* ------------------------------------------------------------------------- *)
 (* Type and term instantiation.                                              *)
 (* ------------------------------------------------------------------------- *)
 
-  let INST_TYPE theta (Sequent(asl,c)) =
+  let INST_TYPE theta (Sequent(asl,c,_)) =
     let inst_fn = inst theta in
-    Sequent(term_image inst_fn asl,inst_fn c)
+    sequent(term_image inst_fn asl,inst_fn c)
 
-  let INST theta (Sequent(asl,c)) =
+  let INST theta (Sequent(asl,c,_)) =
     let inst_fun = vsubst theta in
-    Sequent(term_image inst_fun asl,inst_fun c)
+    sequent(term_image inst_fun asl,inst_fun c)
 
 (* ------------------------------------------------------------------------- *)
 (* Handling of axioms.                                                       *)
@@ -575,7 +589,7 @@ module Hol : Hol_kernel = struct
 
   let new_axiom tm =
     if Pervasives.compare (type_of tm) bool_ty = 0 then
-      let th = Sequent([],tm) in
+      let th = sequent([],tm) in
        (the_axioms := th::(!the_axioms); th)
     else failwith "new_axiom: Not a proposition"
 
@@ -594,7 +608,7 @@ module Hol : Hol_kernel = struct
         else if not (subset (type_vars_in_term r) (tyvars ty))
         then failwith "new_definition: Type variables not reflected in constant"
         else let c = new_constant(cname,ty); Const(cname,ty) in
-             let dth = Sequent([],safe_mk_eq c r) in
+             let dth = sequent([],safe_mk_eq c r) in
              the_definitions := dth::(!the_definitions); dth
     | _ -> failwith "new_basic_definition"
 
@@ -611,7 +625,7 @@ module Hol : Hol_kernel = struct
 (* Where "abs" and "rep" are new constants with the nominated names.         *)
 (* ------------------------------------------------------------------------- *)
 
-  let new_basic_type_definition tyname (absname,repname) (Sequent(asl,c)) =
+  let new_basic_type_definition tyname (absname,repname) (Sequent(asl,c,_)) =
     if exists (can get_const_type) [absname; repname] then
       failwith "new_basic_type_definition: Constant(s) already in use" else
     if not (asl = []) then
@@ -631,8 +645,8 @@ module Hol : Hol_kernel = struct
     let abs = (new_constant(absname,absty); Const(absname,absty))
     and rep = (new_constant(repname,repty); Const(repname,repty)) in
     let a = Var("a",aty) and r = Var("r",rty) in
-    Sequent([],safe_mk_eq (Comb(abs,mk_comb(rep,a))) a),
-    Sequent([],safe_mk_eq (Comb(P,r))
+    sequent([],safe_mk_eq (Comb(abs,mk_comb(rep,a))) a),
+    sequent([],safe_mk_eq (Comb(P,r))
                           (safe_mk_eq (mk_comb(rep,mk_comb(abs,r))) r))
 
 end;;

@@ -909,11 +909,12 @@ let (mk_goalstate:goal->goalstate) =
 
 let (TAC_PROOF : goal * tactic -> thm) =
   fun (g,tac) ->
+    let before_thms = thm_count () in
     let gstate = mk_goalstate g in
     let _,sgs,just = by tac gstate in
     if sgs = [] then
       let (th,log) = just null_inst [] in
-      add_proof_stats log;
+      add_proof_stats before_thms log;
       (match proof_fmt with
         Some fmt -> sexp_print fmt (sexp_proof_log log); pp_print_newline fmt ()
       | None -> ());
