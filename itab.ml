@@ -26,7 +26,7 @@ let UNIFY_ACCEPT_TAC mvs th (asl,w) =
   ([],insts),[],
   let th' = INSTANTIATE insts th in
   fun i [] -> INSTANTIATE i th',
-              Proof_log ((asl,w), Unknown_log, []);;
+              Proof_log ((asl,w), Unify_accept_tac_log (mvs,th), []);;
 
 (* ------------------------------------------------------------------------- *)
 (* The actual prover, as a tactic.                                           *)

@@ -254,6 +254,8 @@ let (IMP_SUBST_TAC:thm_tactic) =
     SUBST[(SYM(MP th1 t1),gv)] pat t2,
     Proof_log ((asl,w), Imp_subst_tac_log th, [l1;l2]);;
 
+Replay.imp_subst_tac := Some IMP_SUBST_TAC
+
 (*---------------------------------------------------------------*)
 (* EXT_CONV `!x. f x = g x` = |- (!x. f x = g x) = (f = g)       *)
 (*---------------------------------------------------------------*)

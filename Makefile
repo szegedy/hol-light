@@ -162,7 +162,7 @@ syntax: pa_j_tweak.cmx system.cmx
 %.cmx: %.ml syntax
 	$(OCAMLOPT) $(OCAMLFLAGS) -c $@ $< -pp ./syntax
 
-CORE_SRCS=system hol_native lib fusion basics nets printer preterm parser equal bool drule log tactics itab simp theorems ind_defs class trivia canon meson metis quot impconv pair nums recursion arith wf calc_num normalizer grobner ind_types lists realax calc_int realarith reals calc_rat ints sets iterate cart define help database
+CORE_SRCS=system hol_native lib fusion basics nets printer preterm parser equal bool drule log tactics itab replay simp theorems ind_defs class trivia canon meson metis quot impconv pair nums recursion arith wf calc_num normalizer grobner ind_types lists realax calc_int realarith reals calc_rat ints sets iterate cart define help database
 MULTIVARIATE_SRCS=Library/wo Library/binary Library/card Library/permutations Library/products Library/floor Multivariate/misc Library/iter Multivariate/metric Multivariate/vectors Multivariate/determinants Multivariate/topology Multivariate/convex Multivariate/paths Multivariate/polytope Multivariate/degree Multivariate/derivatives Multivariate/clifford Multivariate/integration Multivariate/measure Multivariate/multivariate_database
 FINISH_SRCS=finish
 SOSA_SRCS=Library/analysis Library/transc Examples/sos

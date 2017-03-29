@@ -50,10 +50,20 @@ and tactic_log =
   | Meta_spec_tac_log of term * thm
   | Backchain_tac_log of thm
   | Imp_subst_tac_log of thm
-  | Unknown_log
+  | Unify_accept_tac_log of term list * thm
 
 and proof_log = Proof_log of goal * tactic_log * proof_log list;;
 
+
+(* ------------------------------------------------------------------------- *)
+(* Proof log replay.                                                         *)
+(* ------------------------------------------------------------------------- *)
+
+let replay_proof_log_ref : (proof_log -> tactic) option ref = ref None
+
+let replay_proof_log log = match !replay_proof_log_ref with
+    Some f -> f log
+  | None -> failwith "replay_proof_log_ref unset"
 
 (* ------------------------------------------------------------------------- *)
 (* Parseable S-Expression printer for goals.                                 *)
@@ -90,6 +100,7 @@ let proof_stats : (string, int) Hashtbl.t = Hashtbl.create 40
 let num_total_tactics : int ref = ref 0
 (* Each proof has tactic_count, thms_referenced, old_thms_referenced *)
 let proof_info : (int * int * int) list ref = ref []
+let failed_replays : int ref = ref 0
 
 let increment_proof_stats (name:string) =
   if Hashtbl.mem proof_stats name then
@@ -106,6 +117,7 @@ let print_statistics () =
                  Printf.printf "%s: %d\n" name count) proof_stats;
   let proofs = length !proof_info in
   Printf.printf "\ntotal proofs: %d\n" proofs;
+  Printf.printf "failed replays: %d\n" !failed_replays;
   Printf.printf "total tactics: %d\n" !num_total_tactics;
   if proofs != 0 then
     let stats name counts =
@@ -154,7 +166,7 @@ let tactic_name taclog =
   | Meta_spec_tac_log (tm, th) -> "Meta_spec_tac_log"
   | Backchain_tac_log th -> "Backchain_tac_log"
   | Imp_subst_tac_log th -> "Imp_subst_tac_log"
-  | Unknown_log -> "Unknown_log"
+  | Unify_accept_tac_log (tml, th) -> "Unify_accept_tac_log"
 
 let sexp_tactic_log taclog =
   let simple s = Snode [Sleaf s] in
@@ -193,7 +205,8 @@ let sexp_tactic_log taclog =
   | Meta_spec_tac_log (tm, th) -> Snode [Sleaf "Meta_spec_tac_log"; sexp_term tm; sexp_thm th]
   | Backchain_tac_log th -> thm "Backchain_tac_log" th
   | Imp_subst_tac_log th -> thm "Imp_subst_tac_log" th
-  | Unknown_log -> simple "Unknown_log";;
+  | Unify_accept_tac_log (tml, th) -> Snode [Sleaf "Unify_accept_tac_log";
+                                             Snode (map sexp_term tml); sexp_thm th]
 
 let rec sexp_proof_log plog =
   let Proof_log ((gl:goal), (taclog:tactic_log), (logl:proof_log list)) = plog in
@@ -234,7 +247,7 @@ let referenced_thms plog =
     | Meta_spec_tac_log (_,th) -> visit th
     | Backchain_tac_log th -> visit th
     | Imp_subst_tac_log th -> visit th
-    | Unknown_log -> ()
+    | Unify_accept_tac_log (_,th) -> visit th
   in
     visit_plog plog;
     Hashtbl.fold (fun i () l -> i :: l) seen []
