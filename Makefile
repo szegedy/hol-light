@@ -162,22 +162,31 @@ syntax: pa_j_tweak.cmx system.cmx
 %.cmx: %.ml syntax
 	$(OCAMLOPT) $(OCAMLFLAGS) -c $@ $< -pp ./syntax
 
-core.cmxa: $(addsuffix .cmx, system hol_native lib fusion basics nets printer preterm parser equal bool drule log tactics itab simp theorems ind_defs class trivia canon meson metis quot impconv pair nums recursion arith wf calc_num normalizer grobner ind_types lists realax calc_int realarith reals calc_rat ints sets iterate cart define help database)
+CORE_SRCS=system hol_native lib fusion basics nets printer preterm parser equal bool drule log tactics itab simp theorems ind_defs class trivia canon meson metis quot impconv pair nums recursion arith wf calc_num normalizer grobner ind_types lists realax calc_int realarith reals calc_rat ints sets iterate cart define help database
+MULTIVARIATE_SRCS=Library/wo Library/binary Library/card Library/permutations Library/products Library/floor Multivariate/misc Library/iter Multivariate/metric Multivariate/vectors Multivariate/determinants Multivariate/topology Multivariate/convex Multivariate/paths Multivariate/polytope Multivariate/degree Multivariate/derivatives Multivariate/clifford Multivariate/integration Multivariate/measure Multivariate/multivariate_database
+FINISH_SRCS=finish
+SOSA_SRCS=Library/analysis Library/transc Examples/sos
+COMPLEX_SRCS=Library/binomial Multivariate/complexes Multivariate/canal Multivariate/transcendentals Multivariate/realanalysis Multivariate/moretop Multivariate/cauchy Multivariate/complex_database
+CARD_SRCS=Library/wo Library/binary Library/card
+
+ALL_SRCS=$(CORE_SRCS) $(MULTIVARIATE_SRCS) $(FINISH_SRCS) $(SOSA_SRCS) $(COMPLEX_SRCS) $(CARD_SRCS)
+
+core.cmxa: $(addsuffix .cmx, $(CORE_SRCS))
 	$(OCAMLOPT) -a -o $@ -linkall $(CAMLP5_WHERE) $^
 
-multivariate.cmxa: $(addsuffix .cmx, Library/wo Library/binary Library/card Library/permutations Library/products Library/floor Multivariate/misc Library/iter Multivariate/metric Multivariate/vectors Multivariate/determinants Multivariate/topology Multivariate/convex Multivariate/paths Multivariate/polytope Multivariate/degree Multivariate/derivatives Multivariate/clifford Multivariate/integration Multivariate/measure Multivariate/multivariate_database)
+multivariate.cmxa: $(addsuffix .cmx, $(MULTIVARIATE_SRCS))
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
-finish.cmxa: $(addsuffix .cmx, finish)
+finish.cmxa: $(addsuffix .cmx, $(FINISH_SRCS))
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
-sosa.cmxa: $(addsuffix .cmx, Library/analysis Library/transc Examples/sos)
+sosa.cmxa: $(addsuffix .cmx, $(SOSA_SRCS))
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
-complex.cmxa: $(addsuffix .cmx, Library/binomial Multivariate/complexes Multivariate/canal Multivariate/transcendentals Multivariate/realanalysis Multivariate/moretop Multivariate/cauchy Multivariate/complex_database)
+complex.cmxa: $(addsuffix .cmx, $(COMPLEX_SRCS))
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
-card.cmxa: $(addsuffix .cmx, Library/wo Library/binary Library/card)
+card.cmxa: $(addsuffix .cmx, $(CARD_SRCS))
 	$(OCAMLOPT) -a -o $@ -linkall $^
 
 core.native: core.cmxa finish.cmxa
@@ -197,7 +206,7 @@ card.native: core.cmxa card.cmxa finish.cmxa
 
 .PHONY: depend
 depend: syntax
-	ocamldep -pp ./syntax $(filter-out pa_j%.ml make.ml, $(wildcard *.ml)) > .depend
+	ocamldep -pp ./syntax $(addsuffix .ml, $(ALL_SRCS)) > .depend
 
 -include .depend
 
