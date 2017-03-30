@@ -278,7 +278,7 @@ let new_specification =
   let mk_code name =
       end_itlist (curry mk_pair) (map code (explode name)) in
   let check_distinct l =
-    try itlist (fun t res -> if mem t res then fail() else t::res) l []; true
+    try ignore (itlist (fun t res -> if mem t res then fail() else t::res) l []); true
     with Failure _ -> false in
   let specify name th =
     let ntm = mk_code name in
