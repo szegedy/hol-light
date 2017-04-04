@@ -38,6 +38,7 @@ and 'a tactic_log =
   | Itaut_tac_log
   | Cheat_tac_log
   | Ants_tac_log
+  | Raw_pop_all_tac_log
   | Raw_pop_tac_log of int
   (* thm_tactic *)
   | Label_tac_log of string * 'a
@@ -92,12 +93,15 @@ let replace_tactic_log : thm tactic_log -> tactic -> tactic =
     let mvs, gl, just = tac g in
     mvs, gl, fun i l -> fst (just i l), Proof_log (g,log,map snd l)
 
-let add_tactic_log : thm tactic_log -> tactic -> tactic =
-  fun log tac g ->
+let add_tactic_log' : goal -> thm tactic_log -> tactic -> tactic =
+  fun g' log tac g ->
     let mvs, gl, just = tac g in
     mvs, gl, fun i l ->
       let th,log' = just i l in
-      th, Proof_log (g, log, [log'])
+      th, Proof_log (g', log, [log'])
+
+let add_tactic_log : thm tactic_log -> tactic -> tactic =
+  fun log tac g -> add_tactic_log' g log tac g
 
 (* ------------------------------------------------------------------------- *)
 (* Machinery defined later, but needed in tactics.ml                         *)
@@ -241,6 +245,7 @@ let tactic_name taclog =
   | Cheat_tac_log -> "Cheat_tac_log"
   | Ants_tac_log -> "Ants_tac_log"
   | Raw_pop_tac_log _ -> "Raw_pop_tac_log"
+  | Raw_pop_all_tac_log -> "Raw_pop_all_tac_log"
   | Asm_meson_tac_log _ -> "Asm_meson_tac_log"
   | Asm_metis_tac_log _ -> "Asm_metis_tac_log"
   | Rewrite_tac_log (ty,_) -> match ty with
@@ -272,6 +277,7 @@ let sexp_tactic_log f taclog =
     | Refl_tac_log
     | Itaut_tac_log
     | Cheat_tac_log
+    | Raw_pop_all_tac_log
     | Ants_tac_log -> Snode [name]
     (* thm_tactic *)
     | Accept_tac_log th
@@ -341,7 +347,8 @@ let referenced_thms plog =
     | Itaut_tac_log
     | Cheat_tac_log
     | Ants_tac_log
-    | Raw_pop_tac_log _ -> ()
+    | Raw_pop_tac_log _
+    | Raw_pop_all_tac_log -> ()
     (* 1 thm *)
     | Label_tac_log (_,th)
     | Accept_tac_log th
