@@ -10158,7 +10158,7 @@ let PURE_METIS_TAC g =
    W(ACCEPT_TAC o SIMPLE_METIS_REFUTE o map snd o fst)) g
 
 let GEN_METIS_TAC ths =
-  FOL_PREPARE_TAC ths THEN PURE_METIS_TAC
+  Log.replace_tactic_log (Log.Asm_metis_tac_log ths) (FOL_PREPARE_TAC ths THEN PURE_METIS_TAC)
 
 end
 ;;
@@ -10168,6 +10168,8 @@ end
 (* ========================================================================= *)
 
 let ASM_METIS_TAC = Metis.GEN_METIS_TAC;;
+
+Replay.asm_metis_tac := Some ASM_METIS_TAC;;
 
 let METIS_TAC ths = POP_ASSUM_LIST(K ALL_TAC) THEN ASM_METIS_TAC ths;;
 

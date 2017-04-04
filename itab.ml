@@ -73,7 +73,7 @@ let (ITAUT_TAC : tactic) =
   let rec ITAUT_ITERDEEP_TAC n gl =
     remark ("Searching with limit "^(string_of_int n));
     ((ITAUT_TAC [] n THEN NO_TAC) ORELSE ITAUT_ITERDEEP_TAC (n + 1)) gl in
-  ITAUT_ITERDEEP_TAC 0;;
+  replace_tactic_log Itaut_tac_log (ITAUT_ITERDEEP_TAC 0);;
 
 (* ------------------------------------------------------------------------- *)
 (* Alternative interface.                                                    *)

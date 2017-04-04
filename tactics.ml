@@ -277,10 +277,20 @@ let (FIND_ASSUM: thm_tactic -> term -> tactic) =
   fun ttac t ((asl,w) as g) ->
     ttac(snd(find (fun (_,th) -> concl th = t) asl)) g;;
 
+(* For tactic logging purposes *)
+let RAW_POP_TAC: int -> tactic =
+  fun n (asl,w as g) ->
+    try
+      let asl0,(_::asl1) = chop_list n asl in
+      let asl = List.append asl0 asl1 in
+      null_meta,[asl,w],
+      fun _ [th,log] -> th, Proof_log (g, Raw_pop_tac_log 0, [log])
+    with Failure _ -> failwith "RAW_POP_TAC";;
+
 let (POP_ASSUM: thm_tactic -> tactic) =
-  fun ttac ->
+  fun ttac -> add_tactic_log (Raw_pop_tac_log 0) (
    function (((_,th)::asl),w) -> ttac th (asl,w)
-    | _ -> failwith "POP_ASSUM: No assumption to pop";;
+    | _ -> failwith "POP_ASSUM: No assumption to pop");;
 
 let (ASSUM_LIST: (thm list -> tactic) -> tactic) =
     fun aslfun (asl,w) -> aslfun (map snd asl) (asl,w);;
@@ -356,7 +366,7 @@ let (ACCEPT_TAC: thm_tactic) =
 
 let (CONV_TAC: conv -> tactic) =
   let t_tm = `T` in
-  fun conv ((asl,w) as g) ->
+  fun conv -> replace_tactic_log (Conv_tac_log conv) (fun ((asl,w) as g) ->
     let th = conv w in
     let tm = concl th in
     if aconv tm w then ACCEPT_TAC th g else
@@ -365,7 +375,7 @@ let (CONV_TAC: conv -> tactic) =
     if r = t_tm then ACCEPT_TAC(EQT_ELIM th) g else
     let th' = SYM th in
     null_meta,[asl,r],fun i [th,log] -> EQ_MP (INSTANTIATE_ALL i th') th,
-                                        Proof_log (g, Conv_tac_log conv, [log]);;
+                                        Proof_log (g, Fake_log, [log]));;
 
 (* ------------------------------------------------------------------------- *)
 (* Tactics for equality reasoning.                                           *)
@@ -373,7 +383,7 @@ let (CONV_TAC: conv -> tactic) =
 
 let (REFL_TAC: tactic) =
   fun ((asl,w) as g) ->
-    try ACCEPT_TAC(REFL(rand w)) g
+    try replace_tactic_log Refl_tac_log (ACCEPT_TAC(REFL(rand w))) g
     with Failure _ -> failwith "REFL_TAC";;
 
 let (ABS_TAC: tactic) =
@@ -634,7 +644,9 @@ let (TRANS_TAC:thm->term->tactic) =
       let ilist =
         itlist2 type_match (map type_of [x;y;z])(map type_of [l;tm;r]) [] in
       let th' = INST_TYPE ilist th in
-      (MATCH_MP_TAC th' THEN EXISTS_TAC tm) gl;;
+      let log = Trans_tac_log (th, tm) in
+      let tac = MATCH_MP_TAC th' THEN EXISTS_TAC tm in
+      replace_tactic_log log tac gl;;
 
 (* ------------------------------------------------------------------------- *)
 (* Theorem continuations.                                                    *)
@@ -728,13 +740,22 @@ let FIRST_X_ASSUM ttac =
 (* Subgoaling and freezing variables (latter is especially useful now).      *)
 (* ------------------------------------------------------------------------- *)
 
+(* A version of SUBGOAL_THEN written as term -> tactic for easy proof replay. *)
+let RAW_SUBGOAL_TAC: term -> tactic =
+  fun wa (asl,w as g) ->
+    let just i [sth,slog;tth,tlog] =
+      PROVE_HYP sth tth,
+      Proof_log (g, Raw_subgoal_tac_log wa, [slog;tlog]) in
+    null_meta,[asl,wa;("",ASSUME wa)::asl,w],just
+
 let (SUBGOAL_THEN: term -> thm_tactic -> tactic) =
   fun wa ttac ((asl,w) as goal) ->
     let meta,gl,just = ttac (ASSUME wa) (asl,w) in
     let just' i ((hth,hlog)::tail) =
       let (justth, justlog) = just i tail in
       PROVE_HYP hth justth,
-      Proof_log(goal, Subgoal_then_log (wa, ttac), [hlog; justlog]) in
+      (* TODO: The following log is missing something like a POP_ASSUM *)
+      Proof_log (goal, Raw_subgoal_tac_log wa, [hlog; justlog]) in
     meta,(asl,wa)::gl,just';;
 
 let SUBGOAL_TAC s tm prfs =
@@ -749,7 +770,7 @@ let (FREEZE_THEN :thm_tactical) =
     let just' i l =
       let jth = just i l in
       PROVE_HYP th (fst jth),
-      Proof_log (goal, Freeze_then_log (ttac, th), [snd jth]) in
+      Proof_log (goal, Freeze_then_log th, [snd jth]) in
     meta,gl,just';;
 
 (* ------------------------------------------------------------------------- *)
@@ -776,14 +797,15 @@ let (META_SPEC_TAC: term -> thm -> tactic) =
     let sth = SPEC t thm in
     ([t],null_inst),[(("",sth)::asl),w],
     fun i [th,log] -> PROVE_HYP (SPEC (instantiate i t) thm) th,
-                      Proof_log (goal, Meta_spec_tac_log (t, thm), [log]);;
+                      Proof_log (goal, Fake_log, [log]);;
 
 (* ------------------------------------------------------------------------- *)
 (* If all else fails!                                                        *)
 (* ------------------------------------------------------------------------- *)
 
 let (CHEAT_TAC:tactic) =
-  fun (asl,w) -> ACCEPT_TAC(mk_thm([],w)) (asl,w);;
+  replace_tactic_log Cheat_tac_log
+  (fun (asl,w) -> ACCEPT_TAC(mk_thm([],w)) (asl,w));;
 
 (* ------------------------------------------------------------------------- *)
 (* Intended for time-consuming rules; delays evaluation till it sees goal.   *)
@@ -800,7 +822,7 @@ let ANTS_TAC =
   and tm2 = `p ==> q` in
   let th1,th2 = CONJ_PAIR(ASSUME tm1) in
   let th = itlist DISCH [tm1;tm2] (MP th2 (MP(ASSUME tm2) th1)) in
-  MATCH_MP_TAC th THEN CONJ_TAC;;
+  replace_tactic_log Ants_tac_log (MATCH_MP_TAC th THEN CONJ_TAC);;
 
 (* ------------------------------------------------------------------------- *)
 (* A printer for goals etc.                                                  *)
@@ -914,12 +936,17 @@ let (TAC_PROOF : goal * tactic -> thm) =
     let _,sgs,just = by tac gstate in
     if sgs = [] then
       let th,log = just null_inst [] in
-      add_proof_stats before_thms log;
+      let log = finalize_proof_log before_thms log in
+      add_proof_stats Log.all_stats log;
       (match proof_fmt with
-          Some fmt -> sexp_print fmt (sexp_proof_log log); pp_print_newline fmt ()
+          Some fmt -> sexp_print fmt (sexp_proof_log sexp_src log);
+                      pp_print_newline fmt ()
         | None -> ());
       (* Try to replay proof to ensure log is consistent *)
       (try
+        if false then (
+          sexp_print std_formatter (sexp_proof_log sexp_src log);
+          Printf.printf "\n");
         let _,sgs',just' = by (replay_proof_log log) gstate in
         if sgs' != [] then failwith "TAC_PROOF: Unsolved goals during log replay" else
         let th',_ = just' null_inst [] in
@@ -928,10 +955,10 @@ let (TAC_PROOF : goal * tactic -> thm) =
         if not (aconv t t') then (
           Printf.printf "REPLAY:\n  correct: %s\n" (string_of_term t);
           Printf.printf "  replay: %s\n" (string_of_term t');
-          failwith "TAC_PROOF: wrong theorem generated by log replay")
+          failwith "TAC_PROOF: wrong theorem generated by log replay");
+        add_proof_stats Log.replay_stats log
       with Failure s ->
-        Printf.printf "REPLAY FAILURE: %s\n" s;
-        incr failed_replays);
+        Printf.printf "REPLAY FAILURE: %s\n" s);
       th
     else failwith "TAC_PROOF: Unsolved goals";;
 

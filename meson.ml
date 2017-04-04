@@ -848,7 +848,10 @@ let GEN_MESON_TAC min max step ths =
 (* Common cases.                                                             *)
 (* ------------------------------------------------------------------------- *)
 
-let ASM_MESON_TAC = GEN_MESON_TAC 0 50 1;;
+let ASM_MESON_TAC ths =
+  Log.replace_tactic_log (Log.Asm_meson_tac_log ths) (GEN_MESON_TAC 0 50 1 ths);;
+
+Replay.asm_meson_tac := Some ASM_MESON_TAC;;
 
 let MESON_TAC ths = POP_ASSUM_LIST(K ALL_TAC) THEN ASM_MESON_TAC ths;;
 
