@@ -70,8 +70,8 @@ let replay_tactic_log (env : env) log : tactic =
     | Match_accept_tac_log th -> replay_ttac MATCH_ACCEPT_TAC th
     | Match_mp_tac_log th -> replay_ttac MATCH_MP_TAC th
     (* other *)
-    | Conv_tac_log conv -> CONV_TAC conv
-    | Conjuncts_then2_log (tac1, tac2, th) -> replay_ttac (CONJUNCTS_THEN2 tac1 tac2) th
+    | Conv_tac_log conv -> failwith "TODO: Can't replay Conv_tac_log"
+    | Conjuncts_then2_log (tac1, tac2, th) -> failwith "TODO: Can't replay Conjuncts_then2_log"
     | Raw_subgoal_tac_log tm -> RAW_SUBGOAL_TAC tm
     | Backchain_tac_log th -> replay_ttac (get "BACKCHAIN_TAC" backchain_tac) th
     | Imp_subst_tac_log th -> replay_ttac (get "IMP_SUBST_TAC" imp_subst_tac) th
