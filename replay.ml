@@ -23,6 +23,10 @@ let backchain_tac : thm_tactic option ref = ref None
 let imp_subst_tac : thm_tactic option ref = ref None
 let asm_meson_tac : (thm list -> tactic) option ref = ref None
 let asm_metis_tac : (thm list -> tactic) option ref = ref None
+let pure_rewrite_tac : (thm list -> tactic) option ref = ref None
+let rewrite_tac : (thm list -> tactic) option ref = ref None
+let pure_once_rewrite_tac : (thm list -> tactic) option ref = ref None
+let once_rewrite_tac : (thm list -> tactic) option ref = ref None
 
 let get name x = match !x with
     None -> failwith ("Downstream tactic "^name^" not filled in")
@@ -39,6 +43,11 @@ let replay_tactic_log (env : env) log : tactic =
     | Conj_right_src s -> ASSUME (snd (dest_conj (concl (lookup s))))
     | Assume_src tm -> ASSUME tm in
   let replay_ttac ttac src = ttac (lookup src) in
+  let rewrite ty = match ty with
+      Pure_rewrite_type -> get "PURE_REWRITE_TAC" pure_rewrite_tac
+    | Rewrite_type -> get "REWRITE_TAC" rewrite_tac
+    | Pure_once_rewrite_type -> get "PURE_ONCE_REWRITE_TAC" pure_once_rewrite_tac
+    | Once_rewrite_type -> get "ONCE_REWRITE_TAC" once_rewrite_tac in
   match log with
     | Fake_log -> failwith "Can't replay Fake_log"
     | Freeze_then_log th -> failwith "TODO: Can't replay Freeze_then_log"
@@ -79,6 +88,7 @@ let replay_tactic_log (env : env) log : tactic =
     | Trans_tac_log (th,tm) -> replay_ttac (fun th -> TRANS_TAC th tm) th
     | Asm_meson_tac_log thl -> (get "ASM_MESON_TAC" asm_meson_tac) (map lookup thl)
     | Asm_metis_tac_log thl -> (get "ASM_METIS_TAC" asm_metis_tac) (map lookup thl)
+    | Rewrite_tac_log (ty,thl) -> rewrite ty (map lookup thl)
 
 (* Check that logged goals match goals generated during replay.  This ensures
    failful replay especially when we add or remove hypotheses. *)
@@ -183,7 +193,8 @@ let finalize_proof_log : int -> thm proof_log -> src proof_log = fun before_thms
       | Ants_tac_log -> Ants_tac_log
       | Raw_pop_tac_log n -> Raw_pop_tac_log n
       | Asm_meson_tac_log thl -> Asm_meson_tac_log (map thm thl)
-      | Asm_metis_tac_log thl -> Asm_metis_tac_log (map thm thl) in
+      | Asm_metis_tac_log thl -> Asm_metis_tac_log (map thm thl)
+      | Rewrite_tac_log (ty,thl) -> Rewrite_tac_log (ty, map thm thl) in
   let rec proof n env (Proof_log (asl,_ as g, tac, logs)) =
     let rec hyp env s th =
       let env = (th,s)::env in

@@ -65,6 +65,13 @@ and 'a tactic_log =
   | Trans_tac_log of 'a * term
   | Asm_meson_tac_log of 'a list
   | Asm_metis_tac_log of 'a list
+  | Rewrite_tac_log of rewrite_type * 'a list
+
+and rewrite_type =
+  | Pure_rewrite_type
+  | Rewrite_type
+  | Pure_once_rewrite_type
+  | Once_rewrite_type
 
 and 'a proof_log = Proof_log of goal * 'a tactic_log * 'a proof_log list;;
 
@@ -210,6 +217,11 @@ let tactic_name taclog =
   | Raw_pop_tac_log _ -> "Raw_pop_tac_log"
   | Asm_meson_tac_log _ -> "Asm_meson_tac_log"
   | Asm_metis_tac_log _ -> "Asm_metis_tac_log"
+  | Rewrite_tac_log (ty,_) -> match ty with
+      Pure_rewrite_type -> "Pure_rewrite_tac_log"
+    | Rewrite_type -> "Rewrite_tac_log"
+    | Pure_once_rewrite_type -> "Pure_once_rewrite_tac_log"
+    | Once_rewrite_type -> "Once_rewrite_tac_log"
 
 let rec sexp_src src = match src with
   | Premise_src th -> Snode [Sleaf "Premise_src"; sexp_thm th]
@@ -262,7 +274,8 @@ let sexp_tactic_log f taclog =
     | Trans_tac_log (th,tm) -> Snode [name; f th; sexp_term tm]
     | Raw_pop_tac_log n -> Snode [name; Sleaf (string_of_int n)]
     | Asm_meson_tac_log thl
-    | Asm_metis_tac_log thl -> Snode [name; Snode (map f thl)]
+    | Asm_metis_tac_log thl
+    | Rewrite_tac_log (_,thl) -> Snode [name; Snode (map f thl)]
 
 let rec sexp_proof_log f (Proof_log (gl, taclog, logl)) =
   Snode [Sleaf "p"; sexp_goal gl; sexp_tactic_log f taclog; Snode (map (sexp_proof_log f) logl)]
@@ -316,7 +329,8 @@ let referenced_thms plog =
     | Trans_tac_log (th,_) -> visit th
     (* thm list *)
     | Asm_meson_tac_log thl
-    | Asm_metis_tac_log thl -> List.iter visit thl
+    | Asm_metis_tac_log thl
+    | Rewrite_tac_log (_,thl) -> List.iter visit thl
   in
     visit_plog plog;
     Hashtbl.fold (fun i () l -> i :: l) seen []
