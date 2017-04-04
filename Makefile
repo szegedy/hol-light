@@ -137,7 +137,7 @@ native: core.native multivariate.native sosa.native card.native complex.native
 
 # Parameters for native builds
 OCAMLOPT=ocamlopt
-OCAMLFLAGS=-w -3-8-52 -I Library -I Multivariate
+OCAMLFLAGS=-w -3-8-52 -safe-string -I Library -I Multivariate
 CAMLP5_WHERE=-I `camlp5 -where`
 CAMLP5_PRE=$(CAMLP5_WHERE) odyl.cmxa camlp5.cmxa
 CAMLP5_POST=odyl.cmx -linkall
