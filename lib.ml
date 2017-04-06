@@ -81,6 +81,12 @@ let rec map2 f l1 l2 =
   | (h1::t1),(h2::t2) -> let h = f h1 h2 in h::(map2 f t1 t2)
   | _ -> failwith "map2: length mismatch";;
 
+let findi f l =
+  let rec loop i l = match l with
+      [] -> raise Not_found
+    | h::t -> if f h then (i,h) else loop (succ i) t
+  in loop 0 l
+
 (* ------------------------------------------------------------------------- *)
 (* Attempting function or predicate applications.                            *)
 (* ------------------------------------------------------------------------- *)
@@ -237,6 +243,12 @@ let rec tryfind f l =
       [] -> failwith "tryfind"
     | (h::t) -> try f h with Failure _ -> tryfind f t;;
 
+let rec tryfindi f l =
+  let rec loop i l = match l with
+      [] -> failwith "tryfind"
+    | (h::t) -> try f i h with Failure _ -> loop (succ i) t
+  in loop 0 l;;
+
 let flat l = itlist (@) l [];;
 
 let rec remove p l =
@@ -244,6 +256,13 @@ let rec remove p l =
     [] -> failwith "remove"
   | (h::t) -> if p(h) then h,t else
               let y,n = remove p t in y,h::n;;
+
+let removei p l =
+  let rec loop i l = match l with
+      [] -> failwith "removei"
+    | (h::t) -> if p(h) then i,h,t else
+                let i,y,n = loop (succ i) t in i,y,h::n
+  in loop 0 l;;
 
 let rec chop_list n l =
   if n = 0 then [],l else
@@ -289,6 +308,12 @@ let rec assoc a l =
   match l with
     (x,y)::t -> if Pervasives.compare x a = 0 then y else assoc a t
   | [] -> failwith "find";;
+
+let associ a l =
+  let rec loop i l = match l with
+      (x,y)::t -> if Pervasives.compare x a = 0 then (i,y) else loop (succ i) t
+    | [] -> failwith "associ"
+  in loop 0 l;;
 
 let rec rev_assoc a l =
   match l with

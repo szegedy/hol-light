@@ -220,17 +220,6 @@ let install_user_printer,delete_user_printer,try_user_printer =
   (fun fmt -> fun tm -> tryfind (fun (_,pr) -> pr fmt tm) (!user_printers));;
 
 (* ------------------------------------------------------------------------- *)
-(* Parseable S-Expression printer for terms.                                 *)
-(* ------------------------------------------------------------------------- *)
-
-let rec sexp_term tm =
-  match tm with
-    Var (str, ty) -> Snode [Sleaf "v"; sexp_type ty; Sleaf str]
-  | Const (str, ty) -> Snode [Sleaf "c"; sexp_type ty; Sleaf str]
-  | Comb (t1, t2) -> Snode [Sleaf "a"; sexp_term t1; sexp_term t2]
-  | Abs (t1, t2) -> Snode [Sleaf "l"; sexp_term t1; sexp_term t2]
-
-(* ------------------------------------------------------------------------- *)
 (* Printer for terms.                                                        *)
 (* ------------------------------------------------------------------------- *)
 
@@ -534,14 +523,6 @@ let pp_print_qterm fmt tm =
   pp_print_string fmt "`";;
 
 (* ------------------------------------------------------------------------- *)
-(* Parseable S-Expression printer for theorems.                              *)
-(* ------------------------------------------------------------------------- *)
-
-let sexp_thm = sexp_memoize (fun th ->
-  let tls, tm = dest_thm th in
-  Snode [Sleaf "h"; Snode (map sexp_term tls); sexp_term tm])
-
-(* ------------------------------------------------------------------------- *)
 (* Printer for theorems.                                                     *)
 (* ------------------------------------------------------------------------- *)
 
@@ -601,3 +582,19 @@ let print_to_string printer =
 let string_of_type = print_to_string pp_print_type;;
 let string_of_term = print_to_string pp_print_term;;
 let string_of_thm = print_to_string pp_print_thm;;
+
+(* ------------------------------------------------------------------------- *)
+(* Parseable S-Expression printers                                           *)
+(* ------------------------------------------------------------------------- *)
+
+let rec sexp_term tm =
+  if true then Sleaf ("`" ^ string_of_term tm ^ "`") else  (* For debugging purposes *)
+  match tm with
+    Var (str, ty) -> Snode [Sleaf "v"; sexp_type ty; Sleaf str]
+  | Const (str, ty) -> Snode [Sleaf "c"; sexp_type ty; Sleaf str]
+  | Comb (t1, t2) -> Snode [Sleaf "a"; sexp_term t1; sexp_term t2]
+  | Abs (t1, t2) -> Snode [Sleaf "l"; sexp_term t1; sexp_term t2]
+
+let sexp_thm = sexp_memoize (fun th ->
+  let tls, tm = dest_thm th in
+  Snode [Sleaf "h"; Snode (map sexp_term tls); sexp_term tm])

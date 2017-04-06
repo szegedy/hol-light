@@ -273,6 +273,8 @@ let BACKCHAIN_TAC th =
   fun i [t,log] -> MATCH_MP (INSTANTIATE i th1) t,
                    Proof_log ((asl,w), Backchain_tac_log th, [log]);;
 
+Replay.backchain_tac := Some BACKCHAIN_TAC
+
 let MONO_TAC =
   let imp = `(==>)` and IMP_REFL = ITAUT `!p. p ==> p` in
   let MONO_ABS_TAC (asl,w) =

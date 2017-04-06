@@ -26,7 +26,7 @@ let UNIFY_ACCEPT_TAC mvs th (asl,w) =
   ([],insts),[],
   let th' = INSTANTIATE insts th in
   fun i [] -> INSTANTIATE i th',
-              Proof_log ((asl,w), Unknown_log, []);;
+              Proof_log ((asl,w), Unify_accept_tac_log (mvs,th), []);;
 
 (* ------------------------------------------------------------------------- *)
 (* The actual prover, as a tactic.                                           *)
@@ -73,7 +73,7 @@ let (ITAUT_TAC : tactic) =
   let rec ITAUT_ITERDEEP_TAC n gl =
     remark ("Searching with limit "^(string_of_int n));
     ((ITAUT_TAC [] n THEN NO_TAC) ORELSE ITAUT_ITERDEEP_TAC (n + 1)) gl in
-  ITAUT_ITERDEEP_TAC 0;;
+  replace_tactic_log Itaut_tac_log (ITAUT_ITERDEEP_TAC 0);;
 
 (* ------------------------------------------------------------------------- *)
 (* Alternative interface.                                                    *)
