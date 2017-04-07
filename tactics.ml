@@ -929,6 +929,8 @@ let (mk_goalstate:goal->goalstate) =
       (fun inst [th,log] -> INSTANTIATE_ALL inst th, log)
     else failwith "mk_goalstate: Non-boolean goal";;
 
+let tactics_counter = ref 0;;
+
 let (TAC_PROOF : goal * tactic -> thm) =
   fun (g,tac) ->
     let before_thms = thm_count () in
@@ -938,9 +940,21 @@ let (TAC_PROOF : goal * tactic -> thm) =
       let th,log = just null_inst [] in
       let log = finalize_proof_log before_thms log in
       add_proof_stats Log.all_stats log;
+      let sexp_print_with_endl fmt sexp=
+        sexp_print fmt sexp;
+        pp_print_newline fmt () in
+      (* Generate an idex to decide which partition to put in the output:
+         training, testing or validation.
+       *)
+      incr tactics_counter;
       (match proof_fmt with
           Some fmt -> sexp_print fmt (sexp_proof_log sexp_src log);
                       pp_print_newline fmt ()
+        | None -> ());
+      (match training_proof_fmt with
+          Some fmt ->  List.iter (sexp_print_with_endl (fmt !tactics_counter))
+                                 (sexp_proof_log_flatten_stripped
+                                    sexp_src log)
         | None -> ());
       (* Try to replay proof to ensure log is consistent *)
       (try

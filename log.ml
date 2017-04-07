@@ -124,6 +124,15 @@ let sexp_goal (gl:goal) =
   Snode [Sleaf "g"; Snode (map (fun (_,th) -> sexp_thm th) asl); sexp_term w]
 
 (* ------------------------------------------------------------------------- *)
+(* Parseable S-Expression printer for goals. Ignoring the tag and            *)
+(* hypotheses.                                                               *)
+(* ------------------------------------------------------------------------- *)
+let sexp_goal_stripped (gl:goal) =
+  let asl,w = gl in
+  Snode [Sleaf "g"; Snode (map (fun (_,th) -> sexp_term (concl th)) asl);
+         sexp_term w]
+
+(* ------------------------------------------------------------------------- *)
 (* Parseable S-Expression printer for proof logs.                            *)
 (* ------------------------------------------------------------------------- *)
 
@@ -135,6 +144,23 @@ let proof_fmt : Format.formatter option =
     Some Format.formatter_of_out_channel proof_log_oc
   with Not_found -> None;;
 
+let training_proof_fmt : (int -> Format.formatter) option =
+  try
+    let make_formatter filename =
+      (* TODO(szegedy) figure out where to close this channels. *)
+      Format.formatter_of_out_channel (open_out filename) in
+    let filename_base = Sys.getenv "TRAINING_PROOF_LOG_OUTPUT" in
+    let train_fmt = make_formatter (filename_base ^ ".train") in
+    let test_fmt = make_formatter (filename_base ^ ".test") in
+    let valid_fmt = make_formatter (filename_base ^ ".valid") in
+    Some (fun i ->
+           if i mod 5 == 4 then
+             test_fmt
+           else if i mod 5 == 2 then
+             valid_fmt
+           else
+             train_fmt)
+  with Not_found -> None;;
 
 (* TODO(smloos) implement this function.
    Will need to build data structure throughout _CONV tactics. *)
@@ -279,6 +305,10 @@ let sexp_tactic_log f taclog =
 
 let rec sexp_proof_log f (Proof_log (gl, taclog, logl)) =
   Snode [Sleaf "p"; sexp_goal gl; sexp_tactic_log f taclog; Snode (map (sexp_proof_log f) logl)]
+
+let rec sexp_proof_log_flatten_stripped f (Proof_log (gl, taclog, logl)) =
+  Snode [Sleaf "p"; sexp_goal_stripped gl; Sleaf (tactic_name taclog)] ::
+    List.concat (map (sexp_proof_log_flatten_stripped f) logl)
 
 let referenced_thms plog =
   let seen : (int, unit) Hashtbl.t = Hashtbl.create 1 in
