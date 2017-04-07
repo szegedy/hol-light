@@ -164,7 +164,7 @@ let lift_theorem =
     SUBST1_TAC THENL [ASM_MESON_TAC[]; ALL_TAC] THEN
     GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
     FIRST_ASSUM(fun th -> GEN_REWRITE_TAC I [th]) THEN
-    CONV_TAC SELECT_CONV THEN ASM_MESON_TAC[]) in
+    CONV_TAC "SELECT_CONV" SELECT_CONV THEN ASM_MESON_TAC[]) in
   fun tybij (refl_th,sym_th,trans_th) ->
     let tybij1 = GEN_ALL (fst tybij)
     and tybij2 = GEN_ALL (snd tybij) in

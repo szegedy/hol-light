@@ -559,7 +559,7 @@ let SELECT_ELIM_TAC =
           IMP_TRANS (SELECT_ELIMS_ICONV tm') th
       with Failure _ -> DISCH tm (ASSUME tm) in
     SELECT_ELIMS_ICONV in
-  CONV_TAC SELECT_ELIM_CONV THEN W(MATCH_MP_TAC o SELECT_ELIM_ICONV o snd);;
+  CONV_TAC "SELECT_ELIM_CONV" SELECT_ELIM_CONV THEN W(MATCH_MP_TAC o SELECT_ELIM_ICONV o snd);;
 
 (* ------------------------------------------------------------------------- *)
 (* Eliminate all lambda-terms except those part of quantifiers.              *)

@@ -42,7 +42,7 @@ let (ITAUT_TAC : tactic) =
    [CONJ_TAC;                                                     (* and     *)
     GEN_TAC;                                                      (* forall  *)
     DISCH_TAC;                                                    (* implies *)
-    (fun gl -> CONV_TAC(K(IMPLICATE(snd gl))) gl);                (* not     *)
+    (fun gl -> CONV_TAC "(K(IMPLICATE(snd gl)))" (K(IMPLICATE(snd gl))) gl);                (* not     *)
     EQ_TAC]                                                       (* iff     *)
   and LEFT_REVERSIBLE_TAC th gl = tryfind (fun ttac -> ttac th gl)
    [CONJUNCTS_THEN' ASSUME_TAC;                                   (* and    *)

@@ -82,7 +82,7 @@ let VEC2_TAC =
   SIMP_TAC[CART_EQ; LAMBDA_BETA; FORALL_2; SUM_2; DIMINDEX_2; VECTOR_2;
            vector_add; vec; dot; orthogonal; basis;
            vector_neg; vector_sub; vector_mul; ARITH] THEN
-  CONV_TAC REAL_RING;;
+  CONV_TAC "REAL_RING" REAL_RING;;
 
 let COLLINEAR_3_2Dzero = prove
  (`!y z:real^2. collinear{vec 0,y,z} <=>
@@ -247,7 +247,7 @@ let ORIENTED_AREA_COLLINEAR_CONG = prove
  (`! A B C A' B' C.
         oriented_area (A,B,C) = oriented_area (A',B',C')
         ==> (collinear {A,B,C} <=> collinear {A',B',C'})`,
-  REWRITE_TAC[COLLINEAR_3_2D; oriented_area] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[COLLINEAR_3_2D; oriented_area] THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 let Basic2move_THM = prove
  (`! A B C A'. ~collinear {A,B,C} /\ ~collinear {B,A,A'} ==>

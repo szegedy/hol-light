@@ -222,7 +222,7 @@ let UNWIND_THM1 = prove
 
 let UNWIND_THM2 = prove
  (`!P (a:A). (?x. x = a /\ P x) <=> P a`,
-  REPEAT GEN_TAC THEN CONV_TAC(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
+  REPEAT GEN_TAC THEN CONV_TAC "(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV))" (LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
   MATCH_ACCEPT_TAC UNWIND_THM1);;
 
 let FORALL_UNWIND_THM2 = prove
@@ -234,7 +234,7 @@ let FORALL_UNWIND_THM2 = prove
 
 let FORALL_UNWIND_THM1 = prove
  (`!P a. (!x. a = x ==> P x) <=> P a`,
-  REPEAT GEN_TAC THEN CONV_TAC(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
+  REPEAT GEN_TAC THEN CONV_TAC "(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV))" (LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
   MATCH_ACCEPT_TAC FORALL_UNWIND_THM2);;
 
 (* ------------------------------------------------------------------------- *)
@@ -473,9 +473,9 @@ let DESTRUCT_TAC,FIX_TAC,INTRO_TAC,HYP_TAC =
   let pa_label = pa_ident isalnum
   and pa_var = pa_ident isalpha in
   let fix_tac =
-    let fix_var v = CONV_TAC (NAME_PULL_FORALL_CONV v) THEN PURE_GEN_TAC
+    let fix_var v = CONV_TAC "(NAME_PULL_FORALL_CONV v)" (NAME_PULL_FORALL_CONV v) THEN PURE_GEN_TAC
     and fix_rename =
-      function u,[v] -> CONV_TAC (NAME_PULL_FORALL_CONV v) THEN NAME_GEN_TAC u
+      function u,[v] -> CONV_TAC "(NAME_PULL_FORALL_CONV v)" (NAME_PULL_FORALL_CONV v) THEN NAME_GEN_TAC u
              | u,_   -> NAME_GEN_TAC u in
     let vars =
       let pa_rename =

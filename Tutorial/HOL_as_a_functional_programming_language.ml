@@ -97,7 +97,7 @@ let holds = define
 let HOLDS_NORM = prove
  (`!e v. holds v (norm e) <=> holds v e`,
   MATCH_MP_TAC ITE_INDUCT THEN SIMP_TAC[holds; norm] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
 
 let taut = define
  `(taut (t,f) False <=> F) /\
@@ -142,7 +142,7 @@ let HOLDS_BACK = prove
        (!p q. (holds v p <=> holds v q) <=>
                    holds v (Ite p q (Ite q False True))) /\
        (!p q. holds v p ==> holds v q <=> holds v (Ite p q True))`,
-  REWRITE_TAC[holds] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[holds] THEN CONV_TAC "TAUT" TAUT);;
 
 let COND_CONV = GEN_REWRITE_CONV I [COND_CLAUSES];;
 let AND_CONV = GEN_REWRITE_CONV I [TAUT `(F /\ a <=> F) /\ (T /\ a <=> a)`];;

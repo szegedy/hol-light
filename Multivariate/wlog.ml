@@ -291,7 +291,7 @@ let PAD2D3D_TAC =
   let lasttac =
     GEN_REWRITE_TAC REDEPTH_CONV [LINEAR_INVARIANTS pad2d3d_tm pths] in
   fun gl -> (GEN_REWRITE_TAC ONCE_DEPTH_CONV [cth] THEN
-             CONV_TAC(DEPTH_CONV PAD2D3D_QUANTIFY_CONV) THEN
+             CONV_TAC "(DEPTH_CONV PAD2D3D_QUANTIFY_CONV)" (DEPTH_CONV PAD2D3D_QUANTIFY_CONV) THEN
              lasttac) gl;;
 
 (* ------------------------------------------------------------------------- *)

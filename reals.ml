@@ -87,7 +87,7 @@ let REAL_ADD_RDISTRIB = prove
 
 let REAL_LT_LADD_IMP = prove
  (`!x y z. y < z ==> x + y < x + z`,
-  REPEAT GEN_TAC THEN CONV_TAC CONTRAPOS_CONV THEN
+  REPEAT GEN_TAC THEN CONV_TAC "CONTRAPOS_CONV" CONTRAPOS_CONV THEN
   REWRITE_TAC[real_lt] THEN
   DISCH_THEN(MP_TAC o MATCH_MP REAL_LE_LADD_IMP) THEN
   DISCH_THEN(MP_TAC o SPEC `--x`) THEN
@@ -96,7 +96,7 @@ let REAL_LT_LADD_IMP = prove
 let REAL_LT_MUL = prove
  (`!x y. &0 < x /\ &0 < y ==> &0 < x * y`,
   REPEAT GEN_TAC THEN REWRITE_TAC[REAL_LT_LE] THEN
-  CONV_TAC(ONCE_DEPTH_CONV SYM_CONV) THEN
+  CONV_TAC "(ONCE_DEPTH_CONV SYM_CONV)" (ONCE_DEPTH_CONV SYM_CONV) THEN
   STRIP_TAC THEN ASM_REWRITE_TAC[REAL_ENTIRE] THEN
   MATCH_MP_TAC REAL_LE_MUL THEN ASM_REWRITE_TAC[]);;
 
@@ -104,7 +104,7 @@ let REAL_LT_MUL = prove
 (* Tactic version of REAL_ARITH.                                             *)
 (* ------------------------------------------------------------------------- *)
 
-let REAL_ARITH_TAC = CONV_TAC REAL_ARITH;;
+let REAL_ARITH_TAC = CONV_TAC "REAL_ARITH" REAL_ARITH;;
 
 (* ------------------------------------------------------------------------- *)
 (* Prove all the linear theorems we can blow away automatically.             *)
@@ -784,7 +784,7 @@ let REAL_DIV_LMUL = prove
 
 let REAL_ABS_INV = prove
  (`!x. abs(inv x) = inv(abs x)`,
-  GEN_TAC THEN CONV_TAC SYM_CONV THEN
+  GEN_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN
   ASM_CASES_TAC `x = &0` THEN ASM_REWRITE_TAC[REAL_INV_0; REAL_ABS_0] THEN
   MATCH_MP_TAC REAL_MUL_RINV_UNIQ THEN
   REWRITE_TAC[GSYM REAL_ABS_MUL] THEN
@@ -853,7 +853,7 @@ let REAL_POW_SUB = prove
   REWRITE_TAC[real_div] THEN ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN
   GEN_REWRITE_TAC LAND_CONV [GSYM REAL_MUL_LID] THEN
   REWRITE_TAC[REAL_MUL_ASSOC] THEN AP_THM_TAC THEN AP_TERM_TAC THEN
-  CONV_TAC SYM_CONV THEN MATCH_MP_TAC REAL_MUL_LINV THEN
+  CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC REAL_MUL_LINV THEN
   MATCH_MP_TAC REAL_POW_NZ THEN ASM_REWRITE_TAC[]);;
 
 let REAL_LT_IMP_NZ = prove
@@ -977,7 +977,7 @@ let REAL_POW_EQ_0 = prove
   GEN_TAC THEN INDUCT_TAC THEN
   ASM_REWRITE_TAC[NOT_SUC; real_pow; REAL_ENTIRE] THENL
    [REAL_ARITH_TAC;
-    CONV_TAC TAUT]);;
+    CONV_TAC "TAUT" TAUT]);;
 
 let REAL_LE_MUL2 = prove
  (`!w x y z. &0 <= w /\ w <= x /\ &0 <= y /\ y <= z
@@ -1191,7 +1191,7 @@ let REAL_EQ_RCANCEL_IMP = prove
  (`!x y z. ~(z = &0) /\ (x * z = y * z) ==> (x = y)`,
   REPEAT GEN_TAC THEN ONCE_REWRITE_TAC[GSYM REAL_SUB_0] THEN
   REWRITE_TAC[REAL_SUB_RZERO; GSYM REAL_SUB_RDISTRIB; REAL_ENTIRE] THEN
-  CONV_TAC TAUT);;
+  CONV_TAC "TAUT" TAUT);;
 
 let REAL_EQ_LCANCEL_IMP = prove
  (`!x y z. ~(z = &0) /\ (z * x = z * y) ==> (x = y)`,

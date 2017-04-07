@@ -125,4 +125,4 @@ let LP_ARITH =
   and pure = GEN_REAL_ARITH LP_PROVER in
     fun tm -> let th = init tm in EQ_MP (SYM th) (pure(rand(concl th)));;
 
-let LP_ARITH_TAC = CONV_TAC LP_ARITH;;
+let LP_ARITH_TAC = CONV_TAC "LP_ARITH" LP_ARITH;;

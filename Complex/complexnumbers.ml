@@ -416,7 +416,7 @@ let COMPLEX_NORM_CX = prove
 let COMPLEX_ENTIRE = prove
  (`!x y. (x * y = Cx(&0)) <=> (x = Cx(&0)) \/ (y = Cx(&0))`,
   REWRITE_TAC[COMPLEX_EQ; complex_mul; RE; IM; CX_DEF; GSYM REAL_SOS_EQ_0] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Powers.                                                                   *)
@@ -460,13 +460,13 @@ let COMPLEX_POW_MUL = prove
 let COMPLEX_POW_II_2 = prove
  (`ii pow 2 = --Cx(&1)`,
   REWRITE_TAC[ii; COMPLEX_POW_2; complex_mul; CX_DEF; RE; IM; complex_neg] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV);;
+  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
 
 let COMPLEX_POW_EQ_0 = prove
  (`!x n. (x pow n = Cx(&0)) <=> (x = Cx(&0)) /\ ~(n = 0)`,
   GEN_TAC THEN INDUCT_TAC THEN
   ASM_REWRITE_TAC[NOT_SUC; complex_pow; COMPLEX_ENTIRE] THENL
-   [SIMPLE_COMPLEX_ARITH_TAC; CONV_TAC TAUT]);;
+   [SIMPLE_COMPLEX_ARITH_TAC; CONV_TAC "TAUT" TAUT]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Norms (aka "moduli").                                                     *)
@@ -534,7 +534,7 @@ let COMPLEX_NORM_INV = prove
                           (r * r + i * i) * d * d:real`] THEN
   ASM_CASES_TAC `Re z * Re z + Im z * Im z = &0` THENL
    [ASM_REWRITE_TAC[REAL_INV_0; SQRT_0; REAL_MUL_LZERO]; ALL_TAC] THEN
-  CONV_TAC SYM_CONV THEN MATCH_MP_TAC REAL_MUL_RINV_UNIQ THEN
+  CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC REAL_MUL_RINV_UNIQ THEN
   SIMP_TAC[GSYM SQRT_MUL; REAL_LE_MUL; REAL_LE_INV_EQ; REAL_LE_ADD;
            REAL_LE_SQUARE] THEN
   ONCE_REWRITE_TAC[AC REAL_MUL_AC
@@ -765,7 +765,7 @@ let COMPLEX_POLY_CONV =
 let COMPLEX_MUL_LINV = prove
  (`!z. ~(z = Cx(&0)) ==> (inv(z) * z = Cx(&1))`,
   REWRITE_TAC[complex_mul; complex_inv; RE; IM; COMPLEX_EQ; CX_DEF] THEN
-  REWRITE_TAC[GSYM REAL_SOS_EQ_0] THEN CONV_TAC REAL_FIELD);;
+  REWRITE_TAC[GSYM REAL_SOS_EQ_0] THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let COMPLEX_MUL_RINV = prove
  (`!z. ~(z = Cx(&0)) ==> (z * inv(z) = Cx(&1))`,
@@ -815,12 +815,12 @@ let COMPLEX_INV_MUL = prove
   ASM_REWRITE_TAC[COMPLEX_INV_0; COMPLEX_MUL_LZERO; COMPLEX_MUL_RZERO] THEN
   REPEAT(POP_ASSUM MP_TAC) THEN
   REWRITE_TAC[complex_mul; complex_inv; RE; IM; COMPLEX_EQ; CX_DEF] THEN
-  REWRITE_TAC[GSYM REAL_SOS_EQ_0] THEN CONV_TAC REAL_FIELD);;
+  REWRITE_TAC[GSYM REAL_SOS_EQ_0] THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let COMPLEX_INV_1 = prove
  (`inv(Cx(&1)) = Cx(&1)`,
   REWRITE_TAC[complex_inv; CX_DEF; RE; IM] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[REAL_DIV_1]);;
+  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[REAL_DIV_1]);;
 
 let COMPLEX_POW_INV = prove
  (`!x n. (inv x) pow n = inv(x pow n)`,
@@ -834,7 +834,7 @@ let COMPLEX_INV_INV = prove
   POP_ASSUM MP_TAC THEN
   MAP_EVERY (fun t -> MP_TAC(SPEC t COMPLEX_MUL_RINV))
    [`x:complex`; `inv(x):complex`] THEN
-  CONV_TAC COMPLEX_RING);;
+  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* And also field procedure.                                                 *)
@@ -885,28 +885,28 @@ let COMPLEX_POW_DIV = prove
 
 let COMPLEX_DIV_REFL = prove
  (`!x. ~(x = Cx(&0)) ==> (x / x = Cx(&1))`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_EQ_MUL_LCANCEL = prove
  (`!x y z. (x * y = x * z) <=> (x = Cx(&0)) \/ (y = z)`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_EQ_MUL_RCANCEL = prove
  (`!x y z. (x * z = y * z) <=> (x = y) \/ (z = Cx(&0))`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_MUL_RINV_UNIQ = prove
  (`!w z. w * z = Cx(&1) ==> inv w = z`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_MUL_LINV_UNIQ = prove
  (`!w z. w * z = Cx(&1) ==> inv z = w`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_DIV_LMUL = prove
  (`!w z. ~(z = Cx(&0)) ==> z * w / z = w`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_DIV_RMUL = prove
  (`!w z. ~(z = Cx(&0)) ==> w / z * z = w`,
-  CONV_TAC COMPLEX_FIELD);;
+  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;

@@ -136,7 +136,7 @@ let TARSKI_AXIOM_7_EUCLIDEAN = prove
       SIMP_TAC[CART_EQ; DIMINDEX_2; FORALL_2; BASIS_COMPONENT; VEC_COMPONENT;
        ARITH; VECTOR_ADD_COMPONENT; VECTOR_MUL_COMPONENT;
        VECTOR_SUB_COMPONENT] THEN
-      UNDISCH_TAC `&0 < &1 - d + e` THEN CONV_TAC REAL_FIELD;
+      UNDISCH_TAC `&0 < &1 - d + e` THEN CONV_TAC "REAL_FIELD" REAL_FIELD;
       EXISTS_TAC `(&1 - d + e - d * e) / (&1 - d + e)` THEN
       ASM_SIMP_TAC[REAL_LE_LDIV_EQ; REAL_LE_RDIV_EQ] THEN
       SUBGOAL_THEN `&0 <= (&1 - d) * (&1 + e) /\ &0 <= d * e` MP_TAC THENL
@@ -154,7 +154,7 @@ let TARSKI_AXIOM_8_EUCLIDEAN = prove
   MAP_EVERY EXISTS_TAC
    [`vec 0:real^2`; `basis 1:real^2`; `basis 2:real^2`] THEN
   SIMP_TAC[BASIS_COMPONENT; VEC_COMPONENT; DIMINDEX_2; ARITH] THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV);;
+  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Axiom 9 (upper 2-dimensional axiom).                                      *)
@@ -172,7 +172,7 @@ let TARSKI_AXIOM_9_EUCLIDEAN = prove
   ONCE_REWRITE_TAC[REAL_RING `~(x = &0) <=> ~(x pow 2 = &0)`] THEN
   REWRITE_TAC[NORM_POW_2; COLLINEAR_3_2D] THEN
   REWRITE_TAC[DOT_2; VECTOR_SUB_COMPONENT] THEN
-  CONV_TAC REAL_FIELD);;
+  CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 (* ------------------------------------------------------------------------- *)
 (* Axiom 10 (Euclidean axiom).                                               *)

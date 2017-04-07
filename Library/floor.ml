@@ -197,7 +197,7 @@ let RATIONAL_INTEGER = prove
  (`!x. integer x ==> rational x`,
   GEN_TAC THEN DISCH_TAC THEN REWRITE_TAC[rational] THEN
   MAP_EVERY EXISTS_TAC [`x:real`; `&1`] THEN
-  ASM_SIMP_TAC[INTEGER_CLOSED] THEN CONV_TAC REAL_FIELD);;
+  ASM_SIMP_TAC[INTEGER_CLOSED] THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RATIONAL_NUM = prove
  (`!n. rational(&n)`,
@@ -209,7 +209,7 @@ let RATIONAL_NEG = prove
   MAP_EVERY X_GEN_TAC [`x:real`; `m:real`; `n:real`] THEN
   STRIP_TAC THEN
   MAP_EVERY EXISTS_TAC [`--m:real`; `n:real`] THEN
-  ASM_SIMP_TAC[INTEGER_CLOSED] THEN CONV_TAC REAL_FIELD);;
+  ASM_SIMP_TAC[INTEGER_CLOSED] THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RATIONAL_ABS = prove
  (`!x. rational(x) ==> rational(abs x)`,
@@ -223,7 +223,7 @@ let RATIONAL_INV = prove
   MAP_EVERY X_GEN_TAC [`m:real`; `n:real`] THEN STRIP_TAC THEN
   MAP_EVERY EXISTS_TAC [`n:real`; `m:real`] THEN
   ASM_SIMP_TAC[INTEGER_CLOSED] THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RATIONAL_ADD = prove
  (`!x y. rational(x) /\ rational(y) ==> rational(x + y)`,
@@ -233,7 +233,7 @@ let RATIONAL_ADD = prove
   STRIP_TAC THEN
   MAP_EVERY EXISTS_TAC [`m1 * n2 + m2 * n1:real`; `n1 * n2:real`] THEN
   ASM_SIMP_TAC[INTEGER_CLOSED] THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RATIONAL_SUB = prove
  (`!x y. rational(x) /\ rational(y) ==> rational(x - y)`,
@@ -247,7 +247,7 @@ let RATIONAL_MUL = prove
   STRIP_TAC THEN
   MAP_EVERY EXISTS_TAC [`m1 * m2:real`; `n1 * n2:real`] THEN
   ASM_SIMP_TAC[INTEGER_CLOSED] THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RATIONAL_DIV = prove
  (`!x y. rational(x) /\ rational(y) ==> rational(x / y)`,
@@ -637,7 +637,7 @@ let HAS_SIZE_INTSEG_INT = prove
    `{x | integer(x) /\ a <= x /\ x <= b} =
     IMAGE (\n. a + &n) {n | &n <= b - a}`
   SUBST1_TAC THENL
-   [CONV_TAC SYM_CONV THEN MATCH_MP_TAC SURJECTIVE_IMAGE_EQ THEN
+   [CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SURJECTIVE_IMAGE_EQ THEN
     ASM_SIMP_TAC[IN_ELIM_THM; INTEGER_CLOSED] THEN
     CONJ_TAC THENL [ALL_TAC; REAL_ARITH_TAC] THEN
     X_GEN_TAC `c:real` THEN STRIP_TAC THEN

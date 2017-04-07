@@ -668,7 +668,7 @@ let INT_ARITH =
     let th2 = REAL_ARITH(mk_neg(rand(concl th1))) in
     EQ_MP th0 (EQ_MP (AP_TERM not_tm (SYM th1)) th2);;
 
-let INT_ARITH_TAC = CONV_TAC(EQT_INTRO o INT_ARITH);;
+let INT_ARITH_TAC = CONV_TAC "(EQT_INTRO o INT_ARITH)" (EQT_INTRO o INT_ARITH);;
 
 let ASM_INT_ARITH_TAC =
   REPEAT(FIRST_X_ASSUM(MP_TAC o check (not o is_forall o concl))) THEN
@@ -798,7 +798,7 @@ let INT_LE_CONV,INT_LT_CONV,INT_GE_CONV,INT_GT_CONV,INT_EQ_CONV =
      (--(&m) < &n <=> ~((m = 0) /\ (n = 0)))`,
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3;
                 GSYM NOT_LE; INT_LT] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_LT_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_lt1];
     GEN_REWRITE_CONV I [pth_lt2a; pth_lt2b] THENC NUM_LT_CONV;
@@ -809,7 +809,7 @@ let INT_LE_CONV,INT_LT_CONV,INT_GE_CONV,INT_GT_CONV,INT_EQ_CONV =
      (--(&m) >= --(&n) <=> m <= n) /\
      (--(&m) >= &n <=> (m = 0) /\ (n = 0))`,
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3; INT_GE] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_GE_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_ge1];
     GEN_REWRITE_CONV I [pth_ge2a; pth_ge2b] THENC NUM_LE_CONV;
@@ -820,7 +820,7 @@ let INT_LE_CONV,INT_LT_CONV,INT_GE_CONV,INT_GT_CONV,INT_EQ_CONV =
      (--(&m) > --(&n) <=> m < n) /\
      (&m > --(&n) <=> ~((m = 0) /\ (n = 0)))`,
     REWRITE_TAC[pth_lt1; pth_lt2a; pth_lt2b; pth_lt3; INT_GT] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_GT_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_gt1];
     GEN_REWRITE_CONV I [pth_gt2a; pth_gt2b] THENC NUM_LT_CONV;
@@ -832,7 +832,7 @@ let INT_LE_CONV,INT_LT_CONV,INT_GE_CONV,INT_GT_CONV,INT_EQ_CONV =
      ((&m = --(&n)) <=> (m = 0) /\ (n = 0))`,
     REWRITE_TAC[GSYM INT_LE_ANTISYM; GSYM LE_ANTISYM] THEN
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3; LE; LE_0] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_EQ_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_eq1a; pth_eq1b] THENC NUM_EQ_CONV;
     GEN_REWRITE_CONV I [pth_eq2a; pth_eq2b] THENC NUM2_EQ_CONV] in
@@ -1047,7 +1047,7 @@ let INT_DIVMOD_UNIQ = prove
   SUBGOAL_THEN `~(n = &0)` MP_TAC THENL [ASM_INT_ARITH_TAC; ALL_TAC] THEN
   DISCH_THEN(STRIP_ASSUME_TAC o SPEC `m:int` o MATCH_MP INT_DIVISION) THEN
   ASM_CASES_TAC `m div n = q` THENL
-   [REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC INT_RING; ALL_TAC] THEN
+   [REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "INT_RING" INT_RING; ALL_TAC] THEN
   SUBGOAL_THEN `abs(m rem n - r) < abs n` MP_TAC THENL
    [ASM_INT_ARITH_TAC; MATCH_MP_TAC(TAUT `~p ==> p ==> q`)] THEN
   MATCH_MP_TAC(INT_ARITH
@@ -1056,7 +1056,7 @@ let INT_DIVMOD_UNIQ = prove
     ==> ~(abs(m rem n - r) < abs n)`) THEN
   CONJ_TAC THENL
    [MATCH_MP_TAC INT_LE_RMUL THEN ASM_INT_ARITH_TAC;
-    AP_TERM_TAC THEN REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC INT_RING]);;
+    AP_TERM_TAC THEN REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "INT_RING" INT_RING]);;
 
 let INT_DIV_CONV,INT_REM_CONV =
   let pth = prove
@@ -1254,24 +1254,24 @@ let INTEGER_TAC =
                         lhs o concl o snd) asl in
     let cfs = solve_idealism evs ps (map lhs (conjuncts bod)) in
     (MAP_EVERY EXISTS_TAC(map (fun v -> rev_assocd v cfs zero_tm) evs) THEN
-     REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC INT_RING) gl in
+     REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "INT_RING" INT_RING) gl in
   let SCRUB_NEQ_TAC = MATCH_MP_TAC o MATCH_MP (MESON[]
     `~(x = y) ==> x = y \/ p ==> p`) in
   REWRITE_TAC[int_coprime; int_congruent; int_divides] THEN
   REPEAT(STRIP_TAC ORELSE EQ_TAC) THEN
   REWRITE_TAC[LEFT_AND_EXISTS_THM; RIGHT_AND_EXISTS_THM;
               LEFT_OR_EXISTS_THM; RIGHT_OR_EXISTS_THM] THEN
-  CONV_TAC(REPEATC UNWIND_POLYS_CONV) THEN
+  CONV_TAC "(REPEATC UNWIND_POLYS_CONV)" (REPEATC UNWIND_POLYS_CONV) THEN
   REPEAT(FIRST_X_ASSUM SCRUB_NEQ_TAC) THEN
   REWRITE_TAC[LEFT_AND_EXISTS_THM; RIGHT_AND_EXISTS_THM;
               LEFT_OR_EXISTS_THM; RIGHT_OR_EXISTS_THM] THEN
   REPEAT(FIRST_X_ASSUM(MP_TAC o SYM)) THEN
-  CONV_TAC(ONCE_DEPTH_CONV INT_POLYEQ_CONV) THEN
+  CONV_TAC "(ONCE_DEPTH_CONV INT_POLYEQ_CONV)" (ONCE_DEPTH_CONV INT_POLYEQ_CONV) THEN
   REWRITE_TAC[GSYM INT_ENTIRE;
               TAUT `a \/ (b /\ c) <=> (a \/ b) /\ (a \/ c)`] THEN
   POP_ASSUM_LIST(K ALL_TAC) THEN
-  REPEAT DISCH_TAC THEN CONV_TAC GENVAR_EXISTS_CONV THEN
-  CONV_TAC(ONCE_DEPTH_CONV INT_POLYEQ_CONV) THEN EXISTS_POLY_TAC;;
+  REPEAT DISCH_TAC THEN CONV_TAC "GENVAR_EXISTS_CONV" GENVAR_EXISTS_CONV THEN
+  CONV_TAC "(ONCE_DEPTH_CONV INT_POLYEQ_CONV)" (ONCE_DEPTH_CONV INT_POLYEQ_CONV) THEN EXISTS_POLY_TAC;;
 
 let INTEGER_RULE tm = prove(tm,INTEGER_TAC);;
 
@@ -1355,7 +1355,7 @@ let NUM_OF_INT_OF_NUM = prove
 let INT_OF_NUM_OF_INT = prove
  (`!x. &0 <= x ==> &(num_of_int x) = x`,
   REWRITE_TAC[GSYM INT_FORALL_POS; num_of_int] THEN
-  GEN_TAC THEN CONV_TAC SELECT_CONV THEN MESON_TAC[]);;
+  GEN_TAC THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN MESON_TAC[]);;
 
 let NUM_OF_INT = prove
  (`!x. &0 <= x <=> (&(num_of_int x) = x)`,
@@ -1433,7 +1433,7 @@ let ARITH_RULE =
     let th3 = GENL avs (rev_itlist (C MP) pths th2) in
     EQ_MP (SYM th1) th3;;
 
-let ARITH_TAC = CONV_TAC(EQT_INTRO o ARITH_RULE);;
+let ARITH_TAC = CONV_TAC "(EQT_INTRO o ARITH_RULE)" (EQT_INTRO o ARITH_RULE);;
 
 let ASM_ARITH_TAC =
   REPEAT(FIRST_X_ASSUM(MP_TAC o check (not o is_forall o concl))) THEN
@@ -1460,7 +1460,7 @@ let NUMBER_TAC =
      INT_OF_NUM_SUC; INT_OF_NUM_ADD; INT_OF_NUM_MUL; INT_OF_NUM_POW]))
   and quantifier_conv = GEN_REWRITE_CONV DEPTH_CONV [pth_relativize] in
   W(fun (_,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC(relation_conv THENC quantifier_conv) THEN
+  CONV_TAC "(relation_conv THENC quantifier_conv)" (relation_conv THENC quantifier_conv) THEN
   REWRITE_TAC[RIGHT_IMP_FORALL_THM] THEN REPEAT GEN_TAC THEN
   INTEGER_TAC;;
 

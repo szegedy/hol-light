@@ -665,7 +665,7 @@ let CLOSURE_OF_CLOSURE_OF = prove
 let CLOSURE_OF_HULL = prove
  (`!top s:A->bool.
         s SUBSET topspace top ==> top closure_of s = (closed_in top) hull s`,
-  REPEAT STRIP_TAC THEN CONV_TAC SYM_CONV THEN MATCH_MP_TAC HULL_UNIQUE THEN
+  REPEAT STRIP_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC HULL_UNIQUE THEN
   ASM_SIMP_TAC[CLOSURE_OF_SUBSET; CLOSED_IN_CLOSURE_OF] THEN
   ASM_MESON_TAC[CLOSURE_OF_EQ; CLOSURE_OF_MONO]);;
 
@@ -915,7 +915,7 @@ let INTERIOR_OF_EQ_EMPTY_ALT = prove
 let INTERIOR_OF_UNIONS_OPEN_IN_SUBSETS = prove
  (`!top s:A->bool.
         UNIONS {t | open_in top t /\ t SUBSET s} = top interior_of s`,
-  REPEAT GEN_TAC THEN CONV_TAC SYM_CONV THEN
+  REPEAT GEN_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN
   MATCH_MP_TAC INTERIOR_OF_UNIQUE THEN
   SIMP_TAC[OPEN_IN_UNIONS; IN_ELIM_THM] THEN SET_TAC[]);;
 
@@ -1014,7 +1014,7 @@ let frontier_of = new_definition
 let FRONTIER_OF_CLOSURES = prove
  (`!top s. top frontier_of s =
            top closure_of s INTER top closure_of (topspace top DIFF s)`,
-  REPEAT GEN_TAC THEN CONV_TAC SYM_CONV THEN
+  REPEAT GEN_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN
   REWRITE_TAC[frontier_of; CLOSURE_OF_COMPLEMENT] THEN
   MATCH_MP_TAC(SET_RULE `s SUBSET u ==> s INTER (u DIFF t) = s DIFF t`) THEN
   REWRITE_TAC[CLOSURE_OF_SUBSET_TOPSPACE]);;
@@ -2254,7 +2254,7 @@ let METRIC_ARITH : term -> thm =
       elim_exists tm in
     EQ_MP (SYM th0) (GENL avs (elim_exists bod));;
 
-let METRIC_ARITH_TAC = CONV_TAC METRIC_ARITH;;
+let METRIC_ARITH_TAC = CONV_TAC "METRIC_ARITH" METRIC_ARITH;;
 
 let ASM_METRIC_ARITH_TAC =
   REPEAT(FIRST_X_ASSUM(MP_TAC o check (not o is_forall o concl))) THEN
@@ -3590,10 +3590,10 @@ let METRIC_BAIRE_CATEGORY = prove
    ALL_TAC] THEN
   CLAIM_TAC "rlt" `!n:num. r n < inv (&2 pow n)` THENL
   [LABEL_INDUCT_TAC THENL
-   [CONV_TAC (RAND_CONV REAL_RAT_REDUCE_CONV) THEN HYP REWRITE_TAC "r0lt1" [];
+   [CONV_TAC "(RAND_CONV REAL_RAT_REDUCE_CONV)" (RAND_CONV REAL_RAT_REDUCE_CONV) THEN HYP REWRITE_TAC "r0lt1" [];
     TRANS_TAC REAL_LTE_TRANS `r (n:num) / &2` THEN
     HYP REWRITE_TAC "r1lt" [real_pow] THEN REMOVE_THEN "ind_n" MP_TAC THEN
-    REMOVE_THEN "rpos" (MP_TAC o SPEC `n:num`) THEN CONV_TAC REAL_FIELD];
+    REMOVE_THEN "rpos" (MP_TAC o SPEC `n:num`) THEN CONV_TAC "REAL_FIELD" REAL_FIELD];
    ALL_TAC] THEN
   CLAIM_TAC "nested"
     `!p q:num. p <= q ==> mball m (x q:A, r q) SUBSET mball m (x p, r p)` THENL
@@ -3680,7 +3680,7 @@ let DIMENSION_LE_MONO = prove
 let DIMENSION_LE_EQ_EMPTY = prove
  (`!top:(A)topology. top dimension_le (-- &1) <=> topspace top = {}`,
   REPEAT GEN_TAC THEN ONCE_REWRITE_TAC[DIMENSION_LE_CASES] THEN
-  CONV_TAC INT_REDUCE_CONV THEN
+  CONV_TAC "INT_REDUCE_CONV" INT_REDUCE_CONV THEN
   SUBGOAL_THEN `!top:A topology. ~(top dimension_le --(&2))`
    (fun th -> REWRITE_TAC[th])
   THENL

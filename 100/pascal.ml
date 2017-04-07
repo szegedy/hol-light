@@ -285,7 +285,7 @@ let COLLINEAR_BRACKET = prove
     GEN_TAC THEN DISCH_THEN(MP_TAC o CONJUNCT1) THEN
     REWRITE_TAC[DET_3; orthogonal; DOT_3; VECTOR_3; CART_EQ;
               DIMINDEX_3; FORALL_3; VEC_COMPONENT] THEN
-    CONV_TAC REAL_RING;
+    CONV_TAC "REAL_RING" REAL_RING;
     ASM_CASES_TAC `p1:point = p2` THENL
      [ASM_REWRITE_TAC[INSERT_AC; COLLINEAR_PAIR]; ALL_TAC] THEN
     POP_ASSUM MP_TAC THEN
@@ -327,7 +327,7 @@ let HOMOGENEOUS_CONIC_BRACKET = prove
   ONCE_REWRITE_TAC[IMP_CONJ] THEN REWRITE_TAC[LEFT_IMP_EXISTS_THM] THEN
   REPEAT GEN_TAC THEN DISCH_THEN(CONJUNCTS_THEN2 MP_TAC ASSUME_TAC) THEN
   ASM_REWRITE_TAC[IN_ELIM_THM; DET_3; VECTOR_3] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "REAL_RING" REAL_RING);;
 
 let PROJECTIVE_CONIC_BRACKET = prove
  (`!con p1 p2 p3 p4 p5 p6.
@@ -399,7 +399,7 @@ let PASCAL_DIRECT = prove
     --bracket[x1;x5;x7] * bracket[x3;x5;x8]` THEN
   CONJ_TAC THENL
    [REPEAT(MATCH_MP_TAC MONO_AND THEN CONJ_TAC) THEN
-    REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC REAL_RING;
+    REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC "REAL_RING" REAL_RING;
     ALL_TAC] THEN
   REWRITE_TAC[IMP_CONJ] THEN
   REPEAT(ONCE_REWRITE_TAC[IMP_IMP] THEN
@@ -412,7 +412,7 @@ let PASCAL_DIRECT = prove
   ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN
   ASM_REWRITE_TAC[REAL_EQ_MUL_LCANCEL] THEN
   FIRST_X_ASSUM(MP_TAC o CONJUNCT1) THEN
-  REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* With longer but more intuitive non-degeneracy conditions, basically that  *)
@@ -458,7 +458,7 @@ let PASCAL = prove
   REPEAT CONJ_TAC THEN
   REPEAT(POP_ASSUM MP_TAC) THEN
   REWRITE_TAC[COLLINEAR_BRACKET; bracket; DET_3; VECTOR_3] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Homogenization and hence mapping from affine to projective plane.         *)
@@ -501,7 +501,7 @@ let COLLINEAR_PROJECTIVIZE = prove
   EXISTS_TAC `det(vector[homogenize a; homogenize b; homogenize c]) = &0` THEN
   CONJ_TAC THENL
    [REWRITE_TAC[homogenize; DOT_2; VECTOR_SUB_COMPONENT; DET_3; VECTOR_3] THEN
-    CONV_TAC REAL_RING;
+    CONV_TAC "REAL_RING" REAL_RING;
     MAP_EVERY (MP_TAC o C SPEC PARALLEL_PROJP_HOMOP)
      [`homogenize a`; `homogenize b`; `homogenize c`] THEN
     MAP_EVERY (MP_TAC o C SPEC HOMOGENIZE_NONZERO)
@@ -510,7 +510,7 @@ let COLLINEAR_PROJECTIVIZE = prove
      [`projp(homogenize a)`; `projp(homogenize b)`; `projp(homogenize c)`] THEN
     REWRITE_TAC[parallel; cross; CART_EQ; DIMINDEX_3; FORALL_3; VECTOR_3;
                 DET_3; VEC_COMPONENT] THEN
-    CONV_TAC REAL_RING]);;
+    CONV_TAC "REAL_RING" REAL_RING]);;
 
 let AFFINE_PROJECTIVE_CONIC = prove
  (`!con. affine_conic con <=> ?con'. projective_conic con' /\
@@ -526,14 +526,14 @@ let AFFINE_PROJECTIVE_CONIC = prove
    ["a"; "b"; "c"; "d"; "e"; "f"] THEN
   REWRITE_TAC[RIGHT_EXISTS_AND_THM; UNWIND_THM2; GSYM CONJ_ASSOC] THEN
   REWRITE_TAC[IN_ELIM_THM; projectivize; o_THM] THEN
-  BINOP_TAC THENL [CONV_TAC TAUT; AP_TERM_TAC] THEN
+  BINOP_TAC THENL [CONV_TAC "TAUT" TAUT; AP_TERM_TAC] THEN
   REWRITE_TAC[EXTENSION] THEN X_GEN_TAC `x:real^2` THEN
   MP_TAC(SPEC `x:real^2` HOMOGENIZE_NONZERO) THEN
   DISCH_THEN(MP_TAC o MATCH_MP PARALLEL_PROJP_HOMOP_EXPLICIT) THEN
   DISCH_THEN(X_CHOOSE_THEN `k:real` STRIP_ASSUME_TAC) THEN
   ASM_REWRITE_TAC[IN_ELIM_THM; VECTOR_MUL_COMPONENT] THEN
   REWRITE_TAC[homogenize; VECTOR_3] THEN
-  UNDISCH_TAC `~(k = &0)` THEN CONV_TAC REAL_RING);;
+  UNDISCH_TAC `~(k = &0)` THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Hence Pascal's theorem for the affine plane.                              *)
@@ -591,7 +591,7 @@ let COLLINEAR_NOT_COCIRCULAR = prove
   REWRITE_TAC[GSYM DOT_CAUCHY_SCHWARZ_EQUAL; DOT_2] THEN
   REWRITE_TAC[dist; NORM_EQ_SQUARE; CART_EQ; DIMINDEX_2; FORALL_2;
               DOT_2; VECTOR_SUB_COMPONENT] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "REAL_RING" REAL_RING);;
 
 let PASCAL_AFFINE_CIRCLE = prove
  (`!c r x1 x2 x3 x4 x5 x6 x7 x8 x9:real^2.

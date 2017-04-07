@@ -135,7 +135,7 @@ let lambda = new_definition
 let LAMBDA_BETA = prove
  (`!i. 1 <= i /\ i <= dimindex(:B)
        ==> (((lambda) g:A^B) $i = g i)`,
-  REWRITE_TAC[lambda] THEN CONV_TAC SELECT_CONV THEN
+  REWRITE_TAC[lambda] THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN
   EXISTS_TAC `mk_cart(\k. g(@i. 1 <= i /\  i <= dimindex(:B) /\
                                 (finite_index i = k))):A^B` THEN
   REWRITE_TAC[finite_index; REWRITE_RULE[] cart_tybij] THEN
@@ -551,25 +551,25 @@ let PCROSS_INTER = prove
  (`(!s t u. s PCROSS (t INTER u) = (s PCROSS t) INTER (s PCROSS u)) /\
    (!s t u. (s INTER t) PCROSS u = (s PCROSS u) INTER (t PCROSS u))`,
   REWRITE_TAC[EXTENSION; FORALL_PASTECART; IN_INTER; PASTECART_IN_PCROSS] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
 
 let PCROSS_UNION = prove
  (`(!s t u. s PCROSS (t UNION u) = (s PCROSS t) UNION (s PCROSS u)) /\
    (!s t u. (s UNION t) PCROSS u = (s PCROSS u) UNION (t PCROSS u))`,
   REWRITE_TAC[EXTENSION; FORALL_PASTECART; IN_UNION; PASTECART_IN_PCROSS] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
 
 let PCROSS_DIFF = prove
  (`(!s t u. s PCROSS (t DIFF u) = (s PCROSS t) DIFF (s PCROSS u)) /\
    (!s t u. (s DIFF t) PCROSS u = (s PCROSS u) DIFF (t PCROSS u))`,
   REWRITE_TAC[EXTENSION; FORALL_PASTECART; IN_DIFF; PASTECART_IN_PCROSS] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
 
 let INTER_PCROSS = prove
  (`!s s' t t'.
       (s PCROSS t) INTER (s' PCROSS t') = (s INTER s') PCROSS (t INTER t')`,
   REWRITE_TAC[EXTENSION; IN_INTER; FORALL_PASTECART; PASTECART_IN_PCROSS] THEN
-  CONV_TAC TAUT);;
+  CONV_TAC "TAUT" TAUT);;
 
 let PCROSS_UNIONS_UNIONS,PCROSS_UNIONS = (CONJ_PAIR o prove)
  (`(!f g. (UNIONS f) PCROSS (UNIONS g) =

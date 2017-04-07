@@ -38,7 +38,7 @@ let STEP_LEMMA = prove
          a * u pow 2 + u pow 3 +  b * u + c`;
     `B = s pow 2 * v pow 3 + &2 * a * u * v + &3 * u pow 2 * v + b * v`] THEN
   SUBGOAL_THEN `A + B * s = &0` ASSUME_TAC THENL
-   [REPEAT(FIRST_X_ASSUM(MP_TAC o SYM)) THEN CONV_TAC REAL_RING; ALL_TAC] THEN
+   [REPEAT(FIRST_X_ASSUM(MP_TAC o SYM)) THEN CONV_TAC "REAL_RING" REAL_RING; ALL_TAC] THEN
   ASM_CASES_TAC `(P:real->bool) s` THENL [ASM_MESON_TAC[]; ALL_TAC] THEN
   SUBGOAL_THEN `B = &0` ASSUME_TAC THENL
    [UNDISCH_TAC `~P(s:real)` THEN ONCE_REWRITE_TAC[GSYM CONTRAPOS_THM] THEN
@@ -55,7 +55,7 @@ let STEP_LEMMA = prove
     ALL_TAC] THEN
   EXISTS_TAC `--(a + &2 * u)` THEN ASM_SIMP_TAC[] THEN
   REPEAT(FIRST_X_ASSUM(MP_TAC o check ((not) o is_forall o concl))) THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Instantiate to square roots.                                              *)
@@ -317,7 +317,7 @@ let RADICAL_CANONICAL = prove
        [`Inverse(Multiplication (Constant(&2)) a)`; `Constant(&0)`] THEN
       ASM_REWRITE_TAC[value; radicals; wellformed] THEN
       REWRITE_TAC[RATIONAL_NUM; EMPTY_SUBSET; CONJ_ASSOC] THEN CONJ_TAC THENL
-       [UNDISCH_TAC `~(value a + value a = &0)` THEN CONV_TAC REAL_FIELD;
+       [UNDISCH_TAC `~(value a + value a = &0)` THEN CONV_TAC "REAL_FIELD" REAL_FIELD;
         REPEAT(POP_ASSUM MP_TAC) THEN SET_TAC[]];
       ALL_TAC] THEN
     STRIP_TAC THEN MAP_EVERY EXISTS_TAC
@@ -330,7 +330,7 @@ let RADICAL_CANONICAL = prove
     ASM_REWRITE_TAC[value; wellformed; radicals; UNION_SUBSET] THEN
     UNDISCH_TAC `~(value b * sqrt (value r) = value a)` THEN
     UNDISCH_TAC `~(value e1 = &0)` THEN ASM_REWRITE_TAC[] THEN
-    FIRST_ASSUM(MP_TAC o MATCH_MP SQRT_POW_2) THEN CONV_TAC REAL_FIELD;
+    FIRST_ASSUM(MP_TAC o MATCH_MP SQRT_POW_2) THEN CONV_TAC "REAL_FIELD" REAL_FIELD;
 
     REWRITE_TAC[TAUT `a \/ b ==> c <=> (a ==> c) /\ (b ==> c)`] THEN
     REWRITE_TAC[FORALL_AND_THM] THEN
@@ -372,7 +372,7 @@ let RADICAL_CANONICAL = prove
                 (Multiplication (Multiplication b1 b2) r)`;
       `Addition (Multiplication a1 b2) (Multiplication a2 b1)`] THEN
     ASM_REWRITE_TAC[value; wellformed; radicals] THEN CONJ_TAC THENL
-     [FIRST_ASSUM(MP_TAC o MATCH_MP SQRT_POW_2) THEN CONV_TAC REAL_RING;
+     [FIRST_ASSUM(MP_TAC o MATCH_MP SQRT_POW_2) THEN CONV_TAC "REAL_RING" REAL_RING;
       ALL_TAC] THEN
     MP_TAC(SPEC `r:expression` NOT_IN_OWN_RADICALS) THEN
     MP_TAC(SPECL [`e1:expression`; `r:expression`] RADICALS_SUBSET) THEN
@@ -521,7 +521,7 @@ let RATIONAL_LOWEST_LEMMA = prove
   ASM_SIMP_TAC[ARITH_RULE `~(d = 0) /\ ~(d = 1) ==> 1 < d`] THEN
   DISCH_THEN(MP_TAC o SPEC `p':num`) THEN
   REPEAT(MATCH_MP_TAC MONO_EXISTS THEN GEN_TAC) THEN SIMP_TAC[] THEN
-  CONV_TAC NUM_RING);;
+  CONV_TAC "NUM_RING" NUM_RING);;
 
 prioritize_real();;
 
@@ -532,7 +532,7 @@ let RATIONAL_LOWEST = prove
   STRIP_TAC THEN MP_TAC(SPECL [`p:num`; `q:num`] RATIONAL_LOWEST_LEMMA) THEN
   ASM_REWRITE_TAC[] THEN REPEAT(MATCH_MP_TAC MONO_EXISTS THEN GEN_TAC) THEN
   UNDISCH_TAC `~(q = 0)` THEN SIMP_TAC[GSYM REAL_OF_NUM_EQ] THEN
-  REWRITE_TAC[GSYM REAL_OF_NUM_MUL] THEN CONV_TAC REAL_FIELD);;
+  REWRITE_TAC[GSYM REAL_OF_NUM_MUL] THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RATIONAL_ROOT_INTEGER = prove
  (`!a b c x. integer a /\ integer b /\ integer c /\ rational x /\
@@ -624,7 +624,7 @@ let RADICAL_LINEAR_EQUATION = prove
   REPEAT STRIP_TAC THEN
   SUBGOAL_THEN `~(a = &0) /\ x = --b / a`
    (fun th -> ASM_SIMP_TAC[th; RADICAL_RULES]) THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_FIELD" REAL_FIELD);;
 
 let RADICAL_SIMULTANEOUS_LINEAR_EQUATION = prove
  (`!a b c d e f x.
@@ -638,7 +638,7 @@ let RADICAL_SIMULTANEOUS_LINEAR_EQUATION = prove
     x = (e * c - b * f) / (a * e - b * d) /\
     y = (a * f - d * c) / (a * e - b * d)`
   STRIP_ASSUME_TAC THENL
-   [REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD;
+   [REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_FIELD" REAL_FIELD;
     ASM_SIMP_TAC[RADICAL_RULES]]);;
 
 let RADICAL_QUADRATIC_EQUATION = prove
@@ -659,7 +659,7 @@ let RADICAL_QUADRATIC_EQUATION = prove
   MP_TAC THENL
    [REWRITE_TAC[real_sub; REAL_ARITH `a + (b + c) = &0 <=> c = --(a + b)`] THEN
     REWRITE_TAC[REAL_EQ_NEG2] THEN MATCH_MP_TAC SQRT_CASES_LEMMA THEN
-    FIRST_X_ASSUM(MP_TAC o SYM) THEN CONV_TAC REAL_RING;
+    FIRST_X_ASSUM(MP_TAC o SYM) THEN CONV_TAC "REAL_RING" REAL_RING;
     STRIP_TAC THENL
      [EXISTS_TAC `b - sqrt(b pow 2 - &4 * a * c)`;
       EXISTS_TAC `b + sqrt(b pow 2 - &4 * a * c)`] THEN
@@ -684,9 +684,9 @@ let RADICAL_SIMULTANEOUS_LINEAR_QUADRATIC = prove
   (REPLICATE_TAC 3
     (CONJ_TAC THENL [RADICAL_TAC THEN ASM_REWRITE_TAC[]; ALL_TAC]) THEN
    CONJ_TAC THENL
-    [REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_RING; ALL_TAC] THEN
+    [REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_RING" REAL_RING; ALL_TAC] THEN
    REWRITE_TAC[REAL_SOS_EQ_0] THEN REPEAT(POP_ASSUM MP_TAC) THEN
-   CONV_TAC REAL_RING));;
+   CONV_TAC "REAL_RING" REAL_RING));;
 
 let RADICAL_SIMULTANEOUS_QUADRATIC_QUADRATIC = prove
  (`!a b c d e f x.
@@ -704,7 +704,7 @@ let RADICAL_SIMULTANEOUS_QUADRATIC_QUADRATIC = prove
   ASM_REWRITE_TAC[] THEN
   REPLICATE_TAC 3
    (CONJ_TAC THENL [RADICAL_TAC THEN ASM_REWRITE_TAC[]; ALL_TAC]) THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_RING);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Analytic criterion for constructibility.                                  *)
@@ -754,7 +754,7 @@ let RADICAL_LINE_LINE_INTERSECTION = prove
     `(c:real^2)$2 * (c$1 - (d:real^2)$1) - (c:real^2)$1 * (c$2 - d$2)`] THEN
   REPLICATE_TAC 6
    (CONJ_TAC THENL [RADICAL_TAC THEN ASM_REWRITE_TAC[]; ALL_TAC]) THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_RING);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 let RADICAL_LINE_CIRCLE_INTERSECTION = prove
  (`!a b c d e x.
@@ -778,7 +778,7 @@ let RADICAL_LINE_CIRCLE_INTERSECTION = prove
     `a$2 * ((a:real^2)$1 - (b:real^2)$1) - a$1 * (a$2 - b$2)`] THEN
   REPLICATE_TAC 6
    (CONJ_TAC THENL [RADICAL_TAC THEN ASM_REWRITE_TAC[]; ALL_TAC]) THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_RING);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 let RADICAL_CIRCLE_CIRCLE_INTERSECTION = prove
  (`!a b c d e f x.
@@ -804,7 +804,7 @@ let RADICAL_CIRCLE_CIRCLE_INTERSECTION = prove
     `((f:real^2)$1 - (e:real^2)$1) pow 2 + (f$2 - e$2) pow 2`] THEN
   REPLICATE_TAC 6
    (CONJ_TAC THENL [RADICAL_TAC THEN ASM_REWRITE_TAC[]; ALL_TAC]) THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_RING);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* So constructible points have radical coordinates.                         *)
@@ -854,7 +854,7 @@ let COS_TRIPLE = prove
  (`!x. cos(&3 * x) = &4 * cos(x) pow 3 - &3 * cos(x)`,
   GEN_TAC THEN
   REWRITE_TAC[REAL_ARITH `&3 * x = x + x + x`; SIN_ADD; COS_ADD] THEN
-  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC REAL_RING);;
+  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC "REAL_RING" REAL_RING);;
 
 let COS_PI3 = prove
  (`cos(pi / &3) = &1 / &2`,
@@ -880,7 +880,7 @@ let TRISECT_60_DEGREES_ALGEBRA = prove
   FIRST_X_ASSUM(CHOOSE_THEN SUBST1_TAC o REWRITE_RULE[integer]) THEN
   REPEAT_TCL DISJ_CASES_THEN SUBST1_TAC (ARITH_RULE
    `n = 0 \/ n = 1 \/ n = 2 + (n - 2)`) THEN
-  CONV_TAC REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[GSYM REAL_OF_NUM_ADD] THEN
+  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[GSYM REAL_OF_NUM_ADD] THEN
   REWRITE_TAC[REAL_ARITH `(&2 + m) pow 2 - &3 = m pow 2 + &4 * m + &1`] THEN
   REWRITE_TAC[REAL_OF_NUM_ADD; REAL_OF_NUM_MUL; REAL_OF_NUM_POW; REAL_ABS_NUM;
               REAL_OF_NUM_EQ; MULT_EQ_1] THEN

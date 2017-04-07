@@ -240,7 +240,7 @@ let MINUSINF_LEMMA = prove
 let MINUSINF_REPEATS = prove
  (`!p c d x. alldivide d p
              ==> (interp x (minusinf p) <=> interp (x + c * d) (minusinf p))`,
-  CONV_TAC(ONCE_DEPTH_CONV SYM_CONV) THEN MATCH_MP_TAC cform_INDUCT THEN
+  CONV_TAC "(ONCE_DEPTH_CONV SYM_CONV)" (ONCE_DEPTH_CONV SYM_CONV) THEN MATCH_MP_TAC cform_INDUCT THEN
   SIMP_TAC[interp; minusinf; alldivide] THEN
   ONCE_REWRITE_TAC[INT_ARITH `(x + d) + y = (x + y) + d`] THEN
   MESON_TAC[DIVIDES_LMUL; DIVIDES_ADD_REVL; DIVIDES_ADD]);;
@@ -497,7 +497,7 @@ let INT_LE_CONV,INT_LT_CONV,
      (--(&m) < &n <=> ~((m = 0) /\ (n = 0)))`,
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3;
                 GSYM NOT_LE; GSYM INT_NOT_LE] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_LT_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_lt1];
     GEN_REWRITE_CONV I [pth_lt2a; pth_lt2b] THENC NUM_LT_CONV;
@@ -508,7 +508,7 @@ let INT_LE_CONV,INT_LT_CONV,
      (--(&m) >= --(&n) <=> m <= n) /\
      (--(&m) >= &n <=> (m = 0) /\ (n = 0))`,
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3; INT_GE] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_GE_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_ge1];
     GEN_REWRITE_CONV I [pth_ge2a; pth_ge2b] THENC NUM_LE_CONV;
@@ -519,7 +519,7 @@ let INT_LE_CONV,INT_LT_CONV,
      (--(&m) > --(&n) <=> m < n) /\
      (&m > --(&n) <=> ~((m = 0) /\ (n = 0)))`,
     REWRITE_TAC[pth_lt1; pth_lt2a; pth_lt2b; pth_lt3; INT_GT] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_GT_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_gt1];
     GEN_REWRITE_CONV I [pth_gt2a; pth_gt2b] THENC NUM_LT_CONV;
@@ -531,7 +531,7 @@ let INT_LE_CONV,INT_LT_CONV,
      ((&m = --(&n)) <=> (m = 0) /\ (n = 0))`,
     REWRITE_TAC[GSYM INT_LE_ANTISYM; GSYM LE_ANTISYM] THEN
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3; LE; LE_0] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "TAUT" TAUT) in
   let INT_EQ_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_eq1a; pth_eq1b] THENC NUM_EQ_CONV;
     GEN_REWRITE_CONV I [pth_eq2a; pth_eq2b] THENC NUM2_EQ_CONV] in
@@ -821,7 +821,7 @@ let ADJUSTCOEFF_CONV =
     SIMP_TAC[divides; GSYM INT_MUL_ASSOC; INT_EQ_MUL_LCANCEL])
   and pth_eq = prove
    (`~(d = &0) ==> ((&0 = e) <=> (&0 = d * e))`,
-    DISCH_TAC THEN CONV_TAC(BINOP_CONV SYM_CONV) THEN
+    DISCH_TAC THEN CONV_TAC "(BINOP_CONV SYM_CONV)" (BINOP_CONV SYM_CONV) THEN
     ASM_REWRITE_TAC[INT_ENTIRE])
   and pth_lt_pos = prove
    (`&0 < d ==> (&0 < e <=> &0 < d * e)`,

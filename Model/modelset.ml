@@ -425,7 +425,7 @@ let SET_DECOMP = prove
            (I_SET (setlevel(droplevel(level s))) (set s) = element s)`,
   REPEAT GEN_TAC THEN REWRITE_TAC[isaset] THEN
   DISCH_THEN(X_CHOOSE_TAC `l:setlevel`) THEN
-  REWRITE_TAC[set] THEN CONV_TAC SELECT_CONV THEN
+  REWRITE_TAC[set] THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN
   ASM_REWRITE_TAC[setlevel; droplevel] THEN
   MP_TAC(SPEC `s:V` ELEMENT_IN_LEVEL) THEN
   ASM_REWRITE_TAC[setlevel; IN_IMAGE; IN_ELIM_THM] THEN
