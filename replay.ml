@@ -64,6 +64,7 @@ let replay_tactic_log (env : env) log : tactic =
     | Itaut_tac_log -> ITAUT_TAC
     | Ants_tac_log -> ANTS_TAC
     | Raw_pop_tac_log n -> RAW_POP_TAC n
+    | Raw_pop_all_tac_log -> RAW_POP_ALL_TAC
     | Undisch_tac_log tm -> UNDISCH_TAC tm
     | Spec_tac_log (tm1, tm2) -> SPEC_TAC (tm1, tm2)
     | X_gen_tac_log tm -> X_GEN_TAC tm
@@ -90,13 +91,20 @@ let replay_tactic_log (env : env) log : tactic =
     | Asm_metis_tac_log thl -> (get "ASM_METIS_TAC" asm_metis_tac) (map lookup thl)
     | Rewrite_tac_log (ty,thl) -> rewrite ty (map lookup thl)
 
+exception Hard_failure of string
+let hard_failwith s = raise (Hard_failure s)
+
 (* Check that logged goals match goals generated during replay.  This ensures
    failful replay especially when we add or remove hypotheses. *)
 let assert_goals_match: goal -> goal -> unit =
+  let rec ty_eq ty ty' = match (ty,ty') with
+      (Tyvar s, Tyvar s') -> String.equal s s' || (s.[0] = '?' && s'.[0] = '?')
+    | (Tyapp (c,tyl), Tyapp (c',tyl')) -> c = c' && forall2 ty_eq tyl tyl' in
   let term t t' =
     let rec eq t t' = match (t,t') with
-        (Var (s,ty), Var (s',ty')) -> s = s' && ty = ty'
-      | (Const (s,ty), Const (s',ty')) -> s = s' && ty = ty'
+        (Var (s,ty), Var (s',ty')) -> (String.equal s s' || (s.[0] = '_' && s'.[0] = '_')) &&
+                                      ty_eq ty ty'
+      | (Const (s,ty), Const (s',ty')) -> s = s' && ty_eq ty ty'
       | (Comb (f,x), Comb (f',x')) -> eq f f' && eq x x'
       | (Abs (x,e), Abs (x',e')) -> eq x x' && eq e e'
       | _ -> false in
@@ -107,7 +115,7 @@ let assert_goals_match: goal -> goal -> unit =
     List.iter (uncurry term) (zip (hyp th) (hyp th')) in
   let hyp ((s,t),(s',t')) =
     thm t t';
-    if s != s' then failwith ("assert_goals_match: " ^ s ^ " != " ^ s') in
+    if not (String.equal s s') then failwith ("assert_goals_match: '" ^ s ^ "' != '" ^ s' ^ "'") in
   fun (asl,w) (asl',w') ->
     if length asl != length asl' then
       let show asl = string_of_int (length asl) in
@@ -116,15 +124,16 @@ let assert_goals_match: goal -> goal -> unit =
     else (term w w'; List.iter hyp (zip asl asl'));;
 
 let replay_proof_log : src proof_log -> tactic =
-  let rec proof n (env : env) (Proof_log ((asl,_ as g), tac, logs)) g' =
+  let rec proof n above (env : env) (Proof_log ((asl,_ as g), tac, logs)) g' =
+    let above = tactic_name tac :: above in
     (try assert_goals_match g g'
-     with Failure s -> failwith (s ^ ", tactic " ^ tactic_name tac));
+     with Failure s -> failwith (s ^ ", stack " ^ String.concat " " (rev above)));
     let rec hyps k env asl = match asl with
         [] -> env
       | (_,a)::asl -> hyps (succ k) (((n,k),a)::env) asl in
     let env = hyps 0 env asl in
-    (replay_tactic_log env tac THENL (map (proof (succ n) env) logs)) g'
-  in proof 0 []
+    (replay_tactic_log env tac THENL (map (proof (succ n) above env) logs)) g'
+  in proof 0 [] []
 
 (* ------------------------------------------------------------------------- *)
 (* Finalize a proof_log, freezing out the srcs of thms                       *)
@@ -192,6 +201,7 @@ let finalize_proof_log : int -> thm proof_log -> src proof_log = fun before_thms
       | Cheat_tac_log -> Cheat_tac_log
       | Ants_tac_log -> Ants_tac_log
       | Raw_pop_tac_log n -> Raw_pop_tac_log n
+      | Raw_pop_all_tac_log -> Raw_pop_all_tac_log
       | Asm_meson_tac_log thl -> Asm_meson_tac_log (map thm thl)
       | Asm_metis_tac_log thl -> Asm_metis_tac_log (map thm thl)
       | Rewrite_tac_log (ty,thl) -> Rewrite_tac_log (ty, map thm thl) in
