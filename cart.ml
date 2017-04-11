@@ -86,7 +86,7 @@ let FINITE_FINITE_IMAGE = prove
 
 let DIMINDEX_FINITE_IMAGE = prove
  (`!s t. dimindex(s:(A)finite_image->bool) = dimindex(t:A->bool)`,
-  REPEAT GEN_TAC THEN GEN_REWRITE_TAC LAND_CONV [dimindex] THEN
+  REPEAT GEN_TAC THEN GEN_REWRITE_TAC "cart.ml:LAND_CONV" LAND_CONV [dimindex] THEN
   MP_TAC(ISPEC `t:A->bool` HAS_SIZE_FINITE_IMAGE) THEN
   SIMP_TAC[FINITE_FINITE_IMAGE; HAS_SIZE]);;
 
@@ -135,7 +135,7 @@ let lambda = new_definition
 let LAMBDA_BETA = prove
  (`!i. 1 <= i /\ i <= dimindex(:B)
        ==> (((lambda) g:A^B) $i = g i)`,
-  REWRITE_TAC[lambda] THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN
+  REWRITE_TAC[lambda] THEN CONV_TAC "cart.ml:SELECT_CONV" SELECT_CONV THEN
   EXISTS_TAC `mk_cart(\k. g(@i. 1 <= i /\  i <= dimindex(:B) /\
                                 (finite_index i = k))):A^B` THEN
   REWRITE_TAC[finite_index; REWRITE_RULE[] cart_tybij] THEN
@@ -208,7 +208,7 @@ let DIMINDEX_HAS_SIZE_FINITE_SUM = prove
 
 let DIMINDEX_FINITE_SUM = prove
  (`dimindex(:(M,N)finite_sum) = dimindex(:M) + dimindex(:N)`,
-  GEN_REWRITE_TAC LAND_CONV [dimindex] THEN
+  GEN_REWRITE_TAC "cart.ml:LAND_CONV" LAND_CONV [dimindex] THEN
   REWRITE_TAC[REWRITE_RULE[HAS_SIZE] DIMINDEX_HAS_SIZE_FINITE_SUM]);;
 
 let FSTCART_PASTECART = prove
@@ -282,7 +282,7 @@ let DIMINDEX_HAS_SIZE_FINITE_DIFF = prove
 let DIMINDEX_FINITE_DIFF = prove
  (`dimindex(:(M,N)finite_diff) =
      if dimindex(:N) < dimindex(:M) then dimindex(:M) - dimindex(:N) else 1`,
-  GEN_REWRITE_TAC LAND_CONV [dimindex] THEN
+  GEN_REWRITE_TAC "cart.ml:LAND_CONV" LAND_CONV [dimindex] THEN
   REWRITE_TAC[REWRITE_RULE[HAS_SIZE] DIMINDEX_HAS_SIZE_FINITE_DIFF]);;
 
 (* ------------------------------------------------------------------------- *)
@@ -311,7 +311,7 @@ let DIMINDEX_HAS_SIZE_FINITE_PROD = prove
 
 let DIMINDEX_FINITE_PROD = prove                
  (`dimindex(:(M,N)finite_prod) = dimindex(:M) * dimindex(:N)`,
-  GEN_REWRITE_TAC LAND_CONV [dimindex] THEN
+  GEN_REWRITE_TAC "cart.ml:LAND_CONV" LAND_CONV [dimindex] THEN
   REWRITE_TAC[REWRITE_RULE[HAS_SIZE] DIMINDEX_HAS_SIZE_FINITE_PROD]);;
                                                   
 (* ------------------------------------------------------------------------- *)
@@ -551,25 +551,25 @@ let PCROSS_INTER = prove
  (`(!s t u. s PCROSS (t INTER u) = (s PCROSS t) INTER (s PCROSS u)) /\
    (!s t u. (s INTER t) PCROSS u = (s PCROSS u) INTER (t PCROSS u))`,
   REWRITE_TAC[EXTENSION; FORALL_PASTECART; IN_INTER; PASTECART_IN_PCROSS] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "cart.ml:TAUT" TAUT);;
 
 let PCROSS_UNION = prove
  (`(!s t u. s PCROSS (t UNION u) = (s PCROSS t) UNION (s PCROSS u)) /\
    (!s t u. (s UNION t) PCROSS u = (s PCROSS u) UNION (t PCROSS u))`,
   REWRITE_TAC[EXTENSION; FORALL_PASTECART; IN_UNION; PASTECART_IN_PCROSS] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "cart.ml:TAUT" TAUT);;
 
 let PCROSS_DIFF = prove
  (`(!s t u. s PCROSS (t DIFF u) = (s PCROSS t) DIFF (s PCROSS u)) /\
    (!s t u. (s DIFF t) PCROSS u = (s PCROSS u) DIFF (t PCROSS u))`,
   REWRITE_TAC[EXTENSION; FORALL_PASTECART; IN_DIFF; PASTECART_IN_PCROSS] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC "TAUT" TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "cart.ml:TAUT" TAUT);;
 
 let INTER_PCROSS = prove
  (`!s s' t t'.
       (s PCROSS t) INTER (s' PCROSS t') = (s INTER s') PCROSS (t INTER t')`,
   REWRITE_TAC[EXTENSION; IN_INTER; FORALL_PASTECART; PASTECART_IN_PCROSS] THEN
-  CONV_TAC "TAUT" TAUT);;
+  CONV_TAC "cart.ml:TAUT" TAUT);;
 
 let PCROSS_UNIONS_UNIONS,PCROSS_UNIONS = (CONJ_PAIR o prove)
  (`(!f g. (UNIONS f) PCROSS (UNIONS g) =

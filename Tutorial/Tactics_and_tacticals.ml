@@ -1,34 +1,34 @@
 g `2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`;;
 e DISCH_TAC;;
 b();;
-e(CONV_TAC "(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]));;
+e(CONV_TAC "Tutorial/Tactics_and_tacticals.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]));;
 e(SIMP_TAC[]);;
 e(ONCE_REWRITE_TAC[EQ_SYM_EQ]);;
 e DISCH_TAC;;
 e(ASM_REWRITE_TAC[]);;
-e(CONV_TAC "ARITH_RULE" ARITH_RULE);;
+e(CONV_TAC "Tutorial/Tactics_and_tacticals.ml:ARITH_RULE" ARITH_RULE);;
 let trivial = top_thm();;
 
 g `2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`;;
-e(CONV_TAC "(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]));;
+e(CONV_TAC "Tutorial/Tactics_and_tacticals.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]));;
 e(SIMP_TAC[]);;
 e(ONCE_REWRITE_TAC[EQ_SYM_EQ]);;
 e DISCH_TAC;;
 e(ASM_REWRITE_TAC[]);;
-e(CONV_TAC "ARITH_RULE" ARITH_RULE);;
+e(CONV_TAC "Tutorial/Tactics_and_tacticals.ml:ARITH_RULE" ARITH_RULE);;
 let trivial = top_thm();;
 
 g `2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`;;
-e(CONV_TAC "(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]) THEN
+e(CONV_TAC "Tutorial/Tactics_and_tacticals.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]) THEN
   SIMP_TAC[] THEN ONCE_REWRITE_TAC[EQ_SYM_EQ] THEN
-  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "ARITH_RULE" ARITH_RULE);;
+  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "Tutorial/Tactics_and_tacticals.ml:ARITH_RULE" ARITH_RULE);;
 let trivial = top_thm();;
 
 let trivial = prove
  (`2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`,
-  CONV_TAC "(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]) THEN
+  CONV_TAC "Tutorial/Tactics_and_tacticals.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]) THEN
   SIMP_TAC[] THEN ONCE_REWRITE_TAC[EQ_SYM_EQ] THEN
-  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "ARITH_RULE" ARITH_RULE);;
+  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "Tutorial/Tactics_and_tacticals.ml:ARITH_RULE" ARITH_RULE);;
 
 let trivial = prove
  (`!x y:real. &0 < x * y ==> (&0 < x <=> &0 < y)`,

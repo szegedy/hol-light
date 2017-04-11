@@ -120,7 +120,7 @@ let IMPLY_WEAK_lemma1 = prove_thm
          ( (((p /\* q') \/* (p' /\* q)) \/* (q /\* q')) s ) ==> ((q \/* q') s)`),
     REPEAT(GEN_TAC) THEN
     REWRITE_TAC [AND_def; OR_def] THEN
-    CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+    CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
     REWRITE_TAC [(SYM (SPEC_ALL DISJ_ASSOC))] THEN
     REPEAT STRIP_TAC THENL
       [ASM_REWRITE_TAC [];
@@ -153,7 +153,7 @@ let IMPLY_WEAK_lemma3 = prove_thm
          r s`,
     REPEAT GEN_TAC THEN
     REWRITE_TAC [NOT_def1; AND_def; OR_def] THEN
-    CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+    CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
     REWRITE_TAC [(SYM (SPEC_ALL DISJ_ASSOC))] THEN
     REPEAT STRIP_TAC THEN
     RES_TAC);;
@@ -168,7 +168,7 @@ let IMPLY_WEAK_lemma4 = prove_thm
         ((p /\* q) \/* r \/* r')s`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [SYM (SPEC_ALL DISJ_ASSOC);
                 GEN_ALL (SYM (SPEC_ALL CONJ_ASSOC));
                 NOT_CLAUSES;
@@ -184,7 +184,7 @@ let IMPLY_WEAK_lemma5 = prove_thm
         (q \/* r) s`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THEN
    RES_TAC THEN ASM_REWRITE_TAC []);;
 
@@ -196,7 +196,7 @@ let IMPLY_WEAK_lemma6 = prove_thm
         ((q /\* r) \/* b) s`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THEN ASM_REWRITE_TAC []);;
 
 let IMPLY_WEAK_lemma7 = prove_thm
@@ -207,7 +207,7 @@ let IMPLY_WEAK_lemma7 = prove_thm
         ((q /\* r) \/* b) s`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THEN ASM_REWRITE_TAC []);;
 
 let CONJ_COMM_DISJ_lemma_a = TAC_PROOF
@@ -243,7 +243,7 @@ let AND_COMM_OR_lemma = prove_thm
    `!(p:'a->bool) q r. ((r /\* q) \/* p) = ((q /\* r) \/* p)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] CONJ_COMM_DISJ_lemma)));;
 
 let CONJ_DISJ_COMM_lemma_a = TAC_PROOF
@@ -283,7 +283,7 @@ let AND_OR_COMM_lemma = prove_thm
       = p /\* (q \/* r)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] CONJ_DISJ_COMM_lemma)));;
 
 let DISJ_COMM_CONJ_lemma_a = TAC_PROOF
@@ -323,7 +323,7 @@ let OR_COMM_AND_lemma = prove_thm
       = (q \/* r) /\* p`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] DISJ_COMM_CONJ_lemma)));;
 
 let DISJ_COMM_DISJ_lemma_a = TAC_PROOF
@@ -357,7 +357,7 @@ let OR_COMM_OR_lemma = prove_thm
    `!(p:'a->bool) q r. (r \/* q) \/* p = (q \/* r) \/* p`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] DISJ_COMM_DISJ_lemma)));;
 
 let DISJ_DISJ_COMM_lemma_a = TAC_PROOF
@@ -382,7 +382,7 @@ let OR_OR_COMM_lemma = prove_thm
    (`!(p:'a->bool) q r. p \/* (r \/* q) = p \/* (q \/* r)`),
    REPEAT GEN_TAC THEN
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] DISJ_DISJ_COMM_lemma)));;
 
 let CONJ_COMM_CONJ_lemma_a = TAC_PROOF
@@ -405,7 +405,7 @@ let AND_COMM_AND_lemma = prove_thm
    `!(p:'a->bool) q r. (r /\* q) /\* p = (q /\* r) /\* p`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] CONJ_COMM_CONJ_lemma)));;
 
 let CONJ_CONJ_COMM_lemma_a = TAC_PROOF
@@ -428,7 +428,7 @@ let AND_AND_COMM_lemma = prove_thm
    `!(p:'a->bool) q r. p /\* (r /\* q) = p /\* (q /\* r)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] CONJ_CONJ_COMM_lemma)));;
 
 let DISJ_CONJ_COMM_lemma_a = TAC_PROOF
@@ -453,14 +453,14 @@ let OR_AND_COMM_lemma = prove_thm
    `!(p:'a->bool) q r. p \/* (r /\* q) = p \/* (q /\* r)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] DISJ_CONJ_COMM_lemma)));;
 
 let NOT_NOT_lemma = prove_thm
    ("NOT_NOT_lemma",
     `!(p:'a->bool). (Not (Not p)) = p`,
     REWRITE_TAC [NOT_def1] THEN
-    CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+    CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
     REWRITE_TAC [NOT_CLAUSES; ETA_AX]);;
 
 let DISJ_COMM_lemma = TAC_PROOF
@@ -492,7 +492,7 @@ let OR_ASSOC_lemma = prove_thm
    ("OR_ASSOC_lemma",
     (`!(p:'a->bool) q r. (p \/* q) \/* r = p \/* (q \/* r)`),
     REPEAT STRIP_TAC THEN REWRITE_TAC [OR_def]  THEN
-    CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+    CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
     ASSUME_TAC DISJ_ASSOC_lemma THEN
     STRIP_ASSUME_TAC
    (MK_ABS (SPECL [p;q;r]
@@ -507,7 +507,7 @@ let AND_IMPLY_WEAK_lemma = prove_thm
   ("AND_IMPLY_WEAK_lemma",
     `!p q (s:'a). (p /\* q) s ==> q s`,
     REWRITE_TAC [AND_def] THEN
-    CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+    CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
     REWRITE_TAC [CONJ_WEAK_lemma]);;
 
 let SYM_CONJ_WEAK_lemma = TAC_PROOF
@@ -518,14 +518,14 @@ let SYM_AND_IMPLY_WEAK_lemma = prove_thm
   ("SYM_AND_IMPLY_WEAK_lemma",
     `!p q (s:'a). (p /\* q) s ==> p s`,
     REWRITE_TAC [AND_def] THEN
-    CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+    CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
     REWRITE_TAC [SYM_CONJ_WEAK_lemma]);;
 
 let OR_IMPLY_WEAK_lemma = prove_thm
   ("OR_IMPLY_WEAK_lemma",
    `!p q (s:'a). p s ==> (p \/* q) s`,
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THEN
    ASM_REWRITE_TAC []);;
 
@@ -533,7 +533,7 @@ let SYM_OR_IMPLY_WEAK_lemma = prove_thm
   ("SYM_OR_IMPLY_WEAK_lemma",
    `!p q (s:'a). p s ==> (q \/* p) s`,
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THEN
    ASM_REWRITE_TAC []);;
 
@@ -544,7 +544,7 @@ let IMPLY_WEAK_AND_lemma = prove_thm
       ==>
         (!s. (p /\* r) s ==> (q /\* r) s)`,
    REWRITE_TAC [AND_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THENL
      [RES_TAC;
       RES_TAC THEN
@@ -557,7 +557,7 @@ let IMPLY_WEAK_OR_lemma = prove_thm
       ==>
         (!s. (p \/* r) s ==> (q \/* r) s)`,
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THENL
      [RES_TAC THEN
       ASM_REWRITE_TAC [];
@@ -593,7 +593,7 @@ let AND_ASSOC_lemma = prove_thm
    ("AND_ASSOC_lemma",
     `!(p:'a->bool) q r. (p /\* q) /\* r = p /\* (q /\* r)`,
    REPEAT GEN_TAC THEN REWRITE_TAC [AND_def]  THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    ASSUME_TAC CONJ_ASSOC_lemma THEN
    STRIP_ASSUME_TAC
    (MK_ABS (SPECL [p;q;r]
@@ -634,14 +634,14 @@ let P_OR_NOT_P_lemma = prove_thm
    ("P_OR_NOT_P_lemma",
     `!p:'a->bool. p \/* (Not p) = True`,
    REWRITE_TAC [OR_def; NOT_def1; TRUE_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [EXCLUDED_MIDDLE; OR_CLAUSES; NOT_CLAUSES; ETA_AX]);;
 
 let P_AND_NOT_P_lemma = prove_thm
    ("P_AND_NOT_P_lemma",
     `!p:'a->bool. p /\* (Not p) = False`,
    REWRITE_TAC [AND_def; NOT_def1; FALSE_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [NOT_AND; AND_CLAUSES; NOT_CLAUSES; ETA_AX]);;
 
 let CONJ_COMPL_DISJ_lemma1 = TAC_PROOF
@@ -668,7 +668,7 @@ let AND_COMPL_OR_lemma = prove_thm
    ("AND_COMPL_OR_lemma",
     `!(p:'a->bool) q. ((p /\* (Not q)) \/* (p /\* q)) = p`,
    REWRITE_TAC [NOT_def1; AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [CONJ_COMPL_DISJ_lemma; ETA_AX]);;
 
 let DISJ_NOT_CONJ_lemma1 = TAC_PROOF
@@ -692,7 +692,7 @@ let OR_NOT_AND_lemma = prove_thm
    `!(p:'a->bool) q. ((p \/* q) /\* (Not q)) = p /\* (Not q)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [DISJ_NOT_CONJ_lemma]);;
 
 let P_CONJ_Q_DISJ_Q_lemma1 = TAC_PROOF
@@ -714,7 +714,7 @@ let P_AND_Q_OR_Q_lemma = prove_thm
    `!(p:'a->bool) q. (p /\* q) \/* q = q`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [GEN_ALL (MK_ABS (SPECL [p;q] P_CONJ_Q_DISJ_Q_lemma)); ETA_AX]);;
 
 let P_DISJ_Q_CONJ_Q_lemma1 = TAC_PROOF
@@ -736,7 +736,7 @@ let P_OR_Q_AND_Q_lemma = prove_thm
    `!(p:'a->bool) q. (p \/* q) /\* q = q`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [GEN_ALL (MK_ABS (SPECL [p;q] P_DISJ_Q_CONJ_Q_lemma)); ETA_AX]);;
 
 let NOT_OR_AND_NOT_lemma = prove_thm
@@ -744,7 +744,7 @@ let NOT_OR_AND_NOT_lemma = prove_thm
    `!(p:'a->bool) q. Not (p \/* q) = (Not p) /\* (Not q)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [NOT_CLAUSES;
                 DE_MORGAN_THM]);;
 
@@ -753,7 +753,7 @@ let NOT_AND_OR_NOT_lemma = prove_thm
    `!(p:'a->bool) q. Not (p /\* q) = (Not p) \/* (Not q)`,
       REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [NOT_CLAUSES;
                 DE_MORGAN_THM]);;
 
@@ -764,7 +764,7 @@ let NOT_IMPLY_OR_lemma = prove_thm
       = (!s. (p \/* q)s)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [IMP_DISJ_THM]);;
 
 let IMPLY_OR_lemma = prove_thm
@@ -772,7 +772,7 @@ let IMPLY_OR_lemma = prove_thm
    `!(p:'a->bool) q. (!s. p s ==> q s) = (!s. ((Not p) \/* q)s)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [IMP_DISJ_THM]);;
 
 let OR_IMPLY_lemma = prove_thm
@@ -780,7 +780,7 @@ let OR_IMPLY_lemma = prove_thm
    `!(p:'a->bool) q. (!s. (p \/* q)s) = (!s. (Not p)s ==> q s)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [IMP_DISJ_THM; NOT_CLAUSES]);;
 
 let NOT_OR_IMPLY_lemma = prove_thm
@@ -788,7 +788,7 @@ let NOT_OR_IMPLY_lemma = prove_thm
    `!(p:'a->bool) q. (!s. ((Not p) \/* q)s) = (!s. p s ==> q s)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [NOT_def1; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [IMP_DISJ_THM; NOT_CLAUSES]);;
 
 let DISJ_CONJ_lemma1 = TAC_PROOF
@@ -820,7 +820,7 @@ let OR_AND_DISTR_lemma = prove_thm
    `!(p:'a->bool) q r. p \/* (q /\* r) = (p \/* q) /\* (p \/* r)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] DISJ_CONJ_lemma)));;
 
 let CONJ_DISJ_lemma1 = TAC_PROOF
@@ -848,14 +848,14 @@ let AND_OR_DISTR_lemma = prove_thm
    `!(p:'a->bool) q r. p /\* (q \/* r) = (p /\* q) \/* (p /\* r)`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    STRIP_ASSUME_TAC (MK_ABS (SPECL [p;q;r] CONJ_DISJ_lemma)));;
 
 let NOT_IMPLIES_False_lemma = prove_thm
   ("NOT_IMPLIES_False_lemma",
    `!(p:'a->bool). (!s. (Not p)s) ==> (!s. p s = False s)`,
    REWRITE_TAC [FALSE_def; NOT_def1] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC []);;
 
 let NOT_P_IMPLIES_P_EQ_False_lemma = prove_thm
@@ -870,7 +870,7 @@ let NOT_AND_IMPLIES_lemma = prove_thm
   ("NOT_AND_IMPLIES_lemma",
    `!(p:'a->bool) q. (!s. (Not (p /\* q))s) <=> (!s. p s ==> Not q s)`,
    REWRITE_TAC [NOT_def1; AND_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [DE_MORGAN_THM; NOT_CLAUSES; IMP_DISJ_THM]);;
 
 let NOT_AND_IMPLIES_lemma1 = prove_thm
@@ -882,7 +882,7 @@ let NOT_AND_IMPLIES_lemma2 = prove_thm
   ("NOT_AND_IMPLIES_lemma2",
    `!(p:'a->bool) q. (!s. (Not (p /\* q))s) ==> (!s. q s ==> Not p s)`,
    REWRITE_TAC [NOT_AND_IMPLIES_lemma; NOT_def1] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REPEAT STRIP_TAC THEN
    RES_TAC);;
 
@@ -911,7 +911,7 @@ let AND_OR_EQ_lemma = prove_thm
    `!(p:'a->bool) q. p /\* (p \/* q) = p`,
    REPEAT GEN_TAC THEN
    REWRITE_TAC [AND_def; OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    REWRITE_TAC [CONJ_DISJ_ABS_IMPLY_lemma]);;
 
 let AND_OR_EQ_AND_COMM_OR_lemma = prove_thm
@@ -927,7 +927,7 @@ let IMPLY_WEAK_lemma = prove_thm
    `!(p:'a->bool) q. (!s. p s) ==> (!s. (p \/* q) s)`,
    REPEAT STRIP_TAC THEN
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    ASM_REWRITE_TAC []);;
 
 let IMPLY_WEAK_lemma_b = prove_thm
@@ -935,7 +935,7 @@ let IMPLY_WEAK_lemma_b = prove_thm
    `!(p:'a->bool) q s. p s ==> (p \/* q) s`,
    REPEAT STRIP_TAC THEN
    REWRITE_TAC [OR_def] THEN
-   CONV_TAC "(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
+   CONV_TAC "Unity/mk_state_logic.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
    ASM_REWRITE_TAC []);;
 
 let ALL_AND_lemma1 = TAC_PROOF

@@ -130,18 +130,18 @@ let sem_RULES,sem_INDUCT,sem_CASES = new_inductive_definition
 
 let SEM_ASSIGN = prove
  (`sem(Assign f) s s' <=> (s' = f s)`,
-  GEN_REWRITE_TAC LAND_CONV [sem_CASES] THEN
+  GEN_REWRITE_TAC "Examples/prog.ml:LAND_CONV" LAND_CONV [sem_CASES] THEN
   REWRITE_TAC[command_DISTINCT; command_INJECTIVE] THEN MESON_TAC[]);;
 
 let SEM_SEQ = prove
  (`sem(c1 Seq c2) s s' <=> ?s''. sem c1 s s'' /\ sem c2 s'' s'`,
-  GEN_REWRITE_TAC LAND_CONV [sem_CASES] THEN
+  GEN_REWRITE_TAC "Examples/prog.ml:LAND_CONV" LAND_CONV [sem_CASES] THEN
   REWRITE_TAC[command_DISTINCT; command_INJECTIVE] THEN MESON_TAC[]);;
 
 let SEM_ITE = prove
  (`sem(Ite e c1 c2) s s' <=> e s /\ sem c1 s s' \/
                              ~(e s) /\ sem c2 s s'`,
-  GEN_REWRITE_TAC LAND_CONV [sem_CASES] THEN
+  GEN_REWRITE_TAC "Examples/prog.ml:LAND_CONV" LAND_CONV [sem_CASES] THEN
   REWRITE_TAC[command_DISTINCT; command_INJECTIVE] THEN MESON_TAC[]);;
 
 let SEM_SKIP = prove
@@ -154,7 +154,7 @@ let SEM_IF = prove
 
 let SEM_WHILE = prove
  (`sem(While e c) s s' <=> sem(IF e (c Seq While e c)) s s'`,
-  GEN_REWRITE_TAC LAND_CONV [sem_CASES] THEN
+  GEN_REWRITE_TAC "Examples/prog.ml:LAND_CONV" LAND_CONV [sem_CASES] THEN
   REWRITE_TAC[FUN_EQ_THM; SEM_IF; SEM_SEQ] THEN REPEAT GEN_TAC THEN
   REWRITE_TAC[command_DISTINCT; command_INJECTIVE] THEN MESON_TAC[]);;
 
@@ -629,7 +629,7 @@ let STATE_GEN_TAC' =
 
 let VC_UNPACK_TAC =
   REWRITE_TAC[IMPLIES; o_THM; FALSE; TRUE; AND; OR; NOT; IMP] THEN
-  STATE_GEN_TAC THEN CONV_TAC "(REDEPTH_CONV GEN_BETA_CONV)" (REDEPTH_CONV GEN_BETA_CONV) THEN
+  STATE_GEN_TAC THEN CONV_TAC "Examples/prog.ml:(REDEPTH_CONV GEN_BETA_CONV)" (REDEPTH_CONV GEN_BETA_CONV) THEN
   REWRITE_TAC[PAIR_EQ; GSYM CONJ_ASSOC];;
 
 (* ------------------------------------------------------------------------- *)
@@ -658,14 +658,14 @@ let VC_SEQ_TAC =
   and is_assign tm =
      try fst(dest_const(rator tm)) = "Assign" with Failure _ -> false
   and SIDE_TAC =
-    GEN_REWRITE_TAC I [FUN_EQ_THM] THEN STATE_GEN_TAC THEN
+    GEN_REWRITE_TAC "Examples/prog.ml:I" I [FUN_EQ_THM] THEN STATE_GEN_TAC THEN
     PURE_REWRITE_TAC[IMPLIES; o_THM; FALSE; TRUE; AND; OR; NOT; IMP] THEN
-    CONV_TAC "(REDEPTH_CONV GEN_BETA_CONV)" (REDEPTH_CONV GEN_BETA_CONV) THEN
+    CONV_TAC "Examples/prog.ml:(REDEPTH_CONV GEN_BETA_CONV)" (REDEPTH_CONV GEN_BETA_CONV) THEN
     REWRITE_TAC[PAIR_EQ] THEN NO_TAC in
   let ADJUST_TAC ptm ptm' ((_,w) as gl) =
     let w' = subst [ptm',ptm] w in
     let th = EQT_ELIM(REWRITE_CONV[correct; WP_SEQ] (mk_eq(w,w'))) in
-    GEN_REWRITE_TAC I [th] gl in
+    GEN_REWRITE_TAC "Examples/prog.ml:I" I [th] gl in
   fun (asl,w) ->
     let cptm,q = dest_comb w in
     let cpt,ptm = dest_comb cptm in

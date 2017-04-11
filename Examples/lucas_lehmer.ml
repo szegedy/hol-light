@@ -55,7 +55,7 @@ let LLSEQ_CLOSEDFORM = prove
       MATCH_MP_TAC(REAL_ARITH `&0 <= x ==> &1 <= &2 + x`) THEN
       SIMP_TAC[SQRT_POS_LE; REAL_POS];
       MATCH_MP_TAC REAL_POW_LE THEN REWRITE_TAC[REAL_SUB_LE] THEN
-      MATCH_MP_TAC REAL_LE_LSQRT THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV];
+      MATCH_MP_TAC REAL_LE_LSQRT THEN CONV_TAC "Examples/lucas_lehmer.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV];
     ALL_TAC] THEN
   CONJ_TAC THENL
    [ASM_CASES_TAC `p = 1` THENL [ASM_REWRITE_TAC[MOD_1]; ALL_TAC] THEN
@@ -71,8 +71,8 @@ let LLSEQ_CLOSEDFORM = prove
      `(x + y) pow 2 = x pow 2 + y pow 2 + &2 * x * y`] THEN
     REWRITE_TAC[REAL_ARITH `(&2 + s) * (&2 - s) = &4 - s pow 2`] THEN
     REWRITE_TAC[REAL_SQRT_POW_2; REAL_ABS_NUM; GSYM REAL_POW_POW] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
-    REWRITE_TAC[REAL_POW_ONE] THEN CONV_TAC "REAL_RING" REAL_RING]);;
+    CONV_TAC "Examples/lucas_lehmer.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN CONV_TAC "Examples/lucas_lehmer.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    REWRITE_TAC[REAL_POW_ONE] THEN CONV_TAC "Examples/lucas_lehmer.ml:REAL_RING" REAL_RING]);;
 
 (* ------------------------------------------------------------------------- *)
 (* The main Lucas-Lehmer theorem.                                            *)
@@ -129,7 +129,7 @@ let LUCAS_LEHMER = prove
       MAP_EVERY EXISTS_TAC [`2 * a + 3 * b`; `2 * b + a`] THEN
       REWRITE_TAC[GSYM REAL_OF_NUM_MUL; GSYM REAL_OF_NUM_ADD] THEN
       MP_TAC(SPEC `&3` SQRT_POW_2) THEN REWRITE_TAC[REAL_POS] THEN
-      CONV_TAC "REAL_RING" REAL_RING];
+      CONV_TAC "Examples/lucas_lehmer.ml:REAL_RING" REAL_RING];
     ALL_TAC] THEN
   SUBGOAL_THEN
    `!x y. ((&2 + sqrt(&3)) * x == (&2 + sqrt(&3)) * y) equiv <=>
@@ -153,7 +153,7 @@ let LUCAS_LEHMER = prove
     ASM_SIMP_TAC[INTEGER_CLOSED] THEN
     FIRST_X_ASSUM(MP_TAC o SYM) THEN
     MP_TAC(SPEC `&3` SQRT_POW_2) THEN REWRITE_TAC[REAL_POS] THEN
-    CONV_TAC "REAL_RING" REAL_RING;
+    CONV_TAC "Examples/lucas_lehmer.ml:REAL_RING" REAL_RING;
     ALL_TAC] THEN
   SUBGOAL_THEN
    `((&2 + sqrt(&3)) pow (2 EXP (p - 1)) == -- &1) equiv`
@@ -170,7 +170,7 @@ let LUCAS_LEHMER = prove
     REWRITE_TAC[GSYM REAL_POW_MUL; GSYM REAL_POW_2; REAL_POW_POW] THEN
     REWRITE_TAC[REAL_ARITH `(&2 + s) * (&2 - s) = &4 - s pow 2`] THEN
     REWRITE_TAC[REAL_SQRT_POW_2; REAL_ABS_NUM] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[REAL_POW_ONE] THEN
+    CONV_TAC "Examples/lucas_lehmer.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[REAL_POW_ONE] THEN
     REWRITE_TAC[GSYM(CONJUNCT2 EXP)] THEN
     ASM_SIMP_TAC[ARITH_RULE `2 <= p ==> SUC(p - 2) = p - 1`] THEN
     SUBGOAL_THEN
@@ -198,9 +198,9 @@ let LUCAS_LEHMER = prove
     EXISTS_TAC `&q * (a pow 2 + &3 * b pow 2) - &2 * a` THEN
     EXISTS_TAC `&2 * a * b * &q - &2 * b` THEN
     REPEAT(CONJ_TAC THENL [ASM_MESON_TAC[INTEGER_CLOSED]; ALL_TAC]) THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+    CONV_TAC "Examples/lucas_lehmer.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
     MP_TAC(SPEC `&3` SQRT_POW_2) THEN REWRITE_TAC[REAL_POS] THEN
-    CONV_TAC "REAL_RING" REAL_RING;
+    CONV_TAC "Examples/lucas_lehmer.ml:REAL_RING" REAL_RING;
     ALL_TAC] THEN
   SUBGOAL_THEN
    `?k. 0 < k /\ k <= 2 EXP p - 1 /\
@@ -294,9 +294,9 @@ let LUCAS_LEHMER_RULE =
          ==> llseq (2 EXP p - 1) (SUC n) = r`,
     REWRITE_TAC[llseq] THEN
     ASM_CASES_TAC `p = 0` THEN ASM_REWRITE_TAC[] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN REWRITE_TAC[LT] THEN
+    CONV_TAC "Examples/lucas_lehmer.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN REWRITE_TAC[LT] THEN
     ASM_CASES_TAC `p = 1` THEN ASM_REWRITE_TAC[] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+    CONV_TAC "Examples/lucas_lehmer.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
     SIMP_TAC[MOD_1; ARITH_RULE `r < 1 <=> r = 0`] THEN
     REPEAT STRIP_TAC THEN MATCH_MP_TAC MOD_UNIQ THEN
     EXISTS_TAC `q + 1` THEN ASM_REWRITE_TAC[EXP_2] THEN
@@ -308,7 +308,7 @@ let LUCAS_LEHMER_RULE =
       ==> x + y - 1 - 2 = u + (v - w + z) + r`) THEN
     REWRITE_TAC[LE_MULT_LCANCEL; LE_EXP; EXP_EQ_0; ARITH_RULE
       `1 <= n <=> ~(n = 0)`] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN ASM_ARITH_TAC)
+    CONV_TAC "Examples/lucas_lehmer.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN ASM_ARITH_TAC)
   and pconv_tt = GEN_REWRITE_CONV I [TAUT `T /\ T <=> T`]
   and p_tm = `p:num` and n_tm = `n:num` and m_tm = `m:num`
   and q_tm = `q:num` and r_tm = `r:num` in

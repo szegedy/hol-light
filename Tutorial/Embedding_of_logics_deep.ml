@@ -72,7 +72,7 @@ let HOLDS_FORALL_LEMMA = prove
  (`!W R P. (!A V. P(holds (W,R) V A)) <=> (!p:W->bool. P p)`,
   REPEAT GEN_TAC THEN EQ_TAC THENL [DISCH_TAC THEN GEN_TAC; SIMP_TAC[]] THEN
   POP_ASSUM(MP_TAC o SPECL [`Atom a`; `\a:string. (p:W->bool)`]) THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Tutorial/Embedding_of_logics_deep.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[holds] THEN REWRITE_TAC[ETA_AX]);;
 
 let MODAL_SCHEMA_TAC =

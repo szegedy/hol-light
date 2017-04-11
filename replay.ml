@@ -18,6 +18,8 @@ open Itab;;
 (* Replay a proof log, turning it back into a tactic                         *)
 (* ------------------------------------------------------------------------- *)
 
+type conv = term->thm;;
+  
 (* Tactics filled in by future files *)
 let backchain_tac : thm_tactic option ref = ref None
 let imp_subst_tac : thm_tactic option ref = ref None
@@ -27,12 +29,25 @@ let pure_rewrite_tac : (thm list -> tactic) option ref = ref None
 let rewrite_tac : (thm list -> tactic) option ref = ref None
 let pure_once_rewrite_tac : (thm list -> tactic) option ref = ref None
 let once_rewrite_tac : (thm list -> tactic) option ref = ref None
+let simp_tac : (thm list -> tactic) option ref = ref None
+let gen_rewrite_tac : (string -> (conv -> conv) -> thm list -> tactic) option ref = ref None
+let arith_tac : tactic option ref = ref None
+let real_arith_tac : tactic option ref = ref None
+let real_arith_tac2 : tactic option ref = ref None
 
 let get name x = match !x with
     None -> failwith ("Downstream tactic "^name^" not filled in")
   | Some t -> t
-
+                
 type env = ((int * int) * thm) list
+
+let conv_tac_lookup tag =
+  let conv = lookup_conv tag in
+  CONV_TAC tag conv;;
+
+let gen_rewrite_tac_lookup tag thl =
+  let convl = lookup_conv2conv tag in
+  (get "GEN_REWRITE_TAC" gen_rewrite_tac) tag convl thl;;
 
 let replay_tactic_log (env : env) log : tactic =
   let rec lookup src = match src with
@@ -46,7 +61,8 @@ let replay_tactic_log (env : env) log : tactic =
   let rewrite ty = match ty with
       Pure_rewrite_type -> get "PURE_REWRITE_TAC" pure_rewrite_tac
     | Rewrite_type -> get "REWRITE_TAC" rewrite_tac
-    | Pure_once_rewrite_type -> get "PURE_ONCE_REWRITE_TAC" pure_once_rewrite_tac
+    | Pure_once_rewrite_type -> get "PURE_ONCE_REWRITE_TAC"
+                                    pure_once_rewrite_tac
     | Once_rewrite_type -> get "ONCE_REWRITE_TAC" once_rewrite_tac in
   match log with
     | Fake_log -> failwith "Can't replay Fake_log"
@@ -63,6 +79,9 @@ let replay_tactic_log (env : env) log : tactic =
     | Refl_tac_log -> REFL_TAC
     | Itaut_tac_log -> ITAUT_TAC
     | Ants_tac_log -> ANTS_TAC
+    | Arith_tac_log -> get "ARITH_TAC" arith_tac
+    | Real_arith_tac_log -> get "REAL_ARITH_TAC" real_arith_tac
+    | Real_arith_tac2_log -> get "REAL_ARITH_TAC (v2)" real_arith_tac2
     | Raw_pop_tac_log n -> RAW_POP_TAC n
     | Raw_pop_all_tac_log -> RAW_POP_ALL_TAC
     | Undisch_tac_log tm -> UNDISCH_TAC tm
@@ -80,7 +99,7 @@ let replay_tactic_log (env : env) log : tactic =
     | Match_accept_tac_log th -> replay_ttac MATCH_ACCEPT_TAC th
     | Match_mp_tac_log th -> replay_ttac MATCH_MP_TAC th
     (* other *)
-    | Conv_tac_log conv -> failwith "TODO: Can't replay Conv_tac_log"
+    | Conv_tac_log tag -> conv_tac_lookup tag
     | Conjuncts_then2_log (tac1, tac2, th) -> failwith "TODO: Can't replay Conjuncts_then2_log"
     | Raw_subgoal_tac_log tm -> RAW_SUBGOAL_TAC tm
     | Backchain_tac_log th -> replay_ttac (get "BACKCHAIN_TAC" backchain_tac) th
@@ -89,7 +108,11 @@ let replay_tactic_log (env : env) log : tactic =
     | Trans_tac_log (th,tm) -> replay_ttac (fun th -> TRANS_TAC th tm) th
     | Asm_meson_tac_log thl -> (get "ASM_MESON_TAC" asm_meson_tac) (map lookup thl)
     | Asm_metis_tac_log thl -> (get "ASM_METIS_TAC" asm_metis_tac) (map lookup thl)
+    | Gen_rewrite_tac_log (convs,thl) -> (gen_rewrite_tac_lookup) convs (map lookup thl)
     | Rewrite_tac_log (ty,thl) -> rewrite ty (map lookup thl)
+    | Simp_tac_log thl -> (get "SIMP_TAC" simp_tac) (map lookup thl)
+    | Subst1_tac_log th -> SUBST1_TAC (lookup th)
+
 
 exception Hard_failure of string
 let hard_failwith s = raise (Hard_failure s)
@@ -170,6 +193,9 @@ let finalize_proof_log : int -> thm proof_log -> src proof_log = fun before_thms
       | Fake_log -> failwith "Can't finalize Fake_log"
       | Conv_tac_log conv -> Conv_tac_log conv
       | Abs_tac_log -> Abs_tac_log
+      | Arith_tac_log -> Arith_tac_log
+      | Real_arith_tac_log -> Real_arith_tac_log
+      | Real_arith_tac2_log -> Real_arith_tac2_log
       | Mk_comb_tac_log -> Mk_comb_tac_log
       | Disch_tac_log -> Disch_tac_log
       | Label_tac_log (s,th) -> Label_tac_log (s,thm th)
@@ -204,6 +230,10 @@ let finalize_proof_log : int -> thm proof_log -> src proof_log = fun before_thms
       | Raw_pop_all_tac_log -> Raw_pop_all_tac_log
       | Asm_meson_tac_log thl -> Asm_meson_tac_log (map thm thl)
       | Asm_metis_tac_log thl -> Asm_metis_tac_log (map thm thl)
+      | Simp_tac_log thl -> Simp_tac_log (map thm thl)
+      | Subst1_tac_log th -> Subst1_tac_log (thm th)
+      | Gen_rewrite_tac_log (convl,thl) ->
+         Gen_rewrite_tac_log (convl, map thm thl)
       | Rewrite_tac_log (ty,thl) -> Rewrite_tac_log (ty, map thm thl) in
   let rec proof n env (Proof_log (asl,_ as g, tac, logs)) =
     let rec hyp env s th =

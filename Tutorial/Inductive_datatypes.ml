@@ -52,9 +52,9 @@ let EXISTS_LINE = prove
   REWRITE_TAC[DE_MORGAN_THM; NOT_EXISTS_THM; FORALL_LINE]);;
 
 let FANO_TAC =
-  GEN_REWRITE_TAC DEPTH_CONV
+  GEN_REWRITE_TAC "Tutorial/Inductive_datatypes.ml:DEPTH_CONV" DEPTH_CONV
    [FORALL_POINT; EXISTS_LINE; EXISTS_POINT; FORALL_LINE] THEN
-  GEN_REWRITE_TAC DEPTH_CONV
+  GEN_REWRITE_TAC "Tutorial/Inductive_datatypes.ml:DEPTH_CONV" DEPTH_CONV
    (basic_rewrites() @
     [ON_CLAUSES; distinctness "point"; distinctness "line"]);;
 

@@ -58,7 +58,8 @@ and 'a tactic_log =
   | X_meta_exists_tac_log of term
   | Raw_subgoal_tac_log of term
   (* other *)
-  | Conv_tac_log of conv
+  | Conv_tac_log of string (* conv *)
+  | Gen_rewrite_tac_log of string (* conv *) * 'a list
   | Spec_tac_log of term * term
   | X_choose_tac_log of term * 'a
   | Conjuncts_then2_log of thm_tactic * thm_tactic * 'a
@@ -67,6 +68,11 @@ and 'a tactic_log =
   | Asm_meson_tac_log of 'a list
   | Asm_metis_tac_log of 'a list
   | Rewrite_tac_log of rewrite_type * 'a list
+  | Simp_tac_log of 'a list
+  | Subst1_tac_log of 'a
+  | Real_arith_tac_log
+  | Real_arith_tac2_log
+  | Arith_tac_log
 
 and rewrite_type =
   | Pure_rewrite_type
@@ -87,6 +93,53 @@ type src =
 (* ------------------------------------------------------------------------- *)
 (* Replace the logging part of a tactic *)
 (* ------------------------------------------------------------------------- *)
+
+let conversion_registry : (string, conv) Hashtbl.t = Hashtbl.create 1000;;
+let conv2conv_registry :
+      (string, conv -> conv) Hashtbl.t = Hashtbl.create 1000;;
+
+let replace_o str =
+  String.init (String.length str)
+              (fun i ->
+                let chr = String.get str i in
+                if chr == 'o' then 'O'
+                else chr)
+
+let replace_comb str =
+  let tmp = Str.global_replace (Str.regexp "funpow") "FUNPOW" str in
+  replace_o tmp
+
+let lookup_from_registry registry description tag =
+  if Hashtbl.mem registry tag then (
+    let conv = Hashtbl.find registry tag in
+    Printf.printf "Retrieved %s '%s'\n" description tag;
+    let tag_base = (Array.of_list(Str.split (Str.regexp "[:]+") tag)).(1) in
+    (if String.uppercase_ascii tag_base = replace_comb tag_base then
+       (Printf.printf "Returning retrieved %s: %s\n" description tag;
+        conv)
+     else failwith (description ^ " is not replayable " ^ tag)))
+  else failwith (description ^ " is not found: " ^ tag)
+
+let register_entity registry tag conv =
+  if Hashtbl.mem registry tag then (
+    let rconv = Hashtbl.find registry tag in
+    (* Printf.printf "Retrieved conversion '%s'\n" tag; *)
+    let tag = (Array.of_list(Str.split (Str.regexp "[:]+") tag)).(1) in
+    (if String.uppercase_ascii tag = replace_comb tag then
+       ((* Printf.printf "Returning retrieved\n"; *)
+       conv) (*rconv here*)
+     else
+       ((* Printf.printf "Returning original\n"; *)
+       conv)))
+  else (
+    Hashtbl.replace registry tag conv;
+    conv);;
+
+let register_conv = register_entity conversion_registry;;
+let register_conv2conv = register_entity conv2conv_registry;;
+let lookup_conv = lookup_from_registry conversion_registry "conversion";;
+let lookup_conv2conv =
+  lookup_from_registry conv2conv_registry "conv2conv";;
 
 let replace_tactic_log : thm tactic_log -> tactic -> tactic =
   fun log tac g ->
@@ -248,6 +301,12 @@ let tactic_name taclog =
   | Raw_pop_all_tac_log -> "Raw_pop_all_tac_log"
   | Asm_meson_tac_log _ -> "Asm_meson_tac_log"
   | Asm_metis_tac_log _ -> "Asm_metis_tac_log"
+  | Simp_tac_log _ -> "Simp_tac_log"
+  | Subst1_tac_log _ -> "Subst1_tac_log"
+  | Real_arith_tac_log -> "Real_arith_tac_log"
+  | Real_arith_tac2_log -> "Real_arith_tac2_log"
+  | Arith_tac_log -> "Arith_tac_log"
+  | Gen_rewrite_tac_log _ -> "Gen_rewrite_tac_log"
   | Rewrite_tac_log (ty,_) -> match ty with
       Pure_rewrite_type -> "Pure_rewrite_tac_log"
     | Rewrite_type -> "Rewrite_tac_log"
@@ -278,6 +337,9 @@ let sexp_tactic_log f taclog =
     | Itaut_tac_log
     | Cheat_tac_log
     | Raw_pop_all_tac_log
+    | Real_arith_tac_log
+    | Real_arith_tac2_log
+    | Arith_tac_log
     | Ants_tac_log -> Snode [name]
     (* thm_tactic *)
     | Accept_tac_log th
@@ -287,6 +349,7 @@ let sexp_tactic_log f taclog =
     | Match_accept_tac_log th
     | Match_mp_tac_log th
     | Backchain_tac_log th
+    | Subst1_tac_log th
     | Imp_subst_tac_log th -> Snode [name; f th]
     (* term -> tactic *)
     | Undisch_tac_log tm
@@ -307,7 +370,9 @@ let sexp_tactic_log f taclog =
     | Raw_pop_tac_log n -> Snode [name; Sleaf (string_of_int n)]
     | Asm_meson_tac_log thl
     | Asm_metis_tac_log thl
+    | Simp_tac_log thl
     | Rewrite_tac_log (_,thl) -> Snode [name; Snode (map f thl)]
+    | Gen_rewrite_tac_log (convs,thl) -> Snode [name; Sleaf convs; Snode (map f thl)]
 
 let rec sexp_proof_log f (Proof_log (gl, taclog, logl)) =
   Snode [Sleaf "p"; sexp_goal gl; sexp_tactic_log f taclog; Snode (map (sexp_proof_log f) logl)]
@@ -347,6 +412,9 @@ let referenced_thms plog =
     | Itaut_tac_log
     | Cheat_tac_log
     | Ants_tac_log
+    | Arith_tac_log
+    | Real_arith_tac_log
+    | Real_arith_tac2_log
     | Raw_pop_tac_log _
     | Raw_pop_all_tac_log -> ()
     (* 1 thm *)
@@ -363,11 +431,15 @@ let referenced_thms plog =
     | Backchain_tac_log th
     | Imp_subst_tac_log th
     | Unify_accept_tac_log (_,th)
+    | Subst1_tac_log th
     | Trans_tac_log (th,_) -> visit th
     (* thm list *)
     | Asm_meson_tac_log thl
     | Asm_metis_tac_log thl
+    | Simp_tac_log thl
+    | Gen_rewrite_tac_log (_,thl)
     | Rewrite_tac_log (_,thl) -> List.iter visit thl
+
   in
     visit_plog plog;
     Hashtbl.fold (fun i () l -> i :: l) seen []

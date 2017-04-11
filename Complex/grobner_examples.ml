@@ -360,7 +360,7 @@ let det3 = new_definition
 let DET_TRANSPOSE = prove
  (`det3(a1,b1,c1,a2,b2,c2,a3,b3,c3) =
    det3(a1,a2,a3,b1,b2,b3,c1,c2,c3)`,
-  REWRITE_TAC[det3] THEN CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  REWRITE_TAC[det3] THEN CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 let sdet3 = new_definition
   `sdet3(p,q,r) = det3(FST p,SND p,Cx(&1),
@@ -369,33 +369,33 @@ let sdet3 = new_definition
 
 let SDET3_PERMUTE_1 = prove
  (`sdet3(p,q,r) = sdet3(q,r,p)`,
-  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 let SDET3_PERMUTE_2 = prove
  (`sdet3(p,q,r) = --(sdet3(p,r,q))`,
-  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 let SDET_SUM = prove
  (`sdet3(p,q,r) - sdet3(t,q,r) - sdet3(p,t,r) - sdet3(p,q,t) = Cx(&0)`,
-  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 let SDET_CRAMER = prove
  (`sdet3(s,t,q) * sdet3(t,p,r) = sdet3(t,q,r) * sdet3(s,t,p) +
                                  sdet3(t,p,q) * sdet3(s,t,r)`,
-  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 let SDET_NZ = prove
  (`!p q r. ~(sdet3(p,q,r) = Cx(&0))
            ==> ~(p = q) /\ ~(q = r) /\ ~(r = p)`,
   REWRITE_TAC[FORALL_PAIR_THM; PAIR_EQ; sdet3; det3] THEN
-  CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 let SDET_LINCOMB = prove
  (`(FST p * sdet3(i,j,k) =
     FST i * sdet3(j,k,p) + FST j * sdet3(k,i,p) + FST k * sdet3(i,j,p)) /\
    (SND p * sdet3(i,j,k) =
     SND i * sdet3(j,k,p) + SND j * sdet3(k,i,p) + SND k * sdet3(i,j,p))`,
-  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  REWRITE_TAC[sdet3; det3] THEN CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 (***** I'm not sure if this is true; there must be some
        sufficient degenerate conditions....
@@ -414,7 +414,7 @@ let th = prove
            xq,xq pow 2 + yq pow 2,Cx(&1),
            xr,xr pow 2 + yr pow 2,Cx(&1)) = Cx(&0)))`,
   REWRITE_TAC[det3] THEN
-  CONV_TAC "(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
+  CONV_TAC "Complex/grobner_examples.ml:(time COMPLEX_ARITH)" (time COMPLEX_ARITH));;
 
 ***************)
 
@@ -487,16 +487,16 @@ let (EXPAND_COORDS_TAC:tactic) =
   fun (asl,w) ->
     (let fvs = filter (fun v -> type_of v = complex2_ty) (frees w) in
      MAP_EVERY (fun v -> SPEC_TAC(v,v)) fvs THEN
-     GEN_REWRITE_TAC DEPTH_CONV [FORALL_PAIR_THM; EXISTS_PAIR_THM] THEN
+     GEN_REWRITE_TAC "Complex/grobner_examples.ml:DEPTH_CONV" DEPTH_CONV [FORALL_PAIR_THM; EXISTS_PAIR_THM] THEN
      REPEAT GEN_TAC) (asl,w);;
 
 let PAIR_BETA_THM = prove
  (`(\(x,y). P x y) (a,b) = P a b`,
-  CONV_TAC "(LAND_CONV GEN_BETA_CONV)" (LAND_CONV GEN_BETA_CONV) THEN REFL_TAC);;
+  CONV_TAC "Complex/grobner_examples.ml:(LAND_CONV GEN_BETA_CONV)" (LAND_CONV GEN_BETA_CONV) THEN REFL_TAC);;
 
 let GEOM_TAC =
   EXPAND_COORDS_TAC THEN
-  GEN_REWRITE_TAC TOP_DEPTH_CONV
+  GEN_REWRITE_TAC "Complex/grobner_examples.ml:TOP_DEPTH_CONV" TOP_DEPTH_CONV
    [collinear; parallel; perpendicular; oncircle_with_diagonal;
     length; lengths_eq; is_midpoint; is_intersection; distinctpairs;
     isotropic; ITLIST; PAIR_BETA_THM; BETA_THM; PAIR_EQ; FST; SND];;
@@ -511,7 +511,7 @@ let CENTROID = time prove
    is_midpoint f (a,b) /\
    is_intersection m (b,e) (a,d)
    ==> collinear c f m`,
-  GEOM_TAC THEN CONV_TAC "GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
+  GEOM_TAC THEN CONV_TAC "Complex/grobner_examples.ml:GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
 
 (* ------------------------------------------------------------------------- *)
 (* Gauss's theorem (Chou, example 15).                                       *)
@@ -526,7 +526,7 @@ let GAUSS = time prove
    is_midpoint m2 (a0,a2) /\
    is_midpoint m3 (x,y)
    ==> collinear m1 m2 m3`,
-  GEOM_TAC THEN CONV_TAC "GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
+  GEOM_TAC THEN CONV_TAC "Complex/grobner_examples.ml:GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
 
 (* ------------------------------------------------------------------------- *)
 (* Simson's theorem (Chou, example 288).                                     *)
@@ -550,7 +550,7 @@ let SIMSON = time prove
    ~(lengths_eq (a,c) (a,a)) /\
    ~(lengths_eq (b,c) (a,a))
    ==> collinear e f g`,
-  GEOM_TAC THEN CONV_TAC "GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
+  GEOM_TAC THEN CONV_TAC "Complex/grobner_examples.ml:GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
 
 let SIMSON = time prove
  (`lengths_eq (O,a) (O,b) /\
@@ -564,7 +564,7 @@ let SIMSON = time prove
    collinear g a b /\
    ~(a = b) /\ ~(a = c) /\ ~(a = d) /\ ~(b = c) /\ ~(b = d) /\ ~(c = d)
    ==> collinear e f g`,
-  GEOM_TAC THEN CONV_TAC "GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
+  GEOM_TAC THEN CONV_TAC "Complex/grobner_examples.ml:GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
 
 let SIMSON = time prove
  (`lengths_eq (O,a) (O,b) /\
@@ -584,6 +584,6 @@ let SIMSON = time prove
    ~(isotropic (b,d)) /\
    ~(isotropic (c,d))
    ==> collinear e f g`,
-  GEOM_TAC THEN CONV_TAC "GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
+  GEOM_TAC THEN CONV_TAC "Complex/grobner_examples.ml:GROBNER_REAL_ARITH" GROBNER_REAL_ARITH);;
 
 ****************)

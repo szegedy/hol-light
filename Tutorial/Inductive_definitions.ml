@@ -24,7 +24,7 @@ let oriented_area = new_definition
 
 let MOVE_INVARIANT = prove
  (`!p p'. move p p' ==> oriented_area p = oriented_area p'`,
-  REWRITE_TAC[FORALL_PAIR_THM; move; oriented_area] THEN CONV_TAC "REAL_RING" REAL_RING);;
+  REWRITE_TAC[FORALL_PAIR_THM; move; oriented_area] THEN CONV_TAC "Tutorial/Inductive_definitions.ml:REAL_RING" REAL_RING);;
 
 let REACHABLE_INVARIANT = prove
  (`!p p'. reachable p p' ==> oriented_area p = oriented_area p'`,

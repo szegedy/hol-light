@@ -222,7 +222,7 @@ let UNWIND_THM1 = prove
 
 let UNWIND_THM2 = prove
  (`!P (a:A). (?x. x = a /\ P x) <=> P a`,
-  REPEAT GEN_TAC THEN CONV_TAC "(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV))" (LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
+  REPEAT GEN_TAC THEN CONV_TAC "theorems.ml:(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV))" (LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
   MATCH_ACCEPT_TAC UNWIND_THM1);;
 
 let FORALL_UNWIND_THM2 = prove
@@ -234,7 +234,7 @@ let FORALL_UNWIND_THM2 = prove
 
 let FORALL_UNWIND_THM1 = prove
  (`!P a. (!x. a = x ==> P x) <=> P a`,
-  REPEAT GEN_TAC THEN CONV_TAC "(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV))" (LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
+  REPEAT GEN_TAC THEN CONV_TAC "theorems.ml:(LAND_CONV(ONCE_DEPTH_CONV SYM_CONV))" (LAND_CONV(ONCE_DEPTH_CONV SYM_CONV)) THEN
   MATCH_ACCEPT_TAC FORALL_UNWIND_THM2);;
 
 (* ------------------------------------------------------------------------- *)
@@ -413,9 +413,9 @@ let EXISTS_UNIQUE = prove
  (`!P:A->bool. (?!x. P x) <=> (?x. P x /\ !y. P y ==> (y = x))`,
   GEN_TAC THEN REWRITE_TAC[EXISTS_UNIQUE_ALT] THEN
   AP_TERM_TAC THEN ABS_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o BINDER_CONV)
+  GEN_REWRITE_TAC "theorems.ml:(LAND_CONV o BINDER_CONV)" (LAND_CONV o BINDER_CONV)
    [ITAUT `(a <=> b) <=> (a ==> b) /\ (b ==> a)`] THEN
-  GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [EQ_SYM_EQ] THEN
+  GEN_REWRITE_TAC "theorems.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [EQ_SYM_EQ] THEN
   REWRITE_TAC[FORALL_AND_THM] THEN SIMP_TAC[] THEN
   REWRITE_TAC[LEFT_FORALL_IMP_THM; EXISTS_REFL] THEN
   REWRITE_TAC[CONJ_ACI]);;
@@ -473,9 +473,9 @@ let DESTRUCT_TAC,FIX_TAC,INTRO_TAC,HYP_TAC =
   let pa_label = pa_ident isalnum
   and pa_var = pa_ident isalpha in
   let fix_tac =
-    let fix_var v = CONV_TAC "(NAME_PULL_FORALL_CONV v)" (NAME_PULL_FORALL_CONV v) THEN PURE_GEN_TAC
+    let fix_var v = CONV_TAC "theorems.ml:(NAME_PULL_FORALL_CONV v)" (NAME_PULL_FORALL_CONV v) THEN PURE_GEN_TAC
     and fix_rename =
-      function u,[v] -> CONV_TAC "(NAME_PULL_FORALL_CONV v)" (NAME_PULL_FORALL_CONV v) THEN NAME_GEN_TAC u
+      function u,[v] -> CONV_TAC "theorems.ml:(NAME_PULL_FORALL_CONV v)" (NAME_PULL_FORALL_CONV v) THEN NAME_GEN_TAC u
              | u,_   -> NAME_GEN_TAC u in
     let vars =
       let pa_rename =

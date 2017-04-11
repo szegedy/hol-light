@@ -592,7 +592,7 @@ let LEADSTO_thm10 = prove_thm
    (`!(p:'a->bool) q. (p LEADSTO q) [] = F`),
    REPEAT GEN_TAC THEN
    REWRITE_TAC [LEADSTO;LeadstoRel] THEN
-   CONV_TAC "NOT_FORALL_CONV" NOT_FORALL_CONV THEN
+   CONV_TAC "Unity/mk_leadsto.ml:NOT_FORALL_CONV" NOT_FORALL_CONV THEN
    EXISTS_TAC (`\(p:'a->bool) (q:'a->bool) (Pr:('a->'a)list). F`) THEN
    BETA_TAC THEN
    REWRITE_TAC [ENSURES_thm0] THEN
@@ -601,7 +601,7 @@ let LEADSTO_thm10 = prove_thm
    REWRITE_TAC [GEN_ALL (SYM (SPEC_ALL IMP_DISJ_THM))] THEN
    REWRITE_TAC [In,LUB] THEN
    STRIP_TAC THEN
-   CONV_TAC "NOT_FORALL_CONV" NOT_FORALL_CONV THEN
+   CONV_TAC "Unity/mk_leadsto.ml:NOT_FORALL_CONV" NOT_FORALL_CONV THEN
    REWRITE_TAC [] THEN
 
    ...

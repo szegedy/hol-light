@@ -15,7 +15,7 @@ let LAGRANGE_4 = time prove
      (((((x1*y2) + (x2*y1)) + (x3*y4)) - (x4*y3)) pow 2)  +
      (((((x1*y3) - (x2*y4)) + (x3*y1)) + (x4*y2)) pow 2)  +
      (((((x1*y4) + (x2*y3)) - (x3*y2)) + (x4*y1)) pow 2)`,
-  CONV_TAC "REAL_RING" REAL_RING);;
+  CONV_TAC "Examples/lagrange_lemma.ml:REAL_RING" REAL_RING);;
 
 let LAGRANGE_8 = time prove
  (`(p1 pow 2 + q1 pow 2 + r1 pow 2 + s1 pow 2 + t1 pow 2 + u1 pow 2 + v1 pow 2 + w1 pow 2) *
@@ -28,7 +28,7 @@ let LAGRANGE_8 = time prove
      (p1 * u2 + q1 * t2 - r1 * w2 + s1 * v2 - t1 * q2 + u1 * p2 - v1 * s2 + w1 * r2) pow 2 +
      (p1 * v2 + q1 * w2 + r1 * t2 - s1 * u2 - t1 * r2 + u1 * s2 + v1 * p2 - w1 * q2) pow 2 +
      (p1 * w2 - q1 * v2 + r1 * u2 + s1 * t2 - t1 * s2 - u1 * r2 + v1 * q2 + w1 * p2) pow 2`,
-  CONV_TAC "REAL_RING" REAL_RING);;
+  CONV_TAC "Examples/lagrange_lemma.ml:REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Or we can just use REAL_ARITH, which is also reasonably fast.             *)

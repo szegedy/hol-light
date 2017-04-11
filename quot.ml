@@ -64,7 +64,7 @@ let define_quotient_type =
 let lift_function =
   let SELECT_LEMMA = prove
    (`!x:A. (@y. x = y) = x`,
-    GEN_TAC THEN GEN_REWRITE_TAC (LAND_CONV o BINDER_CONV) [EQ_SYM_EQ] THEN
+    GEN_TAC THEN GEN_REWRITE_TAC "quot.ml:(LAND_CONV o BINDER_CONV)" (LAND_CONV o BINDER_CONV) [EQ_SYM_EQ] THEN
     MATCH_ACCEPT_TAC SELECT_REFL) in
   fun tybij2 ->
     let tybl,tybr = dest_comb(concl tybij2) in
@@ -162,9 +162,9 @@ let lift_theorem =
     X_GEN_TAC `x:Repty` THEN
     SUBGOAL_THEN `dest(mk((R:Repty->Repty->bool) x):Absty) = R x`
     SUBST1_TAC THENL [ASM_MESON_TAC[]; ALL_TAC] THEN
-    GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
-    FIRST_ASSUM(fun th -> GEN_REWRITE_TAC I [th]) THEN
-    CONV_TAC "SELECT_CONV" SELECT_CONV THEN ASM_MESON_TAC[]) in
+    GEN_REWRITE_TAC "quot.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+    FIRST_ASSUM(fun th -> GEN_REWRITE_TAC "quot.ml:I" I [th]) THEN
+    CONV_TAC "quot.ml:SELECT_CONV" SELECT_CONV THEN ASM_MESON_TAC[]) in
   fun tybij (refl_th,sym_th,trans_th) ->
     let tybij1 = GEN_ALL (fst tybij)
     and tybij2 = GEN_ALL (snd tybij) in

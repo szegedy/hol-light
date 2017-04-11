@@ -1391,7 +1391,7 @@ let th = prove
                  ==> v * (v * (h * h * c' + c) - h * c') - (v * h * c' - c') <
                      c'))`,
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC "REAL_QELIM_CONV" REAL_QELIM_CONV);;
+  CONV_TAC "Rqe/examples.ml:REAL_QELIM_CONV" REAL_QELIM_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Two notions of parallelism.                                               *)

@@ -152,7 +152,7 @@ let ABS_SQUARE = prove_by_refinement(
 
   [
   REP_GEN_TAC;
-  CONV_TAC "(SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))])" (SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))]);
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))])" (SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))]);
   ASSUME_TAC REAL_ABS_POS;
   USE 0 (SPEC `t:real`);
   ABBREV_TAC `(b:real) = (abs t)`;
@@ -170,7 +170,7 @@ let ABS_SQUARE_LE = prove_by_refinement(
 
   [
   REP_GEN_TAC;
-  CONV_TAC "(SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))])" (SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))]);
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))])" (SUBS_CONV[SPEC `t:real` (REWRITE_RULE[POW_2] (GSYM REAL_POW2_ABS))]);
   ASSUME_TAC REAL_ABS_POS;
   USE 0 (SPEC `t:real`);
   ABBREV_TAC `(b:real) = (abs t)`;
@@ -193,7 +193,7 @@ let twopow_eps = prove_by_refinement(
   ONCE_REWRITE_TAC[REAL_MUL_AC];
   ASM_SIMP_TAC[REAL_INV_LT];
   ASM_SIMP_TAC[GSYM REAL_LT_LDIV_EQ];
-  CONV_TAC "(quant_right_CONV "n")" (quant_right_CONV "n");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_right_CONV \\"n\\")" (quant_right_CONV \\"n\\");
   DISCH_ALL_TAC;
   ASSUME_TAC (SPEC `R/e` REAL_ARCH_SIMPLE);
   CHO 3;
@@ -216,7 +216,7 @@ let prod_EXISTS = prove_by_refinement(
   [
   (CHOOSE_TAC o prove_recursive_functions_exist num_RECURSION) `(!f n. sm n 0 f = &1) /\ (!f m n. sm  n (SUC m) f = sm n m f * f(n + m))` ;
   EXISTS_TAC `\(n,m) f. (sm:num->num->(num->real)->real) n m f`;
-  CONV_TAC "(DEPTH_CONV GEN_BETA_CONV)" (DEPTH_CONV GEN_BETA_CONV) THEN ASM_REWRITE_TAC[]
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(DEPTH_CONV GEN_BETA_CONV)" (DEPTH_CONV GEN_BETA_CONV) THEN ASM_REWRITE_TAC[]
   ]);;
 (* }}} *)
 
@@ -750,16 +750,16 @@ let NUM2_COUNTABLE = prove_by_refinement(
   MESON_TAC[];
   SPEC_TAC (`x':num`,`a:num`);
   SPEC_TAC (`y':num`,`b:num`);
-  CONV_TAC "(quant_left_CONV "t")" (quant_left_CONV "t");
-  CONV_TAC "(quant_left_CONV "t")" (quant_left_CONV "t");
-  CONV_TAC "(quant_left_CONV "t")" (quant_left_CONV "t");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"t\\")" (quant_left_CONV \\"t\\");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"t\\")" (quant_left_CONV \\"t\\");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"t\\")" (quant_left_CONV \\"t\\");
   INDUCT_TAC;
   REDUCE_TAC;
   REP_GEN_TAC;
   DISCH_THEN (fun t -> REWRITE_TAC[t]);
   EXISTS_TAC `0`;
   ASM_REWRITE_TAC[];
-  CONV_TAC "(quant_left_CONV "a")" (quant_left_CONV "a");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"a\\")" (quant_left_CONV \\"a\\");
   INDUCT_TAC;
   REDUCE_TAC;
   GEN_TAC;
@@ -771,7 +771,7 @@ let NUM2_COUNTABLE = prove_by_refinement(
   UND 0;
   UND 1;
   DISCH_THEN (fun t-> REWRITE_TAC[GSYM t]);
-  CONV_TAC "(ONCE_DEPTH_CONV GEN_BETA_CONV)" (ONCE_DEPTH_CONV GEN_BETA_CONV);
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(ONCE_DEPTH_CONV GEN_BETA_CONV)" (ONCE_DEPTH_CONV GEN_BETA_CONV);
   BETA_TAC;
   REDUCE_TAC;
   DISCH_ALL_TAC;
@@ -794,7 +794,7 @@ let NUM2_COUNTABLE = prove_by_refinement(
   UND 0;
   UND 2;
   DISCH_THEN (fun t->REWRITE_TAC[GSYM t]);
-  CONV_TAC "(ONCE_DEPTH_CONV GEN_BETA_CONV)" (ONCE_DEPTH_CONV GEN_BETA_CONV);
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(ONCE_DEPTH_CONV GEN_BETA_CONV)" (ONCE_DEPTH_CONV GEN_BETA_CONV);
   BETA_TAC;
   REDUCE_TAC;
   DISCH_THEN (fun t->REWRITE_TAC[t]);
@@ -975,8 +975,8 @@ let INTER_FINITE = prove_by_refinement(
   (* {{{ proof *)
 
   [
-  CONV_TAC "(quant_right_CONV "t")" (quant_right_CONV "t");
-  CONV_TAC "(quant_right_CONV "s")" (quant_right_CONV "s");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_right_CONV \\"t\\")" (quant_right_CONV \\"t\\");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_right_CONV \\"s\\")" (quant_right_CONV \\"s\\");
   SUBCONJ_TAC;
   DISCH_ALL_TAC;
   SUBGOAL_TAC `s INTER t SUBSET (s:A->bool)`;
@@ -1011,10 +1011,10 @@ let SUBSET_SUC = prove_by_refinement(
   DISCH_TAC;
   REP_GEN_TAC;
   MP_TAC (prove( `?n. n = j -| i`,MESON_TAC[]));
-  CONV_TAC "(quant_left_CONV "n")" (quant_left_CONV "n");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"n\\")" (quant_left_CONV \\"n\\");
   SPEC_TAC (`i:num`,`i:num`);
   SPEC_TAC (`j:num`,`j:num`);
-  REP 2(  CONV_TAC "(quant_left_CONV "n")" (quant_left_CONV "n"));
+  REP 2(  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"n\\")" (quant_left_CONV \\"n\\"));
   INDUCT_TAC;
   REP_GEN_TAC;
   DISCH_ALL_TAC;
@@ -1060,10 +1060,10 @@ let SUBSET_SUC2 = prove_by_refinement(
   DISCH_TAC;
   REP_GEN_TAC;
   MP_TAC (prove( `?n. n = j -| i`,MESON_TAC[]));
-  CONV_TAC "(quant_left_CONV "n")" (quant_left_CONV "n");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"n\\")" (quant_left_CONV \\"n\\");
   SPEC_TAC (`i:num`,`i:num`);
   SPEC_TAC (`j:num`,`j:num`);
-  REP 2(  CONV_TAC "(quant_left_CONV "n")" (quant_left_CONV "n"));
+  REP 2(  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"n\\")" (quant_left_CONV \\"n\\"));
   INDUCT_TAC;
   REP_GEN_TAC;
   DISCH_ALL_TAC;
@@ -1126,8 +1126,8 @@ let INFINITE_PIGEONHOLE = prove_by_refinement(
   USE 2 (REWRITE_RULE[IN]);
   REWR 2;
   CHO 2;
-  CONV_TAC "(quant_left_CONV "x")" (quant_left_CONV "x");
-  CONV_TAC "(quant_left_CONV "x")" (quant_left_CONV "x");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"x\\")" (quant_left_CONV \\"x\\");
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(quant_left_CONV \\"x\\")" (quant_left_CONV \\"x\\");
   EXISTS_TAC (`u:B->bool`);
   NAME_CONFLICT_TAC;
   EXISTS_TAC (`{i' | I' i' /\ (C INTER u) ((f:A->B) i')}`);
@@ -1793,7 +1793,7 @@ let sum_vector_EXISTS = prove_by_refinement(
   [
   (CHOOSE_TAC o prove_recursive_functions_exist num_RECURSION) `(!f n. sm n 0 f = (\n. &0)) /\ (!f m n. sm  n (SUC m) f = sm n m f + f(n + m))`;
   EXISTS_TAC `\(n,m) f. (sm:num->num->(num->(num->real))->(num->real)) n m f`;
-  CONV_TAC "(DEPTH_CONV GEN_BETA_CONV)" (DEPTH_CONV GEN_BETA_CONV);
+  CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(DEPTH_CONV GEN_BETA_CONV)" (DEPTH_CONV GEN_BETA_CONV);
   ASM_REWRITE_TAC[];
   ]);;
   (* }}} *)
@@ -2165,9 +2165,9 @@ let PI_EST2 = prove_by_refinement(
    REWRITE_TAC[pi_fun;pi_bound_fun];
    COND_CASES_TAC;
    ASM_REWRITE_TAC[];
-   CONV_TAC "(NUM_REDUCE_CONV)" (NUM_REDUCE_CONV);
-   (CONV_TAC "(REAL_RAT_REDUCE_CONV)" (REAL_RAT_REDUCE_CONV));
-   CONV_TAC "(RAND_CONV (REWR_CONV (REAL_ARITH `a*b = b*.a`)))" (RAND_CONV (REWR_CONV (REAL_ARITH `a*b = b*.a`)));
+   CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(NUM_REDUCE_CONV)" (NUM_REDUCE_CONV);
+   (CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(REAL_RAT_REDUCE_CONV)" (REAL_RAT_REDUCE_CONV));
+   CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(RAND_CONV (REWR_CONV (REAL_ARITH `a*b = b*.a`)))" (RAND_CONV (REWR_CONV (REAL_ARITH `a*b = b*.a`)));
    REWRITE_TAC[REAL_ABS_MUL;REAL_ABS_INV;REAL_ABS_POW;prove(`||.(&.n) = (&.n)`,MESON_TAC[REAL_POS;REAL_ABS_REFL])];
    MATCH_MP_TAC (prove(`!x y z. (&.0 <. z /\ (y <=. x) ==> (z*y <=. (z*x)))`,MESON_TAC[REAL_LE_LMUL_EQ]));
    ASSUME_TAC (REWRITE_RULE[] (REAL_RAT_REDUCE_CONV `(&.622)/(&.819) <=. (&.15)/(&.16)`));
@@ -2216,7 +2216,7 @@ let GP16a = prove_by_refinement(
    MATCH_MP_TAC (prove (`(x=y) ==> ((a sums x) ==> (a sums y))`,MESON_TAC[]));
    MATCH_MP_TAC (REAL_ARITH `(b*(a*c) = (b*(&.1))) ==> ((a*b)*c = b)`);
    AP_TERM_TAC;
-   CONV_TAC "(REAL_RAT_REDUCE_CONV)" (REAL_RAT_REDUCE_CONV);
+   CONV_TAC "Jordan/misc_defs_and_lemmas.ml:(REAL_RAT_REDUCE_CONV)" (REAL_RAT_REDUCE_CONV);
    ]);;
   (* }}} *)
 

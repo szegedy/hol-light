@@ -15,7 +15,7 @@ let SYM_ALT = prove
  (`!R:A->A->bool. (!x y. R x y ==> R y x) <=> (!x y. R x y <=> R y x)`,
   GEN_TAC THEN EQ_TAC THEN REPEAT STRIP_TAC THENL
    [EQ_TAC THEN DISCH_TAC THEN FIRST_ASSUM MATCH_MP_TAC;
-    FIRST_ASSUM(fun th -> GEN_REWRITE_TAC I [th])] THEN
+    FIRST_ASSUM(fun th -> GEN_REWRITE_TAC "Library/rstc.ml:I" I [th])] THEN
   FIRST_ASSUM MATCH_ACCEPT_TAC);;
 
 let TRANS_ALT = prove

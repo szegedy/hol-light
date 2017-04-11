@@ -47,15 +47,15 @@ let SQRT_2_POW = prove
 let PROVE_NONTRIVIAL =
   let ptm = `~(x :real^3 = vec 0)` and xtm = `x:real^3` in
   fun x -> prove(vsubst [hol_of_point x,xtm] ptm,
-                 GEN_REWRITE_TAC RAND_CONV [VECTOR_ZERO] THEN
-                 MP_TAC SQRT_2_POW THEN CONV_TAC "REAL_RING" REAL_RING);;
+                 GEN_REWRITE_TAC "Tutorial/Custom_tactics.ml:RAND_CONV" RAND_CONV [VECTOR_ZERO] THEN
+                 MP_TAC SQRT_2_POW THEN CONV_TAC "Tutorial/Custom_tactics.ml:REAL_RING" REAL_RING);;
 
 let PROVE_ORTHOGONAL =
   let ptm = `orthogonal:real^3->real^3->bool` in
   fun (x,y) ->
    prove(list_mk_comb(ptm,[hol_of_point x;hol_of_point y]),
          ONCE_REWRITE_TAC[ORTHOGONAL_VECTOR] THEN
-         MP_TAC SQRT_2_POW THEN CONV_TAC "REAL_RING" REAL_RING);;
+         MP_TAC SQRT_2_POW THEN CONV_TAC "Tutorial/Custom_tactics.ml:REAL_RING" REAL_RING);;
 
 let ppoint = let p = `P:real^3->bool` in fun v -> mk_comb(p,hol_of_point v);;
 

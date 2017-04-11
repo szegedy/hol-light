@@ -95,7 +95,7 @@ let _ =
 
 let NAME_CONFLICT_CONV = relabel_bound_conv;;
 
-let NAME_CONFLICT_TAC =  CONV_TAC "(relabel_bound_conv)" (relabel_bound_conv);;
+let NAME_CONFLICT_TAC =  CONV_TAC "Jordan/tactics_ext2.ml:(relabel_bound_conv)" (relabel_bound_conv);;
 
 (* renames  given bound variables *)
 let alpha_conv env tm = ALPHA tm (deep_alpha env tm);;
@@ -162,7 +162,7 @@ let SELECT_TAC  =
      enough to do this by itself. *)
   let unbeta = prove(
   `!(P:A->bool) (Q:A->bool). (Q ((@) P)) <=> (\t. Q t) ((@) P)`,MESON_TAC[]) in
-  let unbeta_tac = CONV_TAC "(HIGHER_REWRITE_CONV[unbeta] true)" (HIGHER_REWRITE_CONV[unbeta] true) in
+  let unbeta_tac = CONV_TAC "Jordan/tactics_ext2.ml:(HIGHER_REWRITE_CONV[unbeta] true)" (HIGHER_REWRITE_CONV[unbeta] true) in
   unbeta_tac THEN (MATCH_MP_TAC SELECT_THM) THEN BETA_TAC THEN CONJ_TAC
    THENL[
      (DISCH_THEN (fun t-> ALL_TAC)) THEN GEN_TAC;
@@ -311,7 +311,7 @@ let PURE_ONCE_REWRITE_ORD_CONV ord force thl =
 let ONCE_REWRITE_ORD_CONV ord force thl =
   GENERAL_REWRITE_ORD_CONV ord false force ONCE_DEPTH_CONV (basic_net()) thl;;
 
-let REWRITE_ORD_TAC ord force thl = CONV_TAC "(REWRITE_ORD_CONV ord force thl)" (REWRITE_ORD_CONV ord force thl);;
+let REWRITE_ORD_TAC ord force thl = CONV_TAC "Jordan/tactics_ext2.ml:(REWRITE_ORD_CONV ord force thl)" (REWRITE_ORD_CONV ord force thl);;
 
 
 
@@ -405,7 +405,7 @@ let real_poly_conv =
    REWRITE_CONV[REAL_ARITH `(&.0 * x = &.0) /\ (x + &.0 = x) /\
               (&.0 + x = x)`];;
 
-let real_poly_tac = CONV_TAC "real_poly_conv" real_poly_conv;;
+let real_poly_tac = CONV_TAC "Jordan/tactics_ext2.ml:real_poly_conv" real_poly_conv;;
 
 let test_real_poly_tac = prove_by_refinement(
   `!x y . (x + (&.2)*y)*(x- (&.2)*y) = (x*x -. (&.4)*y*y)`,
@@ -564,7 +564,7 @@ let ineq_cert_gen_tac v cert =
         (TAUT `(A ==> B==>C) ==> (A /\ B ==> C)`))) THEN
   REWRITE_TAC[REAL_MUL_LID] THEN
   DISCH_THEN MATCH_MP_TAC THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Jordan/tactics_ext2.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   ASM_SIMP_TAC[REAL_LE_POW_2;
      REAL_ARITH `(&.0 < x ==> &.0 <= x) /\ (&.0 + x = x) /\
           (a <= b ==> &.0 <= b - a) /\
@@ -1007,9 +1007,9 @@ let LEFT i t = (USE i (CONV_RULE (quant_left_CONV t)));;
 
 let RIGHT i t =  (USE i (CONV_RULE (quant_right_CONV t)));;
 
-let LEFT_TAC  t = ((CONV_TAC "(quant_left_CONV t)" (quant_left_CONV t)));;
+let LEFT_TAC  t = ((CONV_TAC "Jordan/tactics_ext2.ml:(quant_left_CONV t)" (quant_left_CONV t)));;
 
-let RIGHT_TAC t =  ( (CONV_TAC "(quant_right_CONV t)" (quant_right_CONV t)));;
+let RIGHT_TAC t =  ( (CONV_TAC "Jordan/tactics_ext2.ml:(quant_right_CONV t)" (quant_right_CONV t)));;
 
 let INR = REWRITE_RULE[IN];;
 
@@ -1236,7 +1236,7 @@ let IMATCH_MP imp ant = MATCH_MP (INR imp) (INR ant);;
 let IMATCH_MP_TAC imp  = MATCH_MP_TAC  (INR imp);;
 
 
-let GBETA_TAC =   (CONV_TAC "(TOP_DEPTH_CONV GEN_BETA_CONV)" (TOP_DEPTH_CONV GEN_BETA_CONV));;
+let GBETA_TAC =   (CONV_TAC "Jordan/tactics_ext2.ml:(TOP_DEPTH_CONV GEN_BETA_CONV)" (TOP_DEPTH_CONV GEN_BETA_CONV));;
 let GBETA_RULE =   (CONV_RULE (TOP_DEPTH_CONV GEN_BETA_CONV));;
 
 (* breaks antecedent into multiple cases *)

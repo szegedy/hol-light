@@ -5,49 +5,49 @@
 let th = time prove
  (`!x y. (x pow 2 = Cx(&2)) /\ (y pow 2 = Cx(&3))
          ==> ((x * y) pow 2 = Cx(&6))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`!x a. (a pow 2 = Cx(&2)) /\ (x pow 2 + a * x + Cx(&1) = Cx(&0))
          ==> (x pow 4 + Cx(&1) = Cx(&0))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`!a x. (a pow 2 = Cx(&2)) /\ (x pow 2 + a * x + Cx(&1) = Cx(&0))
          ==> (x pow 4 + Cx(&1) = Cx(&0))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`~(?a x y. (a pow 2 = Cx(&2)) /\
              (x pow 2 + a * x + Cx(&1) = Cx(&0)) /\
              (y * (x pow 4 + Cx(&1)) + Cx(&1) = Cx(&0)))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`!x. ?y. x pow 2 = y pow 3`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`!x y z a b. (a + b) * (x - y + z) - (a - b) * (x + y + z) =
                Cx(&2) * (b * x + b * z - a * y)`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`!a b. ~(a = b) ==> ?x y. (y * x pow 2 = a) /\ (y * x pow 2 + x = b)`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`!a b c x y. (a * x pow 2 + b * x + c = Cx(&0)) /\
                (a * y pow 2 + b * y + c = Cx(&0)) /\
                ~(x = y)
                ==> (a * x * y = c) /\ (a * (x + y) + b = Cx(&0))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 let th = time prove
  (`~(!a b c x y. (a * x pow 2 + b * x + c = Cx(&0)) /\
                  (a * y pow 2 + b * y + c = Cx(&0))
                  ==> (a * x * y = c) /\ (a * (x + y) + b = Cx(&0)))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 (** geometric example from ``Algorithms for Computer Algebra'':
     right triangle where perp. bisector of hypotenuse passes through the
@@ -60,7 +60,7 @@ let th = time prove
      (y_2 = Cx(&2) * y_4) /\
      (y_1 * y_3 = y_2 * y_4)
      ==> (y_1 pow 2 = y_2 pow 2)`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 (** geometric example: gradient condition for two lines to be non-parallel.
  **)
@@ -69,7 +69,7 @@ let th = time prove
  (`!a1 b1 c1 a2 b2 c2.
         ~(a1 * b2 = a2 * b1)
         ==> ?x y. (a1 * x + b1 * y = c1) /\ (a2 * x + b2 * y = c2)`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 (*********** Apparently takes too long
 
@@ -79,7 +79,7 @@ let th = time prove
                (!z. (a * z pow 2 + b * z + c = Cx(&0))
                     ==> (z = x) \/ (z = y))
                ==> (a * x * y = c) /\ (a * (x + y) + b = Cx(&0))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
 *************)
 
@@ -95,7 +95,7 @@ let th = time prove
                  (x2 - x0) pow 2 + (y2 - y0) pow 2) /\
                 ((x2 - x0) pow 2 + (y2 - y0) pow 2 =
                  (x3 - x0) pow 2 + (y3 - y0) pow 2))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
  **************)
 
@@ -110,7 +110,7 @@ let th = time prove
           ~(x = y)) <=>
    (a = Cx(&0)) /\ (b = Cx(&0)) /\ (c = Cx(&0)) \/
    ~(a = Cx(&0)) /\ ~(b pow 2 = Cx(&4) * a * c)`,
-  CONV_TAC "(LAND_CONV FULL_COMPLEX_QUELIM_CONV)" (LAND_CONV FULL_COMPLEX_QUELIM_CONV) THEN
+  CONV_TAC "Complex/quelim_examples.ml:(LAND_CONV FULL_COMPLEX_QUELIM_CONV)" (LAND_CONV FULL_COMPLEX_QUELIM_CONV) THEN
   REWRITE_TAC[poly; COMPLEX_MUL_RZERO; COMPLEX_ADD_LID; COMPLEX_ADD_RID] THEN
   REWRITE_TAC[COMPLEX_ENTIRE; CX_INJ; REAL_OF_NUM_EQ; ARITH] THEN
   ASM_CASES_TAC `a = Cx(&0)` THEN
@@ -127,7 +127,7 @@ let th = time prove
      `b * b * Cx (&1) + a * c * Cx(--(&4)) =
       Cx(--(&1)) * (Cx(&4) * a * c - b * b)`] THEN
     REWRITE_TAC[COMPLEX_ENTIRE; COMPLEX_SUB_0; CX_INJ] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    CONV_TAC "Complex/quelim_examples.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     ASM_CASES_TAC `b = Cx(&0)` THEN ASM_REWRITE_TAC[] THEN
     ASM_CASES_TAC `c = Cx(&0)` THEN ASM_REWRITE_TAC[] THEN
     REWRITE_TAC[COMPLEX_POW_2; COMPLEX_MUL_RZERO; COMPLEX_MUL_LZERO] THEN
@@ -146,7 +146,7 @@ let th = time prove
              ~(x = y)) <=>
       (a = Cx(&0)) /\ (b = Cx(&0)) /\ (c = Cx(&0)) \/
       ~(a = Cx(&0)) /\ ~(b pow 2 = Cx(&4) * a * c)`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
  ****)
 
@@ -168,7 +168,7 @@ let th = prove
         ((x2 - x0') pow 2 + (y2 - y0') pow 2 =
          (x3 - x0') pow 2 + (y3 - y0') pow 2)
         ==> (x0 = x0') /\ (y0 = y0'))`,
-  CONV_TAC "FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
+  CONV_TAC "Complex/quelim_examples.ml:FULL_COMPLEX_QUELIM_CONV" FULL_COMPLEX_QUELIM_CONV);;
 
  *************)
 

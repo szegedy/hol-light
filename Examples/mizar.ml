@@ -17,7 +17,7 @@ let IMP_CHOOSE_RULE =
   and Q = `Q:bool`
   and pth = prove
    (`(!x:A. P x ==> Q) ==> ((?) P ==> Q)`,
-    GEN_REWRITE_TAC (RAND_CONV o LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "Examples/mizar.ml:(RAND_CONV o LAND_CONV o RAND_CONV)" (RAND_CONV o LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
     REWRITE_TAC[LEFT_IMP_EXISTS_THM]) in
   fun v th ->
     let ant,con = dest_imp (concl th) in

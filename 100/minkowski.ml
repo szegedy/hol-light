@@ -19,7 +19,7 @@ let LEMMA = prove
         ==> ?u v. u IN f /\ v IN f /\ ~(u = v) /\
                   ~(DISJOINT (IMAGE (\x. x - u) (t u))
                              (IMAGE (\x. x - v) (t v)))`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC I [TAUT `p <=> ~ ~p`] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "100/minkowski.ml:I" I [TAUT `p <=> ~ ~p`] THEN
   PURE_REWRITE_TAC[NOT_EXISTS_THM] THEN
   REWRITE_TAC[TAUT `~(a /\ b /\ ~c /\ ~d) <=> a /\ b /\ ~c ==> d`] THEN
   DISCH_TAC THEN
@@ -47,7 +47,7 @@ let LEMMA = prove
      `UNIONS (IMAGE (t:real^N->real^N->bool) f) =
       UNIONS (IMAGE t {u | u IN f /\ ~(t u = {})})`
     SUBST1_TAC THENL
-     [GEN_REWRITE_TAC I [EXTENSION] THEN
+     [GEN_REWRITE_TAC "100/minkowski.ml:I" I [EXTENSION] THEN
       REWRITE_TAC[IN_UNIONS; IN_IMAGE; IN_ELIM_THM] THEN
       MESON_TAC[NOT_IN_EMPTY];
       ALL_TAC] THEN
@@ -193,7 +193,7 @@ let MINKOWSKI = prove
   ASM_SIMP_TAC[VECTOR_MUL_COMPONENT; VECTOR_SUB_COMPONENT] THEN
   REWRITE_TAC[VECTOR_SUB; VECTOR_ADD_LDISTRIB] THEN
   FIRST_ASSUM(MATCH_MP_TAC o GEN_REWRITE_RULE I [convex]) THEN
-  ASM_SIMP_TAC[] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
+  ASM_SIMP_TAC[] THEN CONV_TAC "100/minkowski.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* A slightly sharper variant for use when the set is also closed.           *)
@@ -216,7 +216,7 @@ let MINKOWSKI_COMPACT = prove
     DISCH_THEN(X_CHOOSE_TAC `a:real^N`) THEN
     SUBST1_TAC(VECTOR_ARITH `vec 0:real^N = inv(&2) % a + inv(&2) % --a`) THEN
     FIRST_X_ASSUM(MATCH_MP_TAC o GEN_REWRITE_RULE I [convex]) THEN
-    ASM_SIMP_TAC[] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
+    ASM_SIMP_TAC[] THEN CONV_TAC "100/minkowski.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
     ALL_TAC] THEN
   REPEAT STRIP_TAC THEN
   MP_TAC(ISPECL

@@ -1799,7 +1799,7 @@ let rec INTERVAL_OF_TERM bprec tm =
         let (u,v) = dest_conj c in break_conj v (u::acc) in
        (break_conj conjhyp []) in
     let thm2 = prove(hyp2,REWRITE_TAC[interval] THEN
-                       (CONV_TAC "FLOAT_INEQ_CONV" FLOAT_INEQ_CONV)) in
+                       (CONV_TAC "Jordan/float.ml:FLOAT_INEQ_CONV" FLOAT_INEQ_CONV)) in
     let thm3 = FLOAT_INEQ_CONV hyp3 in
     let thm4 = FLOAT_INEQ_CONV hyp4 in
     let float_tac = REWRITE_TAC[FLOAT_NN;FLOAT_POS;INT_NN;INT_NN_NEG;

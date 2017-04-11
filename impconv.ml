@@ -804,7 +804,7 @@ let IMPCONV_RULE:imp_conv->thm->thm =
     MATCH_MP (c Contra t) th
 
 (* From an implicational conversion builds a tactic. *)
-let IMPCONV_TAC "" :imp_conv->tactic =
+let IMPCONV_TAC "impconv.ml:" :imp_conv->tactic =
   fun cnv (_,c as g) ->
     (MATCH_MP_TAC (cnv Co c) THEN TRY (ACCEPT_TAC TRUTH)) g
 
@@ -1136,7 +1136,7 @@ let ONCE_DEPTH_CTXIMPCONV =
 let CTXIMPCONV_RULE (c:imp_conv with_context) th =
   MATCH_MP (apply c Contra (concl th)) th
 
-let CTXIMPCONV_TAC "(cnv:imp_conv with_context)" (cnv:imp_conv with_context) : tactic =
+let CTXIMPCONV_TAC (cnv:imp_conv with_context) : tactic =
   fun (asms,c as g) ->
     let cnv' = augment cnv (map (concl o snd) asms) in
     (MATCH_MP_TAC (apply cnv' Co c) THEN TRY (ACCEPT_TAC TRUTH)) g
@@ -1398,7 +1398,7 @@ let preprocess = CONJUNCTS o IMPLY_AND
 
 (* Tactic for implicational rewrite. *)
 let IMP_REWRITE_TAC ths =
-  CTXIMPCONV_TAC "(REWRITE_CTXIMPCONV (flat (map preprocess ths)))" (REWRITE_CTXIMPCONV (flat (map preprocess ths)))
+  CTXIMPCONV_TAC (REWRITE_CTXIMPCONV (flat (map preprocess ths)))
 
 let SEQ_IMP_REWRITE_TAC ths =
   let cnv =
@@ -1409,7 +1409,7 @@ let SEQ_IMP_REWRITE_TAC ths =
         let fcnv = REWRITE_CTXIMPCONV o preprocess in
         REPEAT_UNCHANGED_CTXIMPCONV (map fcnv ths)
   in
-  CTXIMPCONV_TAC "cnv" cnv
+  CTXIMPCONV_TAC cnv
 
 (* Tactic for implicational rewrite with assumptions. *)
 let ASM_IMP_REWRITE_TAC = ASM IMP_REWRITE_TAC
@@ -1440,7 +1440,7 @@ let CASE_REWRITE_CTXIMPCONV =
   ONCE_DEPTH_CTXIMPCONV o CASE_REWR_IMPCONV_OF_CONV o IMPREWR_CTXCONV
 
 (* Tactic version of it. *)
-let CASE_REWRITE_TAC = CTXIMPCONV_TAC "o" o CASE_REWRITE_CTXIMPCONV o preprocess
+let CASE_REWRITE_TAC = CTXIMPCONV_TAC o CASE_REWRITE_CTXIMPCONV o preprocess
 
 (*****************************************************************************)
 (* IMPLICATIONAL CONVERSIONS WITH MULTIPLE RESULTS                           *)
@@ -1853,9 +1853,9 @@ let TARGET_REWRITE_IMPCONV : thm list -> term list -> imp_conv =
 let TARGET_REWRITE_TAC sths th =
   let sths' = flat (map preprocess sths) in
   let ths = preprocess th and (+) = THEN_IMPCONV in
-  IMPCONV_TAC "(TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))" (TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))
+  IMPCONV_TAC "impconv.ml:(TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))" (TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))
 
-let HINT_EXISTS_TAC = CTXIMPCONV_TAC "(TOP_DEPTH_CTXIMPCONV EXISTS_CTXIMPCONV)" (TOP_DEPTH_CTXIMPCONV EXISTS_CTXIMPCONV)
+let HINT_EXISTS_TAC = CTXIMPCONV_TAC (TOP_DEPTH_CTXIMPCONV EXISTS_CTXIMPCONV)
 
 end in
 

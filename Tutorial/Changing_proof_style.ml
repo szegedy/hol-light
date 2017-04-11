@@ -23,7 +23,7 @@ let consider (x,lab,t) tac =
   SUBGOAL_THEN tm (X_CHOOSE_THEN x (LABEL_TAC lab)) THENL [tac; ALL_TAC];;
 
 let trivial = MESON_TAC[];;
-let algebra = CONV_TAC "NUM_RING" NUM_RING;;
+let algebra = CONV_TAC "Tutorial/Changing_proof_style.ml:NUM_RING" NUM_RING;;
 let arithmetic = ARITH_TAC;;
 
 let by labs tac = MAP_EVERY (fun l -> USE_THEN l MP_TAC) labs THEN tac;;

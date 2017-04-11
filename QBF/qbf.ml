@@ -363,7 +363,7 @@ let PROPAGATE_FORALL =
   let MONO_FORALL_B = (UNDISCH o prove)
    (`(!x:bool. A x ==> B x) ==> (!) A ==> (!) B`,
     STRIP_TAC THEN
-    GEN_REWRITE_TAC (BINOP_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "QBF/qbf.ml:(BINOP_CONV o RAND_CONV)" (BINOP_CONV o RAND_CONV) [GSYM ETA_AX] THEN
     ASM_MESON_TAC[]) in
   let a_tm = rand(lhand(concl MONO_FORALL_B))
   and b_tm = rand(rand(concl MONO_FORALL_B))
@@ -388,7 +388,7 @@ let PROPAGATE_RIGHT =
   let MONO_EXISTS_RIGHT_B = (UNDISCH o prove)
    (`(A ==> B(x:bool)) ==> A ==> (?) B`,
     ASM_CASES_TAC `A:bool` THEN ASM_REWRITE_TAC[] THEN
-    GEN_REWRITE_TAC (RAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "QBF/qbf.ml:(RAND_CONV o RAND_CONV)" (RAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
     MESON_TAC[]) in
   let a_tm = lhand(concl MONO_EXISTS_RIGHT_B)
   and b_tm = rand(rand(concl MONO_EXISTS_RIGHT_B))
@@ -407,7 +407,7 @@ let PROPAGATE_LEFT =
   let MONO_EXISTS_LEFT_B = (UNDISCH o prove)
    (`(!x:bool. A x ==> B) ==> (?) A ==> B`,
     ASM_CASES_TAC `B:bool` THEN ASM_REWRITE_TAC[] THEN
-    GEN_REWRITE_TAC (funpow 3 RAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "QBF/qbf.ml:(funpow 3 RAND_CONV)" (funpow 3 RAND_CONV) [GSYM ETA_AX] THEN
     MESON_TAC[]) in
   let a_tm = rand(lhand(concl MONO_EXISTS_LEFT_B))
   and b_tm = rand(concl MONO_EXISTS_LEFT_B)

@@ -31,7 +31,7 @@ let MVT2 = prove
     EXISTS_TAC `f' * (g(b:real) - g a) - g' * (f b - f a)` THEN
     ASM_SIMP_TAC[ONCE_REWRITE_RULE[REAL_MUL_SYM] DIFF_CMUL; DIFF_SUB];
     ALL_TAC] THEN
-  GEN_REWRITE_TAC LAND_CONV [SWAP_EXISTS_THM] THEN
+  GEN_REWRITE_TAC "100/lhopital.ml:LAND_CONV" LAND_CONV [SWAP_EXISTS_THM] THEN
   MATCH_MP_TAC MONO_EXISTS THEN X_GEN_TAC `z:real` THEN
   REWRITE_TAC[REAL_ARITH
    `(fb * (gb - ga) - gb * (fb - fa)) -
@@ -46,7 +46,7 @@ let MVT2 = prove
      (X_CHOOSE_TAC `f':real`) (X_CHOOSE_TAC `g':real`)) THEN
   MAP_EVERY EXISTS_TAC [`f':real`; `g':real`] THEN
   ASM_REWRITE_TAC[] THEN ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN
-  CONV_TAC "SYM_CONV" SYM_CONV THEN ONCE_REWRITE_TAC[GSYM REAL_SUB_0] THEN
+  CONV_TAC "100/lhopital.ml:SYM_CONV" SYM_CONV THEN ONCE_REWRITE_TAC[GSYM REAL_SUB_0] THEN
   MATCH_MP_TAC DIFF_UNIQ THEN
   EXISTS_TAC `\x:real. f(x) * (g(b) - g(a)) - g(x) * (f(b) - f(a))` THEN
   EXISTS_TAC `z:real` THEN
@@ -77,14 +77,14 @@ let LHOPITAL_WEAK = prove
        [`f:real->real`; `g:real->real`; `c:real`; `x:real`] MVT2) THEN
       ANTS_TAC THENL
        [ASM_REWRITE_TAC[] THEN
-        GEN_REWRITE_TAC (LAND_CONV o BINDER_CONV o funpow 2 LAND_CONV)
+        GEN_REWRITE_TAC "100/lhopital.ml:(LAND_CONV o BINDER_CONV o funpow 2 LAND_CONV)" (LAND_CONV o BINDER_CONV o funpow 2 LAND_CONV)
           [REAL_LE_LT] THEN
         ASM_MESON_TAC[CONTL_LIM; DIFF_CONT; REAL_LT_IMP_LE; differentiable;
           REAL_ARITH
           `c < z /\ z <= x /\ x < c + d ==> &0 < abs(z - c) /\ abs(z - c) < d`];
         ALL_TAC] THEN
       ASM_REWRITE_TAC[REAL_SUB_RZERO] THEN MATCH_MP_TAC MONO_EXISTS THEN
-      GEN_TAC THEN GEN_REWRITE_TAC (funpow 4 RAND_CONV) [REAL_MUL_SYM] THEN
+      GEN_TAC THEN GEN_REWRITE_TAC "100/lhopital.ml:(funpow 4 RAND_CONV)" (funpow 4 RAND_CONV) [REAL_MUL_SYM] THEN
       REPEAT STRIP_TAC THENL
        [ASM_REAL_ARITH_TAC;
         ASM_REAL_ARITH_TAC;
@@ -96,7 +96,7 @@ let LHOPITAL_WEAK = prove
        [`f:real->real`; `g:real->real`; `x:real`; `c:real`] MVT2) THEN
       ANTS_TAC THENL
        [ASM_REWRITE_TAC[] THEN
-        GEN_REWRITE_TAC (LAND_CONV o BINDER_CONV o LAND_CONV o RAND_CONV)
+        GEN_REWRITE_TAC "100/lhopital.ml:(LAND_CONV o BINDER_CONV o LAND_CONV o RAND_CONV)" (LAND_CONV o BINDER_CONV o LAND_CONV o RAND_CONV)
           [REAL_LE_LT] THEN
         ASM_MESON_TAC[CONTL_LIM; DIFF_CONT; REAL_LT_IMP_LE; differentiable;
           REAL_ARITH
@@ -104,7 +104,7 @@ let LHOPITAL_WEAK = prove
         ALL_TAC] THEN
       ASM_REWRITE_TAC[REAL_SUB_LZERO; REAL_MUL_LNEG; REAL_EQ_NEG2] THEN
       MATCH_MP_TAC MONO_EXISTS THEN GEN_TAC THEN
-      GEN_REWRITE_TAC (funpow 4 RAND_CONV) [REAL_MUL_SYM] THEN
+      GEN_REWRITE_TAC "100/lhopital.ml:(funpow 4 RAND_CONV)" (funpow 4 RAND_CONV) [REAL_MUL_SYM] THEN
       REPEAT STRIP_TAC THENL
        [ASM_REAL_ARITH_TAC;
         ASM_REAL_ARITH_TAC;
@@ -138,7 +138,7 @@ let LHOPITAL_WEAK = prove
   REPEAT STRIP_TAC THENL
    [MP_TAC(SPECL [`g:real->real`; `c:real`; `x:real`] ROLLE) THEN
     ASM_REWRITE_TAC[NOT_IMP; GSYM CONJ_ASSOC] THEN CONJ_TAC THENL
-     [GEN_TAC THEN GEN_REWRITE_TAC (funpow 2 LAND_CONV) [REAL_LE_LT] THEN
+     [GEN_TAC THEN GEN_REWRITE_TAC "100/lhopital.ml:(funpow 2 LAND_CONV)" (funpow 2 LAND_CONV) [REAL_LE_LT] THEN
       ASM_MESON_TAC[CONTL_LIM; DIFF_CONT; REAL_LT_TRANS; REAL_ARITH
        `c < z /\ z <= x /\ abs(x - c) < d
         ==> &0 < abs(z - c) /\ abs(z - c) < d`];
@@ -154,7 +154,7 @@ let LHOPITAL_WEAK = prove
     ASM_MESON_TAC[DIFF_UNIQ];
     MP_TAC(SPECL [`g:real->real`; `x:real`; `c:real`] ROLLE) THEN
     ASM_REWRITE_TAC[NOT_IMP; GSYM CONJ_ASSOC] THEN CONJ_TAC THENL
-     [GEN_TAC THEN GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [REAL_LE_LT] THEN
+     [GEN_TAC THEN GEN_REWRITE_TAC "100/lhopital.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [REAL_LE_LT] THEN
       ASM_MESON_TAC[CONTL_LIM; DIFF_CONT; REAL_LT_TRANS; REAL_ARITH
        `x <= z /\ z < c /\ z < c /\ abs(x - c) < d
         ==> &0 < abs(z - c) /\ abs(z - c) < d`];

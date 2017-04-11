@@ -83,7 +83,7 @@ let CEXP_CONVERGES_UNIFORMLY_CAUCHY = prove
   REWRITE_TAC[SERIES_CAUCHY; LEFT_FORALL_IMP_THM] THEN
   MP_TAC(SPEC `&2 * norm(Cx(R))` REAL_ARCH_SIMPLE) THEN
   REWRITE_TAC[COMPLEX_NORM_CX; COMPLEX_NORM_DIV; COMPLEX_NORM_POW] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   MATCH_MP_TAC(TAUT `(a ==> b) /\ (c ==> d) ==> a ==> (b ==> c) ==> d`) THEN
   CONJ_TAC THENL
    [MATCH_MP_TAC MONO_EXISTS THEN X_GEN_TAC `N:num` THEN DISCH_TAC THEN
@@ -150,7 +150,7 @@ let CEXP_CONVERGES_UNIFORMLY = prove
   FIRST_X_ASSUM(MP_TAC o SPECL [`n + 1`; `n + M + 1`; `z:complex`]) THEN
   ASM_SIMP_TAC[ARITH_RULE `(n >= N ==> n + 1 >= N) /\ M <= n + M + 1`] THEN
   ASM_SIMP_TAC[REAL_LT_IMP_LE; VSUM_ADD_SPLIT; LE_0] THEN
-  CONV_TAC "(ONCE_DEPTH_CONV(ALPHA_CONV `i:num`))" (ONCE_DEPTH_CONV(ALPHA_CONV `i:num`)) THEN NORM_ARITH_TAC);;
+  CONV_TAC "Multivariate/transcendentals.ml:(ONCE_DEPTH_CONV(ALPHA_CONV `i:num`))" (ONCE_DEPTH_CONV(ALPHA_CONV `i:num`)) THEN NORM_ARITH_TAC);;
 
 let HAS_COMPLEX_DERIVATIVE_CEXP = prove
  (`!z. (cexp has_complex_derivative cexp(z)) (at z)`,
@@ -172,7 +172,7 @@ let HAS_COMPLEX_DERIVATIVE_CEXP = prove
     REWRITE_TAC[NOT_SUC; SUC_SUB1; GSYM REAL_OF_NUM_SUC; FACT;
          CX_ADD; CX_MUL; GSYM REAL_OF_NUM_MUL; COMPLEX_INV_MUL] THEN
     REWRITE_TAC[REAL_ARITH `~(&n + &1 = &0)`] THEN
-    ABBREV_TAC `a = inv(Cx(&(FACT n)))` THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD;
+    ABBREV_TAC `a = inv(Cx(&(FACT n)))` THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD;
     REPEAT STRIP_TAC THEN
     MP_TAC(SPECL [`norm(z:complex) + &1`; `e:real`]
        CEXP_CONVERGES_UNIFORMLY) THEN
@@ -256,7 +256,7 @@ let CEXP_ADD_MUL = prove
   MATCH_MP_TAC HAS_COMPLEX_DERIVATIVE_ZERO_UNIQUE THEN
   EXISTS_TAC `Cx(&0)` THEN REWRITE_TAC[OPEN_UNIV; CONVEX_UNIV; IN_UNIV] THEN
   REWRITE_TAC[COMPLEX_ADD_RID; COMPLEX_NEG_0; CEXP_0; COMPLEX_MUL_RID] THEN
-  GEN_TAC THEN COMPLEX_DIFF_TAC THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  GEN_TAC THEN COMPLEX_DIFF_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CEXP_NEG_RMUL = prove
  (`!z. cexp(z) * cexp(--z) = Cx(&1)`,
@@ -270,13 +270,13 @@ let CEXP_NEG_LMUL = prove
 let CEXP_NEG = prove
  (`!z. cexp(--z) = inv(cexp z)`,
   MP_TAC CEXP_NEG_LMUL THEN MATCH_MP_TAC MONO_FORALL THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CEXP_ADD = prove
  (`!w z. cexp(w + z) = cexp(w) * cexp(z)`,
   REPEAT GEN_TAC THEN
   MP_TAC(SPECL [`w:complex`; `z:complex`] CEXP_ADD_MUL) THEN
-  MP_TAC(SPEC `z:complex` CEXP_NEG_LMUL) THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  MP_TAC(SPEC `z:complex` CEXP_NEG_LMUL) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CEXP_SUB = prove
  (`!w z. cexp(w - z) = cexp(w) / cexp(z)`,
@@ -286,7 +286,7 @@ let CEXP_SUB = prove
 let CEXP_NZ = prove
  (`!z. ~(cexp(z) = Cx(&0))`,
   MP_TAC CEXP_NEG_LMUL THEN MATCH_MP_TAC MONO_FORALL THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CEXP_N = prove
  (`!n x. cexp(Cx(&n) * x) = cexp(x) pow n`,
@@ -321,7 +321,7 @@ let CEXP_BOUND_BLEMMA = prove
     HAS_COMPLEX_DERIVATIVE_AT_WITHIN; HAS_COMPLEX_DERIVATIVE_CEXP] THEN
   DISCH_THEN(MP_TAC o SPECL [`z:complex`; `Cx(&0)`]) THEN
   REWRITE_TAC[COMPLEX_NORM_0; CEXP_0; COMPLEX_SUB_RZERO] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN ASM_REWRITE_TAC[] THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN ASM_REWRITE_TAC[] THEN
   MATCH_MP_TAC(NORM_ARITH
    `norm(y) = &1 /\ d <= e ==> norm(x - y) <= d ==> norm(x) <= &1 + e`) THEN
   REWRITE_TAC[COMPLEX_NORM_CX; real_div; REAL_ABS_NUM] THEN
@@ -337,7 +337,7 @@ let CEXP_BOUND_HALF = prove
   SIMP_TAC[COMPACT_CONTINUOUS_IMAGE; COMPACT_CBALL; CONTINUOUS_ON_CEXP;
            IMAGE_EQ_EMPTY; CBALL_EQ_EMPTY; FORALL_IN_IMAGE; EXISTS_IN_IMAGE;
            IN_CBALL; dist; COMPLEX_SUB_LZERO; NORM_NEG] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   DISCH_THEN(X_CHOOSE_THEN `w:complex` STRIP_ASSUME_TAC) THEN
   FIRST_ASSUM(MP_TAC o SPEC `w:complex` o MATCH_MP CEXP_BOUND_BLEMMA) THEN
   FIRST_X_ASSUM(MP_TAC o SPEC `z:complex`) THEN
@@ -353,7 +353,7 @@ let CEXP_BOUND_LEMMA = prove
                CEXP_BOUND_HALF] THEN
   DISCH_THEN(MP_TAC o SPECL [`z:complex`; `Cx(&0)`]) THEN
   REWRITE_TAC[COMPLEX_NORM_0; CEXP_0; COMPLEX_SUB_RZERO] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN ASM_REWRITE_TAC[] THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN ASM_REWRITE_TAC[] THEN
   MATCH_MP_TAC(NORM_ARITH
    `norm(y) = &1 ==> norm(x - y) <= d ==> norm(x) <= &1 + d`) THEN
   REWRITE_TAC[COMPLEX_NORM_CX; REAL_ABS_NUM]);;
@@ -371,51 +371,51 @@ let csin = new_definition
 let CSIN_0 = prove
  (`csin(Cx(&0)) = Cx(&0)`,
   REWRITE_TAC[csin; COMPLEX_MUL_RZERO; COMPLEX_SUB_REFL] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CCOS_0 = prove
  (`ccos(Cx(&0)) = Cx(&1)`,
   REWRITE_TAC[ccos; COMPLEX_MUL_RZERO; CEXP_0] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CSIN_CIRCLE = prove
  (`!z. csin(z) pow 2 + ccos(z) pow 2 = Cx(&1)`,
   GEN_TAC THEN REWRITE_TAC[csin; ccos] THEN
   MP_TAC(SPEC `ii * z` CEXP_NEG_LMUL) THEN
   REWRITE_TAC[COMPLEX_MUL_LNEG] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CSIN_ADD = prove
  (`!w z. csin(w + z) = csin(w) * ccos(z) + ccos(w) * csin(z)`,
   REPEAT GEN_TAC THEN
   REWRITE_TAC[csin; ccos; COMPLEX_ADD_LDISTRIB; CEXP_ADD] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CCOS_ADD = prove
  (`!w z. ccos(w + z) = ccos(w) * ccos(z) - csin(w) * csin(z)`,
   REPEAT GEN_TAC THEN
   REWRITE_TAC[csin; ccos; COMPLEX_ADD_LDISTRIB; CEXP_ADD] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CSIN_NEG = prove
  (`!z. csin(--z) = --(csin(z))`,
   REWRITE_TAC[csin; COMPLEX_MUL_LNEG; COMPLEX_MUL_RNEG; COMPLEX_NEG_NEG] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CCOS_NEG = prove
  (`!z. ccos(--z) = ccos(z)`,
   REWRITE_TAC[ccos; COMPLEX_MUL_LNEG; COMPLEX_MUL_RNEG; COMPLEX_NEG_NEG] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CSIN_DOUBLE = prove
  (`!z. csin(Cx(&2) * z) = Cx(&2) * csin(z) * ccos(z)`,
   REWRITE_TAC[COMPLEX_RING `Cx(&2) * x = x + x`; CSIN_ADD] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CCOS_DOUBLE = prove
  (`!z. ccos(Cx(&2) * z) = (ccos(z) pow 2) - (csin(z) pow 2)`,
   REWRITE_TAC[COMPLEX_RING `Cx(&2) * x = x + x`; CCOS_ADD] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CSIN_SUB = prove
  (`!w z. csin(w - z) = csin(w) * ccos(z) - ccos(w) * csin(z)`,
@@ -428,55 +428,55 @@ let CCOS_SUB = prove
 
 let COMPLEX_MUL_CSIN_CSIN = prove
  (`!w z. csin(w) * csin(z) = (ccos(w - z) - ccos(w + z)) / Cx(&2)`,
-  REWRITE_TAC[CCOS_ADD; CCOS_SUB] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CCOS_ADD; CCOS_SUB] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_MUL_CSIN_CCOS = prove
  (`!w z. csin(w) * ccos(z) = (csin(w + z) + csin(w - z)) / Cx(&2)`,
-  REWRITE_TAC[CSIN_ADD; CSIN_SUB] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CSIN_ADD; CSIN_SUB] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_MUL_CCOS_CSIN = prove
  (`!w z. ccos(w) * csin(z) = (csin(w + z) - csin(w - z)) / Cx(&2)`,
-  REWRITE_TAC[CSIN_ADD; CSIN_SUB] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CSIN_ADD; CSIN_SUB] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_MUL_CCOS_CCOS = prove
  (`!w z. ccos(w) * ccos(z) = (ccos(w - z) + ccos(w + z)) / Cx(&2)`,
-  REWRITE_TAC[CCOS_ADD; CCOS_SUB] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CCOS_ADD; CCOS_SUB] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_ADD_CSIN = prove
  (`!w z. csin(w) + csin(z) =
          Cx(&2) * csin((w + z) / Cx(&2)) * ccos((w - z) / Cx(&2))`,
   SIMP_TAC[COMPLEX_MUL_CSIN_CCOS; COMPLEX_RING `Cx(&2) * x / Cx(&2) = x`] THEN
-  REPEAT GEN_TAC THEN BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REPEAT GEN_TAC THEN BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_SUB_CSIN = prove
  (`!w z. csin(w) - csin(z) =
          Cx(&2) * csin((w - z) / Cx(&2)) * ccos((w + z) / Cx(&2))`,
   SIMP_TAC[COMPLEX_MUL_CSIN_CCOS; COMPLEX_RING `Cx(&2) * x / Cx(&2) = x`] THEN
   REPEAT GEN_TAC THEN REWRITE_TAC[complex_sub; GSYM CSIN_NEG] THEN
-  BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_ADD_CCOS = prove
  (`!w z. ccos(w) + ccos(z) =
          Cx(&2) * ccos((w + z) / Cx(&2)) * ccos((w - z) / Cx(&2))`,
   SIMP_TAC[COMPLEX_MUL_CCOS_CCOS; COMPLEX_RING `Cx(&2) * x / Cx(&2) = x`] THEN
-  REPEAT GEN_TAC THEN GEN_REWRITE_TAC LAND_CONV [COMPLEX_ADD_SYM] THEN
-  BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REPEAT GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [COMPLEX_ADD_SYM] THEN
+  BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_SUB_CCOS = prove
  (`!w z. ccos(w) - ccos(z) =
          Cx(&2) * csin((w + z) / Cx(&2)) * csin((z - w) / Cx(&2))`,
   SIMP_TAC[COMPLEX_MUL_CSIN_CSIN; COMPLEX_RING `Cx(&2) * x / Cx(&2) = x`] THEN
-  REPEAT GEN_TAC THEN BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REPEAT GEN_TAC THEN BINOP_TAC THEN AP_TERM_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CCOS_DOUBLE_CCOS = prove
  (`!z. ccos(Cx(&2) * z) = Cx(&2) * ccos z pow 2 - Cx(&1)`,
   GEN_TAC THEN REWRITE_TAC[COMPLEX_RING `Cx(&2) * x = x + x`; CCOS_ADD] THEN
-  MP_TAC(SPEC `z:complex` CSIN_CIRCLE) THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  MP_TAC(SPEC `z:complex` CSIN_CIRCLE) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CCOS_DOUBLE_CSIN = prove
  (`!z. ccos(Cx(&2) * z) = Cx(&1) - Cx(&2) * csin z pow 2`,
   GEN_TAC THEN REWRITE_TAC[COMPLEX_RING `Cx(&2) * x = x + x`; CCOS_ADD] THEN
-  MP_TAC(SPEC `z:complex` CSIN_CIRCLE) THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  MP_TAC(SPEC `z:complex` CSIN_CIRCLE) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Euler and de Moivre formulas.                                             *)
@@ -484,7 +484,7 @@ let CCOS_DOUBLE_CSIN = prove
 
 let CEXP_EULER = prove
  (`!z. cexp(ii * z) = ccos(z) + ii * csin(z)`,
-  REWRITE_TAC[ccos; csin] THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  REWRITE_TAC[ccos; csin] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let DEMOIVRE = prove
  (`!z n. (ccos z + ii * csin z) pow n =
@@ -574,7 +574,7 @@ let REAL_EXP_LE_X = prove
            VSUM_COMPONENT; EVENTUALLY_SEQUENTIALLY; FROM_0; INTER_UNIV] THEN
   REWRITE_TAC[GSYM CX_DIV; GSYM RE_DEF; RE_CX; GSYM CX_POW] THEN
   EXISTS_TAC `1` THEN SIMP_TAC[SUM_CLAUSES_LEFT; LE_0; ADD_CLAUSES] THEN
-  CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
   SIMP_TAC[real_pow; REAL_POW_1; REAL_DIV_1; REAL_LE_ADDR; REAL_ADD_ASSOC] THEN
   SUBGOAL_THEN
    `!n. &0 <= sum(2*1..2*n+1) (\k. x pow k / &(FACT k))`
@@ -610,7 +610,7 @@ let REAL_EXP_LT_1 = prove
 
 let REAL_EXP_MONO_IMP = prove
  (`!x y. x < y ==> exp(x) < exp(y)`,
-  REPEAT GEN_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM REAL_SUB_LT] THEN
+  REPEAT GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_SUB_LT] THEN
   DISCH_THEN(MP_TAC o MATCH_MP REAL_EXP_LT_1) THEN
   SIMP_TAC[REAL_EXP_SUB; REAL_LT_RDIV_EQ; REAL_EXP_POS_LT; REAL_MUL_LID]);;
 
@@ -660,7 +660,7 @@ let CNJ_CSIN = prove
  (`!z. cnj(csin z) = csin(cnj z)`,
   REWRITE_TAC[csin; CNJ_DIV; CNJ_SUB; CNJ_MUL; CNJ_CX; CNJ_CEXP;
               CNJ_NEG; CNJ_II; COMPLEX_NEG_NEG] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CNJ_CCOS = prove
  (`!z. cnj(ccos z) = ccos(cnj z)`,
@@ -685,9 +685,9 @@ let CX_COS = prove
 
 let HAS_COMPLEX_DERIVATIVE_CSIN = prove
  (`!z. (csin has_complex_derivative ccos z) (at z)`,
-  GEN_TAC THEN GEN_REWRITE_TAC (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+  GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RATOR_CONV o LAND_CONV)" (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[csin; ccos] THEN COMPLEX_DIFF_TAC THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_DIFFERENTIABLE_AT_CSIN = prove
  (`!z. csin complex_differentiable at z`,
@@ -706,9 +706,9 @@ add_complex_differentiation_theorems
 
 let HAS_COMPLEX_DERIVATIVE_CCOS = prove
  (`!z. (ccos has_complex_derivative --csin z) (at z)`,
-  GEN_TAC THEN GEN_REWRITE_TAC (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+  GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RATOR_CONV o LAND_CONV)" (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[csin; ccos] THEN COMPLEX_DIFF_TAC THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_DIFFERENTIABLE_AT_CCOS = prove
  (`!z. ccos complex_differentiable at z`,
@@ -877,7 +877,7 @@ let REAL_SUB_COS = prove
 let COS_DOUBLE_SIN = prove
  (`!x. cos(&2 * x) = &1 - &2 * sin x pow 2`,
   GEN_TAC THEN REWRITE_TAC[REAL_RING `&2 * x = x + x`; COS_ADD] THEN
-  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC "REAL_RING" REAL_RING);;
+  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Get a nice real/imaginary separation in Euler's formula.                  *)
@@ -885,7 +885,7 @@ let COS_DOUBLE_SIN = prove
 
 let EULER = prove
  (`!z. cexp(z) = Cx(exp(Re z)) * (Cx(cos(Im z)) + ii * Cx(sin(Im z)))`,
-  GEN_TAC THEN GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [COMPLEX_EXPAND] THEN
+  GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [COMPLEX_EXPAND] THEN
   REWRITE_TAC[CEXP_ADD; CEXP_EULER; GSYM CX_SIN; GSYM CX_COS; GSYM CX_EXP]);;
 
 let RE_CEXP = prove
@@ -904,7 +904,7 @@ let RE_CSIN = prove
   SIMP_TAC[COMPLEX_FIELD `x / (Cx(&2) * ii) = ii * --(x / Cx(&2))`] THEN
   REWRITE_TAC[IM_MUL_II; IM_DIV_CX; RE_NEG; IM_SUB; IM_CEXP;
               RE_MUL_II; COMPLEX_MUL_LNEG; IM_NEG] THEN
-  REWRITE_TAC[REAL_NEG_NEG; SIN_NEG] THEN CONV_TAC "REAL_RING" REAL_RING);;
+  REWRITE_TAC[REAL_NEG_NEG; SIN_NEG] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let IM_CSIN = prove
  (`!z. Im(csin z) = (exp(Im z) - exp(--(Im z))) / &2 * cos(Re z)`,
@@ -912,21 +912,21 @@ let IM_CSIN = prove
   SIMP_TAC[COMPLEX_FIELD `x / (Cx(&2) * ii) = ii * --(x / Cx(&2))`] THEN
   REWRITE_TAC[IM_MUL_II; RE_DIV_CX; RE_NEG; RE_SUB; RE_CEXP;
               RE_MUL_II; COMPLEX_MUL_LNEG; IM_NEG] THEN
-  REWRITE_TAC[REAL_NEG_NEG; COS_NEG] THEN CONV_TAC "REAL_RING" REAL_RING);;
+  REWRITE_TAC[REAL_NEG_NEG; COS_NEG] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let RE_CCOS = prove
  (`!z. Re(ccos z) = (exp(Im z) + exp(--(Im z))) / &2 * cos(Re z)`,
   GEN_TAC THEN REWRITE_TAC[ccos] THEN
   REWRITE_TAC[RE_DIV_CX; RE_ADD; RE_CEXP; COMPLEX_MUL_LNEG;
               RE_MUL_II; IM_MUL_II; RE_NEG; IM_NEG; COS_NEG] THEN
-  REWRITE_TAC[REAL_NEG_NEG] THEN CONV_TAC "REAL_RING" REAL_RING);;
+  REWRITE_TAC[REAL_NEG_NEG] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let IM_CCOS = prove
  (`!z. Im(ccos z) = (exp(--(Im z)) - exp(Im z)) / &2 * sin(Re z)`,
   GEN_TAC THEN REWRITE_TAC[ccos] THEN
   REWRITE_TAC[IM_DIV_CX; IM_ADD; IM_CEXP; COMPLEX_MUL_LNEG;
               RE_MUL_II; IM_MUL_II; RE_NEG; IM_NEG; SIN_NEG] THEN
-  REWRITE_TAC[REAL_NEG_NEG] THEN CONV_TAC "REAL_RING" REAL_RING);;
+  REWRITE_TAC[REAL_NEG_NEG] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Some special intermediate value theorems over the reals.                  *)
@@ -991,7 +991,7 @@ let log_def = new_definition
 
 let EXP_LOG = prove
  (`!x. &0 < x ==> exp(log x) = x`,
-  REPEAT STRIP_TAC THEN REWRITE_TAC[log_def] THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN
+  REPEAT STRIP_TAC THEN REWRITE_TAC[log_def] THEN CONV_TAC "Multivariate/transcendentals.ml:SELECT_CONV" SELECT_CONV THEN
   SUBGOAL_THEN `?y. --inv(x) <= y /\ y <= x /\ Re(cexp(Cx y)) = x`
   MP_TAC THENL [ALL_TAC; MESON_TAC[CX_EXP; RE_CX]] THEN
   MATCH_MP_TAC IVT_INCREASING_RE THEN
@@ -1020,7 +1020,7 @@ let LOG_MUL = prove
 
 let LOG_INJ = prove
  (`!x y. &0 < x /\ &0 < y ==> (log(x) = log(y) <=> x = y)`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM REAL_EXP_INJ] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_EXP_INJ] THEN
   ASM_SIMP_TAC[EXP_LOG]);;
 
 let LOG_1 = prove
@@ -1039,7 +1039,7 @@ let LOG_DIV = prove
 
 let LOG_MONO_LT = prove
  (`!x y. &0 < x /\ &0 < y ==> (log(x) < log(y) <=> x < y)`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM REAL_EXP_MONO_LT] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_EXP_MONO_LT] THEN
   ASM_SIMP_TAC[EXP_LOG]);;
 
 let LOG_MONO_LT_IMP = prove
@@ -1052,7 +1052,7 @@ let LOG_MONO_LT_REV = prove
 
 let LOG_MONO_LE = prove
  (`!x y. &0 < x /\ &0 < y ==> (log(x) <= log(y) <=> x <= y)`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM REAL_EXP_MONO_LE] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_EXP_MONO_LE] THEN
   ASM_SIMP_TAC[EXP_LOG]);;
 
 let LOG_MONO_LE_IMP = prove
@@ -1112,7 +1112,7 @@ let SIN_NEARZERO = prove
   MP_TAC(SPEC `&1 / &2` (CONJUNCT2
    (REWRITE_RULE[has_complex_derivative; HAS_DERIVATIVE_AT_ALT]
     (ISPEC `Cx(&0)` HAS_COMPLEX_DERIVATIVE_CSIN)))) THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[CSIN_0; COMPLEX_SUB_RZERO; CCOS_0; COMPLEX_MUL_LZERO;
               COMPLEX_MUL_LID] THEN
   DISCH_THEN(X_CHOOSE_THEN `d:real` STRIP_ASSUME_TAC) THEN
@@ -1130,7 +1130,7 @@ let COS_NONTRIVIAL = prove
  (`?x. &0 < x /\ ~(cos x = &1)`,
   MP_TAC SIN_NONTRIVIAL THEN MATCH_MP_TAC MONO_EXISTS THEN
   MP_TAC SIN_CIRCLE THEN MATCH_MP_TAC MONO_FORALL THEN
-  CONV_TAC "REAL_FIELD" REAL_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD);;
 
 let COS_DOUBLE_BOUND = prove
  (`!x. &0 <= cos x ==> &2 * (&1 - cos x) <= &1 - cos(&2 * x)`,
@@ -1217,7 +1217,7 @@ let pi = new_definition
 
 let PI_WORKS = prove
  (`&0 < pi /\ sin(pi) = &0 /\ !x. &0 < x /\ x < pi ==> ~(sin x = &0)`,
-  REWRITE_TAC[pi] THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN
+  REWRITE_TAC[pi] THEN CONV_TAC "Multivariate/transcendentals.ml:SELECT_CONV" SELECT_CONV THEN
   REWRITE_TAC[SIN_HASZERO_MINIMAL]);;
 
 (* ------------------------------------------------------------------------- *)
@@ -1415,7 +1415,7 @@ let COS_ONE_2PI = prove
     DISCH_THEN(DISJ_CASES_THEN(X_CHOOSE_THEN `n:num` SUBST_ALL_TAC)) THEN
     POP_ASSUM MP_TAC THEN REWRITE_TAC[COS_NEG; COS_NPI; REAL_POW_NEG] THEN
     COND_CASES_TAC THEN REWRITE_TAC[REAL_POW_ONE] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     FIRST_X_ASSUM(MP_TAC o REWRITE_RULE[EVEN_EXISTS]) THEN
     REWRITE_TAC[OR_EXISTS_THM] THEN MATCH_MP_TAC MONO_EXISTS THEN
     SIMP_TAC[GSYM REAL_OF_NUM_MUL] THEN REAL_ARITH_TAC;
@@ -1425,7 +1425,7 @@ let COS_ONE_2PI = prove
 
 let SIN_COS_SQRT = prove
  (`!x. &0 <= sin(x) ==> (sin(x) = sqrt(&1 - (cos(x) pow 2)))`,
-  REPEAT STRIP_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SQRT_UNIQUE THEN
+  REPEAT STRIP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SQRT_UNIQUE THEN
   ASM_REWRITE_TAC[SIN_CIRCLE; REAL_EQ_SUB_LADD]);;
 
 let SIN_EQ_0_PI = prove
@@ -1443,7 +1443,7 @@ let COS_TREBLE_COS = prove
  (`!x. cos(&3 * x) = &4 * cos(x) pow 3 - &3 * cos x`,
   GEN_TAC THEN REWRITE_TAC[COS_ADD; REAL_ARITH `&3 * x = &2 * x + x`] THEN
   REWRITE_TAC[SIN_DOUBLE; COS_DOUBLE_COS] THEN
-  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC "REAL_RING" REAL_RING);;
+  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let COS_PI6 = prove
  (`cos(pi / &6) = sqrt(&3) / &2`,
@@ -1525,7 +1525,7 @@ let SINCOS_TOTAL_PI2 = prove
     SUBGOAL_THEN `x = cos t \/ x = --(cos t)` MP_TAC THENL
      [MP_TAC(SPEC `t:real` SIN_CIRCLE);
       MP_TAC(SPEC `t:real` COS_POS_PI_LE)] THEN
-    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "REAL_FIELD" REAL_FIELD]);;
+    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD]);;
 
 let SINCOS_TOTAL_PI = prove
  (`!x y. &0 <= y /\ x pow 2 + y pow 2 = &1
@@ -1610,12 +1610,12 @@ let SINCOS_PRINCIPAL_VALUE = prove
    SIMP_TAC[REAL_DIV_LMUL; REAL_ENTIRE; REAL_OF_NUM_EQ; ARITH; REAL_LT_IMP_NZ;
     PI_POS; REAL_ARITH `a - (a - b - c):real = b + c`; SIN_ADD; COS_ADD] THEN
    SIMP_TAC[FLOOR_FRAC; SIN_INTEGER_2PI; COS_INTEGER_2PI] THEN
-   CONV_TAC "REAL_RING" REAL_RING]);;
+   CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING]);;
 
 let CEXP_COMPLEX = prove
  (`!r t. cexp(complex(r,t)) = Cx(exp r) * complex(cos t,sin t)`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [COMPLEX_EXPAND] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [COMPLEX_EXPAND] THEN
   REWRITE_TAC[RE; IM; CEXP_ADD; CEXP_EULER; CX_EXP] THEN
   REWRITE_TAC[COMPLEX_TRAD; CX_SIN; CX_COS]);;
 
@@ -1659,7 +1659,7 @@ let CEXP_EQ_1 = prove
     DISCH_THEN(X_CHOOSE_THEN `n:num` SUBST_ALL_TAC) THEN
     SIMP_TAC[real_abs; PI_POS; REAL_LT_IMP_LE; COS_NPI] THEN
     REWRITE_TAC[REAL_POW_NEG; REAL_POW_ONE] THEN
-    COND_CASES_TAC THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    COND_CASES_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     FIRST_X_ASSUM(CHOOSE_THEN SUBST1_TAC o REWRITE_RULE[EVEN_EXISTS]) THEN
     REWRITE_TAC[GSYM REAL_OF_NUM_MUL; REAL_ARITH `(&2 * x) / &2 = x`] THEN
     REWRITE_TAC[INTEGER_CLOSED];
@@ -1752,13 +1752,13 @@ let CCOS_EQ_0 = prove
 
 let CCOS_EQ_1 = prove
  (`!z. ccos z = Cx(&1) <=> ?n. integer n /\ z = Cx(&2 * n * pi)`,
-  GEN_TAC THEN GEN_REWRITE_TAC (LAND_CONV o LAND_CONV o RAND_CONV)
+  GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o LAND_CONV o RAND_CONV)" (LAND_CONV o LAND_CONV o RAND_CONV)
    [COMPLEX_RING `z = Cx(&2) * z / Cx(&2)`] THEN
   REWRITE_TAC[CCOS_DOUBLE_CSIN; COMPLEX_RING
    `a - Cx(&2) * s pow 2 = a <=> s = Cx(&0)`] THEN
   REWRITE_TAC[CSIN_EQ_0; CX_MUL] THEN
   EQ_TAC THEN MATCH_MP_TAC MONO_EXISTS THEN SIMP_TAC[] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CSIN_EQ_1 = prove
  (`!z. csin z = Cx(&1) <=> ?n. integer n /\ z = Cx((&2 * n + &1 / &2) * pi)`,
@@ -1816,19 +1816,19 @@ let DIST_CEXP_II_1 = prove
   REWRITE_TAC[RE_CX; IM_CX; REAL_POW2_ABS; REAL_POW_MUL] THEN
   MP_TAC(ISPEC `t / &2` COS_DOUBLE_SIN) THEN
   REWRITE_TAC[REAL_ARITH `&2 * t / &2 = t`] THEN
-  MP_TAC(SPEC `t:real` SIN_CIRCLE) THEN CONV_TAC "REAL_RING" REAL_RING);;
+  MP_TAC(SPEC `t:real` SIN_CIRCLE) THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let CX_SINH = prove
  (`Cx((exp x - inv(exp x)) / &2) = --ii * csin(ii * Cx x)`,
   REWRITE_TAC[csin; COMPLEX_RING `--ii * ii * z = z /\ ii * ii * z = --z`] THEN
   REWRITE_TAC[CEXP_NEG; GSYM CX_EXP; GSYM CX_INV; CX_SUB; CX_DIV] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CX_COSH = prove
  (`Cx((exp x + inv(exp x)) / &2) = ccos(ii * Cx x)`,
   REWRITE_TAC[ccos; COMPLEX_RING `--ii * ii * z = z /\ ii * ii * z = --z`] THEN
   REWRITE_TAC[CEXP_NEG; GSYM CX_EXP; GSYM CX_INV; CX_ADD; CX_DIV] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let NORM_CCOS_POW_2 = prove
  (`!z. norm(ccos z) pow 2 =
@@ -1844,7 +1844,7 @@ let NORM_CCOS_POW_2 = prove
   REWRITE_TAC[GSYM CX_EXP; GSYM CX_INV; IM_CX; RE_CX] THEN
   MAP_EVERY X_GEN_TAC [`x:real`; `y:real`] THEN
   MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN MP_TAC(SPEC `y:real` REAL_EXP_NZ) THEN
-  CONV_TAC "REAL_FIELD" REAL_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD);;
 
 let NORM_CSIN_POW_2 = prove
  (`!z. norm(csin z) pow 2 =
@@ -1862,13 +1862,13 @@ let NORM_CSIN_POW_2 = prove
   REWRITE_TAC[REAL_EXP_N; COS_DOUBLE] THEN
   MAP_EVERY X_GEN_TAC [`x:real`; `y:real`] THEN
   MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN MP_TAC(SPEC `y:real` REAL_EXP_NZ) THEN
-  CONV_TAC "REAL_FIELD" REAL_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD);;
 
 let CSIN_EQ = prove
  (`!w z. csin w = csin z <=>
          ?n. integer n /\
              (w = z + Cx(&2 * n * pi) \/ w = --z + Cx((&2 * n + &1) * pi))`,
-  REPEAT GEN_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM COMPLEX_SUB_0] THEN
+  REPEAT GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM COMPLEX_SUB_0] THEN
   REWRITE_TAC[COMPLEX_SUB_CSIN; COMPLEX_ENTIRE; CSIN_EQ_0; CCOS_EQ_0] THEN
   REWRITE_TAC[CX_INJ; REAL_OF_NUM_EQ; ARITH_EQ; OR_EXISTS_THM] THEN
   AP_TERM_TAC THEN REWRITE_TAC[FUN_EQ_THM] THEN X_GEN_TAC `n:real` THEN
@@ -1876,19 +1876,19 @@ let CSIN_EQ = prove
   ASM_REWRITE_TAC[COMPLEX_FIELD `a / Cx(&2) = b <=> a = Cx(&2) * b`] THEN
   REWRITE_TAC[GSYM CX_MUL; REAL_ARITH
     `&2 * (n + &1 / &2) * pi = (&2 * n + &1) * pi`] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CCOS_EQ = prove
  (`!w z. ccos(w) = ccos(z) <=>
          ?n. integer n /\
              (w = z + Cx(&2 * n * pi) \/ w = --z + Cx(&2 * n * pi))`,
-  REPEAT GEN_TAC THEN CONV_TAC "(LAND_CONV SYM_CONV)" (LAND_CONV SYM_CONV) THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM COMPLEX_SUB_0] THEN
+  REPEAT GEN_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:(LAND_CONV SYM_CONV)" (LAND_CONV SYM_CONV) THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM COMPLEX_SUB_0] THEN
   REWRITE_TAC[COMPLEX_SUB_CCOS; COMPLEX_ENTIRE; CSIN_EQ_0] THEN
   REWRITE_TAC[CX_INJ; REAL_OF_NUM_EQ; ARITH_EQ; OR_EXISTS_THM] THEN
   AP_TERM_TAC THEN REWRITE_TAC[FUN_EQ_THM] THEN X_GEN_TAC `n:real` THEN
   ASM_CASES_TAC `integer(n)` THEN ASM_REWRITE_TAC[CX_MUL] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let SIN_EQ = prove
  (`!x y. sin x = sin y <=>
@@ -1951,11 +1951,11 @@ let TAYLOR_CEXP = prove
         COMPLEX_TAYLOR) THEN
   REWRITE_TAC[CONVEX_SEGMENT; NORM_CEXP; REAL_EXP_MONO_LE] THEN ANTS_TAC THENL
    [REWRITE_TAC[IN_SEGMENT] THEN REPEAT STRIP_TAC THENL
-     [GEN_REWRITE_TAC(RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+     [GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RATOR_CONV o LAND_CONV)" (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
       COMPLEX_DIFF_TAC THEN REWRITE_TAC[COMPLEX_MUL_LID];
       ASM_REWRITE_TAC[GSYM COMPLEX_VEC_0; VECTOR_MUL_RZERO] THEN
       REWRITE_TAC[VECTOR_ADD_LID; COMPLEX_CMUL; COMPLEX_NORM_MUL] THEN
-      GEN_REWRITE_TAC RAND_CONV [GSYM REAL_MUL_LID] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM REAL_MUL_LID] THEN
       MATCH_MP_TAC(REAL_ARITH `abs x <= a ==> x <= a`) THEN
       REWRITE_TAC[RE_MUL_CX; REAL_ABS_MUL] THEN MATCH_MP_TAC REAL_LE_RMUL THEN
       ASM_REAL_ARITH_TAC];
@@ -1971,9 +1971,9 @@ let E_APPROX_32 = prove
   MP_TAC(ISPECL [`14`; `Cx(&1)`] TAYLOR_CEXP) THEN
   SIMP_TAC[RE_CX; REAL_ABS_NUM; GSYM CX_EXP; GSYM CX_DIV; GSYM CX_SUB;
            COMPLEX_POW_ONE; COMPLEX_NORM_CX] THEN
-  CONV_TAC "(ONCE_DEPTH_CONV EXPAND_VSUM_CONV)" (ONCE_DEPTH_CONV EXPAND_VSUM_CONV) THEN
+  CONV_TAC "Multivariate/transcendentals.ml:(ONCE_DEPTH_CONV EXPAND_VSUM_CONV)" (ONCE_DEPTH_CONV EXPAND_VSUM_CONV) THEN
   REWRITE_TAC[GSYM CX_ADD; GSYM CX_SUB; COMPLEX_NORM_CX] THEN
-  CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN REAL_ARITH_TAC);;
 
 (* ------------------------------------------------------------------------- *)
@@ -2023,7 +2023,7 @@ let TAYLOR_CSIN = prove
   REWRITE_TAC[COMPLEX_POW_MUL; complex_div; COMPLEX_MUL_ASSOC] THEN
   AP_THM_TAC THEN AP_TERM_TAC THEN AP_THM_TAC THEN AP_TERM_TAC THEN
   REWRITE_TAC[COMPLEX_POW_ADD; GSYM COMPLEX_POW_POW] THEN
-  REWRITE_TAC[COMPLEX_POW_II_2] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[COMPLEX_POW_II_2] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CSIN_CONVERGES = prove
  (`!z. ((\n. --Cx(&1) pow n * z pow (2 * n + 1) / Cx(&(FACT(2 * n + 1))))
@@ -2040,7 +2040,7 @@ let CSIN_CONVERGES = prove
   REWRITE_TAC[GSYM VECTOR_MUL_ASSOC] THEN
   MATCH_MP_TAC LIM_NULL_CMUL THEN
   MP_TAC(MATCH_MP SERIES_TERMS_TOZERO (SPEC `z:complex` CEXP_CONVERGES)) THEN
-  GEN_REWRITE_TAC LAND_CONV [LIM_NULL_NORM] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [LIM_NULL_NORM] THEN
   REWRITE_TAC[COMPLEX_NORM_DIV; COMPLEX_NORM_POW; COMPLEX_NORM_CX] THEN
   REWRITE_TAC[REAL_ABS_NUM; GSYM LIFT_CMUL; GSYM real_div] THEN
   REWRITE_TAC[LIM_SEQUENTIALLY] THEN
@@ -2106,7 +2106,7 @@ let CCOS_CONVERGES = prove
   REWRITE_TAC[GSYM VECTOR_MUL_ASSOC] THEN
   MATCH_MP_TAC LIM_NULL_CMUL THEN
   MP_TAC(MATCH_MP SERIES_TERMS_TOZERO (SPEC `z:complex` CEXP_CONVERGES)) THEN
-  GEN_REWRITE_TAC LAND_CONV [LIM_NULL_NORM] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [LIM_NULL_NORM] THEN
   REWRITE_TAC[COMPLEX_NORM_DIV; COMPLEX_NORM_POW; COMPLEX_NORM_CX] THEN
   REWRITE_TAC[REAL_ABS_NUM; GSYM LIFT_CMUL; GSYM real_div] THEN
   REWRITE_TAC[LIM_SEQUENTIALLY] THEN
@@ -2133,7 +2133,7 @@ let ARG = prove
   GEN_TAC THEN REWRITE_TAC[Arg_DEF] THEN
   COND_CASES_TAC THEN ASM_REWRITE_TAC[COMPLEX_NORM_0; COMPLEX_MUL_LZERO] THEN
   SIMP_TAC[REAL_LE_REFL; REAL_LT_MUL; PI_POS; REAL_ARITH `&0 < &2`] THEN
-  CONV_TAC "SELECT_CONV" SELECT_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:SELECT_CONV" SELECT_CONV THEN
   MP_TAC(SPECL [`Re(z) / norm z`; `Im(z) / norm z`]
         SINCOS_TOTAL_2PI) THEN
   ASM_SIMP_TAC[COMPLEX_SQNORM; COMPLEX_NORM_ZERO; REAL_FIELD
@@ -2193,7 +2193,7 @@ let ARG_LE_PI = prove
  (`!z. Arg z <= pi <=> &0 <= Im z`,
   GEN_TAC THEN ASM_CASES_TAC `z = Cx(&0)` THENL
    [ASM_REWRITE_TAC[Arg_DEF; IM_CX; REAL_LE_REFL; PI_POS_LE]; ALL_TAC] THEN
-  GEN_REWRITE_TAC (funpow 3 RAND_CONV) [ARG] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(funpow 3 RAND_CONV)" (funpow 3 RAND_CONV) [ARG] THEN
   ASM_SIMP_TAC[IM_MUL_CX; CEXP_EULER; REAL_LE_MUL_EQ; COMPLEX_NORM_NZ] THEN
   REWRITE_TAC[IM_ADD; GSYM CX_SIN; GSYM CX_COS; IM_CX; IM_MUL_II; RE_CX] THEN
   REWRITE_TAC[REAL_ADD_LID] THEN EQ_TAC THEN SIMP_TAC[ARG; SIN_POS_PI_LE] THEN
@@ -2207,7 +2207,7 @@ let ARG_LT_PI = prove
  (`!z. &0 < Arg z /\ Arg z < pi <=> &0 < Im z`,
   GEN_TAC THEN ASM_CASES_TAC `z = Cx(&0)` THENL
    [ASM_REWRITE_TAC[Arg_DEF; IM_CX; REAL_LT_REFL; PI_POS_LE]; ALL_TAC] THEN
-  GEN_REWRITE_TAC (funpow 3 RAND_CONV) [ARG] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(funpow 3 RAND_CONV)" (funpow 3 RAND_CONV) [ARG] THEN
   ASM_SIMP_TAC[IM_MUL_CX; CEXP_EULER; REAL_LT_MUL_EQ; COMPLEX_NORM_NZ] THEN
   REWRITE_TAC[IM_ADD; GSYM CX_SIN; GSYM CX_COS; IM_CX; IM_MUL_II; RE_CX] THEN
   REWRITE_TAC[REAL_ADD_LID] THEN EQ_TAC THEN SIMP_TAC[SIN_POS_PI] THEN
@@ -2225,7 +2225,7 @@ let ARG_EQ_0 = prove
  (`!z. Arg z = &0 <=> real z /\ &0 <= Re z`,
   GEN_TAC THEN ASM_CASES_TAC `z = Cx(&0)` THENL
    [ASM_REWRITE_TAC[REAL_CX; RE_CX; Arg_DEF; REAL_LE_REFL]; ALL_TAC] THEN
-  CONV_TAC "(RAND_CONV(SUBS_CONV[last(CONJUNCTS(SPEC `z:complex` ARG))]))" (RAND_CONV(SUBS_CONV[last(CONJUNCTS(SPEC `z:complex` ARG))])) THEN
+  CONV_TAC "Multivariate/transcendentals.ml:(RAND_CONV(SUBS_CONV[last(CONJUNCTS(SPEC `z:complex` ARG))]))" (RAND_CONV(SUBS_CONV[last(CONJUNCTS(SPEC `z:complex` ARG))])) THEN
   ASM_SIMP_TAC[RE_MUL_CX; REAL_MUL_CX; REAL_LE_MUL_EQ; COMPLEX_NORM_NZ] THEN
   ASM_REWRITE_TAC[COMPLEX_NORM_ZERO; CEXP_EULER] THEN
   REWRITE_TAC[real; RE_ADD; IM_ADD; RE_MUL_II; IM_MUL_II;
@@ -2271,7 +2271,7 @@ let ARG_INV = prove
   SUBST1_TAC(SPEC `Cx(&2) * Cx pi` CEXP_EULER) THEN
   REWRITE_TAC[GSYM CX_MUL; GSYM CX_SIN; GSYM CX_COS] THEN
   REWRITE_TAC[SIN_NPI; COS_NPI; COMPLEX_MUL_RZERO; COMPLEX_ADD_RID] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[complex_div; COMPLEX_MUL_LID; CX_INV; GSYM COMPLEX_INV_MUL] THEN
   REWRITE_TAC[GSYM ARG] THEN
   MP_TAC(SPEC `z:complex` ARG_EQ_0) THEN ASM_REWRITE_TAC[real] THEN
@@ -2286,7 +2286,7 @@ let ARG_EQ = prove
   MAP_EVERY (MP_TAC o CONJUNCT2 o CONJUNCT2 o C SPEC ARG)
    [`z:complex`; `w:complex`] THEN
   ASM_REWRITE_TAC[IMP_IMP] THEN
-  DISCH_THEN(fun th -> CONV_TAC "(SUBS_CONV(CONJUNCTS th))" (SUBS_CONV(CONJUNCTS th))) THEN
+  DISCH_THEN(fun th -> CONV_TAC "Multivariate/transcendentals.ml:(SUBS_CONV(CONJUNCTS th))" (SUBS_CONV(CONJUNCTS th))) THEN
   EXISTS_TAC `norm(w:complex) / norm(z:complex)` THEN
   ASM_SIMP_TAC[REAL_LT_DIV; COMPLEX_NORM_NZ; CX_DIV] THEN
   REWRITE_TAC[COMPLEX_MUL_ASSOC] THEN AP_THM_TAC THEN AP_TERM_TAC THEN
@@ -2297,7 +2297,7 @@ let ARG_INV_EQ_0 = prove
   GEN_TAC THEN REWRITE_TAC[ARG_EQ_0; REAL_INV_EQ] THEN
   MATCH_MP_TAC(TAUT `(a ==> (b <=> c)) ==> (a /\ b <=> a /\ c)`) THEN
   REWRITE_TAC[real] THEN DISCH_TAC THEN ASM_REWRITE_TAC[complex_inv; RE] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[REAL_ADD_RID] THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[REAL_ADD_RID] THEN
   ASM_CASES_TAC `Re z = &0` THEN ASM_REWRITE_TAC[real_div; REAL_MUL_LZERO] THEN
   ASM_SIMP_TAC[REAL_FIELD `~(x = &0) ==> x * inv(x pow 2) = inv x`] THEN
   REWRITE_TAC[REAL_LE_INV_EQ]);;
@@ -2335,7 +2335,7 @@ let REAL_SUB_ARG = prove
     ASM_REWRITE_TAC[] THEN
     ANTS_TAC THENL [ASM_REAL_ARITH_TAC; DISCH_THEN SUBST1_TAC] THEN
     REWRITE_TAC[REAL_ARITH `a - (a + b):real = --b`] THEN
-    GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [GSYM COMPLEX_INV_DIV] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [GSYM COMPLEX_INV_DIV] THEN
     MATCH_MP_TAC(REAL_ARITH `x = &2 * pi - y ==> --x = y - &2 * pi`) THEN
     MATCH_MP_TAC ARG_INV THEN REWRITE_TAC[GSYM ARG_EQ_0] THEN
     ONCE_REWRITE_TAC[GSYM COMPLEX_INV_DIV] THEN
@@ -2416,7 +2416,7 @@ let NORM_ROTATE2D = prove
  (`!t z. norm(rotate2d t z) = norm z`,
   REWRITE_TAC[NORM_EQ; rotate2d; DIMINDEX_2; DOT_2; VECTOR_2] THEN
   REPEAT GEN_TAC THEN MP_TAC(ISPEC `t:real` SIN_CIRCLE) THEN
-  CONV_TAC "REAL_RING" REAL_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let ROTATE2D_0 = prove
  (`!t. rotate2d t (Cx(&0)) = Cx(&0)`,
@@ -2466,7 +2466,7 @@ let ROTATION_ROTATE2D = prove
                 (matrix f)$1$2 = --((matrix f)$2$1) /\
                 (matrix f:real^2^2)$2$2 = (matrix f)$1$1`
   STRIP_ASSUME_TAC THENL
-   [REPEAT(FIRST_X_ASSUM(MP_TAC o SYM)) THEN CONV_TAC "REAL_RING" REAL_RING;
+   [REPEAT(FIRST_X_ASSUM(MP_TAC o SYM)) THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING;
     FIRST_X_ASSUM(MP_TAC o MATCH_MP SINCOS_TOTAL_2PI) THEN
     MATCH_MP_TAC MONO_EXISTS THEN REPEAT STRIP_TAC THEN ASM_REWRITE_TAC[] THEN
     MATCH_MP_TAC LINEAR_EQ_MATRIX THEN
@@ -2481,7 +2481,7 @@ let ROTATE2D_ADD = prove
 
 let ROTATE2D_COMPLEX = prove
  (`!t z. rotate2d t z = cexp(ii * Cx t) * z`,
-  REPEAT GEN_TAC THEN GEN_REWRITE_TAC RAND_CONV [complex_mul] THEN
+  REPEAT GEN_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [complex_mul] THEN
   REWRITE_TAC[CEXP_EULER; rotate2d; GSYM CX_SIN; GSYM CX_COS;
               RE_ADD; IM_ADD; RE_MUL_II; IM_MUL_II; IM_CX; RE_CX] THEN
   REWRITE_TAC[CART_EQ; FORALL_2; VECTOR_2; DIMINDEX_2] THEN
@@ -2492,23 +2492,23 @@ let ROTATE2D_PI2 = prove
  (`!z. rotate2d (pi / &2) z = ii * z`,
   REWRITE_TAC[ROTATE2D_COMPLEX; CEXP_EULER; SIN_PI2; COS_PI2; GSYM CX_SIN;
               GSYM CX_COS] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let ROTATE2D_PI = prove
  (`!z. rotate2d pi z = --z`,
   REWRITE_TAC[ROTATE2D_COMPLEX; CEXP_EULER; SIN_PI; COS_PI; GSYM CX_SIN;
               GSYM CX_COS] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let ROTATE2D_NPI = prove
  (`!n z. rotate2d (&n * pi) z = --Cx(&1) pow n * z`,
   REWRITE_TAC[ROTATE2D_COMPLEX; CEXP_EULER; SIN_NPI; COS_NPI; GSYM CX_SIN;
               GSYM CX_COS; CX_NEG; CX_POW] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let ROTATE2D_2PI = prove
  (`!z. rotate2d (&2 * pi) z = z`,
-  REWRITE_TAC[ROTATE2D_NPI] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[ROTATE2D_NPI] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let ARG_ROTATE2D = prove
  (`!t z. ~(z = Cx(&0)) /\ &0 <= t + Arg z /\ t + Arg z < &2 * pi
@@ -2516,7 +2516,7 @@ let ARG_ROTATE2D = prove
   REPEAT STRIP_TAC THEN MATCH_MP_TAC ARG_UNIQUE THEN
   EXISTS_TAC `norm(z:complex)` THEN
   ASM_SIMP_TAC[ARG; ROTATE2D_COMPLEX; REAL_LE_ADD; COMPLEX_NORM_NZ] THEN
-  GEN_REWRITE_TAC (RAND_CONV o RAND_CONV) [ARG] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o RAND_CONV)" (RAND_CONV o RAND_CONV) [ARG] THEN
   REWRITE_TAC[CX_ADD; COMPLEX_ADD_LDISTRIB; CEXP_ADD] THEN
   REWRITE_TAC[COMPLEX_MUL_AC]);;
 
@@ -2527,7 +2527,7 @@ let ARG_ROTATE2D_UNIQUE = prove
   MP_TAC(last(CONJUNCTS(ISPEC `rotate2d t z` ARG))) THEN
   ASM_REWRITE_TAC[NORM_ROTATE2D] THEN
   REWRITE_TAC[ROTATE2D_COMPLEX] THEN
-  GEN_REWRITE_TAC (LAND_CONV o LAND_CONV o RAND_CONV) [ARG] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o LAND_CONV o RAND_CONV)" (LAND_CONV o LAND_CONV o RAND_CONV) [ARG] THEN
   ASM_REWRITE_TAC[COMPLEX_RING `a * z * b = z * c <=> z = Cx(&0) \/ a * b = c`;
                   CX_INJ; COMPLEX_NORM_ZERO; GSYM CEXP_ADD; CEXP_EQ] THEN
   MATCH_MP_TAC MONO_EXISTS THEN GEN_TAC THEN MATCH_MP_TAC MONO_AND THEN
@@ -2608,7 +2608,7 @@ let ROTATION_ROTATE2D_EXISTS_ORTHOGONAL = prove
   SIMP_TAC[DOT_2; CART_EQ; FORALL_2; DIMINDEX_2; rotate2d; VECTOR_2] THEN
   REWRITE_TAC[COS_PI2; SIN_PI2; REAL_MUL_RZERO; REAL_ADD_RID;
               REAL_SUB_LZERO; REAL_SUB_RZERO; REAL_MUL_RID] THEN
-  CONV_TAC "REAL_RING" REAL_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RING" REAL_RING);;
 
 let ROTATION_ROTATE2D_EXISTS_ORTHOGONAL_ORIENTED = prove
  (`!e1 e2. norm(e1) = &1 /\ norm(e2) = &1 /\ orthogonal e1 e2 /\
@@ -2642,7 +2642,7 @@ let ROTATE2D_SUB_ARG = prove
   REWRITE_TAC[EULER; RE_MUL_II; IM_MUL_II; RE_CX; IM_CX; COS_NEG; SIN_NEG] THEN
   REWRITE_TAC[SIN_NPI; COS_NPI; REAL_EXP_NEG; REAL_EXP_0; CX_NEG] THEN
   REWRITE_TAC[COMPLEX_NEG_0; COMPLEX_MUL_RZERO; COMPLEX_ADD_RID] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[COMPLEX_MUL_LID]);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN REWRITE_TAC[COMPLEX_MUL_LID]);;
 
 let ROTATION_MATRIX_ROTATE2D = prove
  (`!t. rotation_matrix(matrix(rotate2d t))`,
@@ -2678,7 +2678,7 @@ let NULLHOMOTOPIC_ORTHOGONAL_TRANSFORMATION = prove
              VECTOR_MUL_COMPONENT; DIMINDEX_2; FORALL_2; VECTOR_2; ARITH] THEN
     CONJ_TAC THEN AP_TERM_TAC THEN AP_THM_TAC THEN AP_TERM_TAC THEN
     AP_TERM_TAC THEN BINOP_TAC THEN REWRITE_TAC[dot] THEN
-    CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SUM_EQ_SUPERSET THEN
+    CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SUM_EQ_SUPERSET THEN
     ASM_SIMP_TAC[FINITE_NUMSEG; IN_NUMSEG; FORALL_2; DIMINDEX_2; LAMBDA_BETA;
                  ARITH; VECTOR_2; SUBSET_NUMSEG] THEN
     REWRITE_TAC[ARITH_RULE
@@ -2708,7 +2708,7 @@ let NULLHOMOTOPIC_ORTHOGONAL_TRANSFORMATION = prove
                ORTHOGONAL_TRANSFORMATION_REFLECT_ALONG;
                ORTHOGONAL_TRANSFORMATION_COMPOSE; MATRIX_COMPOSE;
                LINEAR_REFLECT_ALONG; DET_MUL] THEN
-      CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
+      CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
       DISCH_THEN(X_CHOOSE_THEN `t:real` STRIP_ASSUME_TAC) THEN
       ONCE_REWRITE_TAC[HOMOTOPIC_WITH_SYM] THEN
       ASM_REWRITE_TAC[homotopic_with] THEN
@@ -2720,7 +2720,7 @@ let NULLHOMOTOPIC_ORTHOGONAL_TRANSFORMATION = prove
       REWRITE_TAC[ROTATE2D_COMPLEX] THEN
       MATCH_MP_TAC CONTINUOUS_ON_COMPLEX_MUL THEN
       SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_SNDCART] THEN
-      GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
       MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
       REWRITE_TAC[CONTINUOUS_ON_CEXP; CX_MUL] THEN
       ONCE_REWRITE_TAC[COMPLEX_RING `ii * x * t = (ii * t) * x`] THEN
@@ -2955,7 +2955,7 @@ let NULLHOMOTOPIC_ORTHOGONAL_TRANSFORMATION = prove
   DISCH_THEN(fun th -> DISCH_TAC THEN MP_TAC th) THEN
   ASM_REWRITE_TAC[] THEN
   MATCH_MP_TAC(REWRITE_RULE[IMP_CONJ] HOMOTOPIC_WITH_TRANS) THEN
-  GEN_REWRITE_TAC RAND_CONV [MESON[I_O_ID] `f = I o f`] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [MESON[I_O_ID] `f = I o f`] THEN
   REWRITE_TAC[o_ASSOC] THEN
   MATCH_MP_TAC HOMOTOPIC_WITH_COMPOSE_CONTINUOUS_RIGHT THEN
   EXISTS_TAC `(:real^N)` THEN REWRITE_TAC[SUBSET_UNIV] THEN
@@ -3031,7 +3031,7 @@ let HOMOTOPIC_SPECIAL_ORTHOGONAL_TRANSFORMATIONS,
         SIMP_TAC[matrix; LAMBDA_BETA; o_DEF] THEN
         MAP_EVERY X_GEN_TAC [`i:num`; `j:num`] THEN STRIP_TAC THEN
         MATCH_MP_TAC CONTINUOUS_ON_LIFT_COMPONENT_COMPOSE THEN
-        ASM_REWRITE_TAC[] THEN GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+        ASM_REWRITE_TAC[] THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
         MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
         SIMP_TAC[CONTINUOUS_ON_PASTECART; CONTINUOUS_ON_CONST;
                  CONTINUOUS_ON_ID] THEN
@@ -3050,7 +3050,7 @@ let HOMOTOPIC_SPECIAL_ORTHOGONAL_TRANSFORMATIONS,
         DISCH_THEN(CONJUNCTS_THEN
           (STRIP_ASSUME_TAC o MATCH_MP DET_ORTHOGONAL_MATRIX o
                     MATCH_MP ORTHOGONAL_MATRIX_MATRIX)) THEN
-        ASM_REWRITE_TAC[] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV];
+        ASM_REWRITE_TAC[] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV];
       REWRITE_TAC[o_DEF; LEFT_IMP_EXISTS_THM] THEN
       X_GEN_TAC `a:real^1` THEN DISCH_TAC THEN
       REPEAT(FIRST_X_ASSUM(MP_TAC o GEN_REWRITE_RULE I [GSYM FUN_EQ_THM])) THEN
@@ -3121,7 +3121,7 @@ let HOMOTOPIC_ORTHOGONAL_TRANSFORMATIONS_SPHERE = prove
     ONCE_REWRITE_TAC[REAL_ARITH `norm(x:real^N) * inv r = inv r * norm x`] THEN
     SIMP_TAC[LIFT_CMUL; CONTINUOUS_CMUL; CONTINUOUS_LIFT_NORM_COMPOSE;
              LINEAR_CONTINUOUS_WITHIN; LINEAR_SNDCART] THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_WITHIN_COMPOSE THEN CONJ_TAC THENL
      [MATCH_MP_TAC CONTINUOUS_PASTECART THEN
       SIMP_TAC[LINEAR_CONTINUOUS_WITHIN; LINEAR_FSTCART] THEN
@@ -3177,7 +3177,7 @@ let HOMOTOPIC_LINEAR_MAPS = prove
     MATCH_MP_TAC CONTINUOUS_ON_MUL THEN
     SIMP_TAC[o_DEF; LIFT_SUB; LIFT_DROP; CONTINUOUS_ON_SUB; LINEAR_FSTCART;
       ETA_AX; LINEAR_SNDCART; CONTINUOUS_ON_CONST; LINEAR_CONTINUOUS_ON] THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
     ASM_SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_FSTCART; LINEAR_SNDCART];
     REPEAT STRIP_TAC THEN MATCH_MP_TAC LINEAR_COMPOSE_ADD THEN
@@ -3202,7 +3202,7 @@ let HOMOTOPIC_LINEAR_POSITIVE_SEMIDEFINITE_MAPS = prove
     MATCH_MP_TAC CONTINUOUS_ON_MUL THEN
     SIMP_TAC[o_DEF; LIFT_SUB; LIFT_DROP; CONTINUOUS_ON_SUB; LINEAR_FSTCART;
       ETA_AX; LINEAR_SNDCART; CONTINUOUS_ON_CONST; LINEAR_CONTINUOUS_ON] THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
     ASM_SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_FSTCART; LINEAR_SNDCART];
     REWRITE_TAC[IN_INTERVAL_1; GSYM FORALL_DROP; DROP_VEC] THEN
@@ -3231,7 +3231,7 @@ let HOMOTOPIC_LINEAR_POSITIVE_DEFINITE_MAPS = prove
     MATCH_MP_TAC CONTINUOUS_ON_MUL THEN
     SIMP_TAC[o_DEF; LIFT_SUB; LIFT_DROP; CONTINUOUS_ON_SUB; LINEAR_FSTCART;
       ETA_AX; LINEAR_SNDCART; CONTINUOUS_ON_CONST; LINEAR_CONTINUOUS_ON] THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
     ASM_SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_FSTCART; LINEAR_SNDCART];
     REWRITE_TAC[IN_INTERVAL_1; GSYM FORALL_DROP; DROP_VEC] THEN
@@ -3260,7 +3260,7 @@ let HOMOTOPIC_RESTRICTED_LINEAR_MAPS = prove
    [ASM_REWRITE_TAC[REAL_SGN_EQ] THEN STRIP_TAC THEN
     MATCH_MP_TAC HOMOTOPIC_WITH_TRANS THEN
     EXISTS_TAC `(\x. vec 0):real^N->real^N` THEN
-    GEN_REWRITE_TAC LAND_CONV [HOMOTOPIC_WITH_SYM] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [HOMOTOPIC_WITH_SYM] THEN
     REWRITE_TAC[homotopic_with] THEN CONJ_TAC THENL
      [EXISTS_TAC `\z. drop(fstcart z) % (f:real^N->real^N) (sndcart z)`;
       EXISTS_TAC `\z. drop(fstcart z) % (g:real^N->real^N) (sndcart z)`] THEN
@@ -3271,7 +3271,7 @@ let HOMOTOPIC_RESTRICTED_LINEAR_MAPS = prove
     MATCH_MP_TAC CONTINUOUS_ON_MUL THEN
     SIMP_TAC[o_DEF; LIFT_DROP; LINEAR_FSTCART; ETA_AX; LINEAR_SNDCART;
              LINEAR_CONTINUOUS_ON] THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
     ASM_SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_FSTCART; LINEAR_SNDCART];
     ALL_TAC] THEN
@@ -3292,7 +3292,7 @@ let HOMOTOPIC_RESTRICTED_LINEAR_MAPS = prove
       MP_TAC(ISPEC `matrix(g:real^N->real^N)`
         RIGHT_POLAR_DECOMPOSITION_INVERTIBLE)] THEN
     REWRITE_TAC[INVERTIBLE_DET_NZ] THEN
-    GEN_REWRITE_TAC (LAND_CONV o LAND_CONV o RAND_CONV) [GSYM REAL_SGN_EQ] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o LAND_CONV o RAND_CONV)" (LAND_CONV o LAND_CONV o RAND_CONV) [GSYM REAL_SGN_EQ] THEN
     ASM_REWRITE_TAC[] THEN
     REPEAT(MATCH_MP_TAC(MESON[]
      `(!M. P M ==> Q(\x:real^N. M ** x))
@@ -3363,10 +3363,9 @@ let HOMOTOPIC_INVERTIBLE_LINEAR_MAPS_ALT = prove
     MP_TAC(ISPEC `det(matrix(f:real^N->real^N))` REAL_SGN_CASES) THEN
     MP_TAC(ISPEC `det(matrix(g:real^N->real^N))` REAL_SGN_CASES) THEN
     STRIP_TAC THEN STRIP_TAC THEN ASM_REWRITE_TAC[] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV] THEN
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV] THEN
   REWRITE_TAC[homotopic_with] THEN
-  GEN_REWRITE_TAC
-    (LAND_CONV o ONCE_DEPTH_CONV) [GSYM(CONJUNCT1 REAL_SGN_EQ)] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [GSYM(CONJUNCT1 REAL_SGN_EQ)] THEN
   EQ_TAC THEN MATCH_MP_TAC MONO_EXISTS THEN SIMP_TAC[] THEN
   ASM_REWRITE_TAC[REAL_SGN_EQ] THEN
   X_GEN_TAC `h:real^(1,N)finite_sum->real^N` THEN STRIP_TAC THEN
@@ -3379,7 +3378,7 @@ let HOMOTOPIC_INVERTIBLE_LINEAR_MAPS_ALT = prove
     SIMP_TAC[matrix; LAMBDA_BETA; o_THM] THEN
     MAP_EVERY X_GEN_TAC [`i:num`; `j:num`] THEN STRIP_TAC THEN
     MATCH_MP_TAC CONTINUOUS_ON_LIFT_COMPONENT_COMPOSE THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
     SIMP_TAC[CONTINUOUS_ON_PASTECART; CONTINUOUS_ON_CONST;
              CONTINUOUS_ON_ID] THEN
@@ -3443,7 +3442,7 @@ let HOMOTOPIC_LINEAR_MAPS_EQ = prove
     ASM_SIMP_TAC[IMP_CONJ; MATRIX_INVERTIBLE] THEN DISCH_THEN(K ALL_TAC) THEN
     DISCH_THEN(X_CHOOSE_THEN `k:real^N->real^N` MP_TAC) THEN
     REPEAT(DISCH_THEN(CONJUNCTS_THEN2 ASSUME_TAC MP_TAC)) THEN
-    GEN_REWRITE_TAC I [GSYM CONTRAPOS_THM] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [GSYM CONTRAPOS_THM] THEN
     REWRITE_TAC[FUN_EQ_THM; o_THM] THEN DISCH_TAC THEN
     DISCH_THEN(MP_TAC o SPEC `x:real^N`) THEN ASM_REWRITE_TAC[I_THM] THEN
     ASM_MESON_TAC[LINEAR_0]]);;
@@ -3471,7 +3470,7 @@ let HOMOTOPIC_ANTIPODAL_IDENTITY_MAP = prove
            ORTHOGONAL_TRANSFORMATION_ID] THEN
   SIMP_TAC[MATRIX_NEG; LINEAR_ID; DET_NEG; MATRIX_ID; DET_I] THEN
   REWRITE_TAC[REAL_POW_NEG; REAL_POW_ONE] THEN
-  COND_CASES_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
+  COND_CASES_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Complex tangent function.                                                 *)
@@ -3494,7 +3493,7 @@ let CTAN_ADD = prove
          ~(ccos(w + z) = Cx(&0))
          ==> ctan(w + z) = (ctan w + ctan z) / (Cx(&1) - ctan(w) * ctan(z))`,
   REPEAT GEN_TAC THEN REWRITE_TAC[ctan; CSIN_ADD; CCOS_ADD] THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CTAN_DOUBLE = prove
  (`!z. ~(ccos(z) = Cx(&0)) /\ ~(ccos(Cx(&2) * z) = Cx(&0))
@@ -3514,13 +3513,13 @@ let COMPLEX_ADD_CTAN = prove
  (`!w z. ~(ccos(w) = Cx(&0)) /\
          ~(ccos(z) = Cx(&0))
          ==> ctan(w) + ctan(z) = csin(w + z) / (ccos(w) * ccos(z))`,
-  REWRITE_TAC[ctan; CSIN_ADD] THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  REWRITE_TAC[ctan; CSIN_ADD] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_SUB_CTAN = prove
  (`!w z. ~(ccos(w) = Cx(&0)) /\
          ~(ccos(z) = Cx(&0))
          ==> ctan(w) - ctan(z) = csin(w - z) / (ccos(w) * ccos(z))`,
-  REWRITE_TAC[ctan; CSIN_SUB] THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  REWRITE_TAC[ctan; CSIN_SUB] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 (* ------------------------------------------------------------------------- *)
 (* Analytic properties of tangent function.                                  *)
@@ -3530,10 +3529,10 @@ let HAS_COMPLEX_DERIVATIVE_CTAN = prove
  (`!z. ~(ccos z = Cx(&0))
        ==> (ctan has_complex_derivative (inv(ccos(z) pow 2))) (at z)`,
   REPEAT STRIP_TAC THEN
-  GEN_REWRITE_TAC (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RATOR_CONV o LAND_CONV)" (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[ctan] THEN COMPLEX_DIFF_TAC THEN
   MP_TAC(SPEC `z:complex` CSIN_CIRCLE) THEN
-  POP_ASSUM MP_TAC THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  POP_ASSUM MP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let COMPLEX_DIFFERENTIABLE_AT_CTAN = prove
  (`!z. ~(ccos z = Cx(&0)) ==> ctan complex_differentiable at z`,
@@ -3769,7 +3768,7 @@ let REAL_ABS_COS_MONO_LE_EQ = prove
 
 let TAN_MONO_LT = prove
  (`!x y. --(pi / &2) < x /\ x < y /\ y < pi / &2 ==> tan(x) < tan(y)`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC I [GSYM REAL_SUB_LT] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [GSYM REAL_SUB_LT] THEN
   SUBGOAL_THEN `&0 < cos(x) /\ &0 < cos(y)` STRIP_ASSUME_TAC THENL
    [CONJ_TAC THEN MATCH_MP_TAC COS_POS_PI;
     ASM_SIMP_TAC[REAL_LT_IMP_NZ; REAL_SUB_TAN] THEN
@@ -3814,7 +3813,7 @@ let REAL_ABS_SIN_BOUND_LT = prove
   REWRITE_TAC[SIN_BOUND] THEN DISCH_TAC THEN
   MP_TAC(SPECL [`1`; `Cx x`] TAYLOR_CSIN) THEN
   REWRITE_TAC[num_CONV `1`; VSUM_CLAUSES_NUMSEG; IM_CX] THEN
-  CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
   REWRITE_TAC[REAL_ABS_NUM; REAL_EXP_0; COMPLEX_POW_1; complex_pow;
               COMPLEX_DIV_1] THEN
   REWRITE_TAC[GSYM CX_SIN; GSYM CX_MUL; GSYM CX_NEG; GSYM CX_POW; GSYM CX_DIV;
@@ -3825,7 +3824,7 @@ let REAL_ABS_SIN_BOUND_LT = prove
    [MATCH_MP_TAC(REAL_ARITH `&0 < y /\ x <= y pow 1 ==> x / &6 < y`);
     MATCH_MP_TAC(REAL_ARITH `&0 < x /\ x <= y ==> x / &24 < y / &6`)] THEN
   ASM_SIMP_TAC[REAL_POW_LT] THEN MATCH_MP_TAC REAL_POW_MONO_INV THEN
-  CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN ASM_REAL_ARITH_TAC);;
+  CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN ASM_REAL_ARITH_TAC);;
 
 let REAL_ABS_SIN_BOUND_LE = prove
  (`!x. abs(sin x) <= abs x`,
@@ -3847,7 +3846,7 @@ let SIN_PI6_STRADDLE = prove
   SUBGOAL_THEN `!x. &0 < x /\ x < &7 / &5 ==> &0 < sin x`
   MP_TAC THENL
    [REPEAT STRIP_TAC THEN MP_TAC(ISPECL [`0`; `Cx(x)`] TAYLOR_CSIN) THEN
-    REWRITE_TAC[VSUM_SING_NUMSEG] THEN CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+    REWRITE_TAC[VSUM_SING_NUMSEG] THEN CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
     REWRITE_TAC[COMPLEX_DIV_1; COMPLEX_POW_1; complex_pow] THEN
     REWRITE_TAC[COMPLEX_MUL_LID; GSYM CX_SIN; GSYM CX_SUB] THEN
     REWRITE_TAC[IM_CX; COMPLEX_NORM_CX; REAL_ABS_NUM; REAL_EXP_0] THEN
@@ -3858,7 +3857,7 @@ let SIN_PI6_STRADDLE = prove
     ASM_SIMP_TAC[REAL_LT_LMUL_EQ] THEN
     MATCH_MP_TAC REAL_LT_TRANS THEN EXISTS_TAC `(&7 / &5) pow 2` THEN
     ASM_SIMP_TAC[REAL_POW_LT2; ARITH_EQ; REAL_LT_IMP_LE] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
     DISCH_THEN(MP_TAC o SPEC `pi`) THEN
     SIMP_TAC[SIN_PI; REAL_LT_REFL; PI_POS; REAL_NOT_LT] THEN
     ASM_REAL_ARITH_TAC]);;
@@ -3866,19 +3865,19 @@ let SIN_PI6_STRADDLE = prove
 let PI_APPROX_32 = prove
  (`abs(pi - &13493037705 / &4294967296) <= inv(&2 pow 32)`,
   REWRITE_TAC[REAL_ARITH `abs(x - a) <= e <=> a - e <= x /\ x <= a + e`] THEN
-  MATCH_MP_TAC SIN_PI6_STRADDLE THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  MATCH_MP_TAC SIN_PI6_STRADDLE THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   CONJ_TAC THENL
    [MP_TAC(SPECL [`5`; `Cx(&1686629713 / &3221225472)`] TAYLOR_CSIN);
     MP_TAC(SPECL [`5`; `Cx(&6746518853 / &12884901888)`] TAYLOR_CSIN)] THEN
   SIMP_TAC[COMPLEX_NORM_CX; GSYM CX_POW; GSYM CX_DIV; GSYM CX_MUL;
            GSYM CX_NEG; VSUM_CX; FINITE_NUMSEG; GSYM CX_SIN; GSYM CX_SUB] THEN
   REWRITE_TAC[IM_CX; REAL_ABS_NUM; REAL_EXP_0] THEN
-  CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[REAL_POW_ADD; REAL_POW_1; GSYM REAL_POW_POW] THEN
   REWRITE_TAC[REAL_MUL_ASSOC; GSYM REAL_POW_MUL; real_div] THEN
-  REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN
-  CONV_TAC "(ONCE_DEPTH_CONV HORNER_SUM_CONV)" (ONCE_DEPTH_CONV HORNER_SUM_CONV) THEN REAL_ARITH_TAC);;
+  CONV_TAC "Multivariate/transcendentals.ml:(ONCE_DEPTH_CONV HORNER_SUM_CONV)" (ONCE_DEPTH_CONV HORNER_SUM_CONV) THEN REAL_ARITH_TAC);;
 
 let PI2_BOUNDS = prove
  (`&0 < pi / &2 /\ pi / &2 < &2`,
@@ -3898,7 +3897,7 @@ let EXISTS_COMPLEX' = prove
 let CLOG_WORKS = prove
  (`!z. ~(z = Cx(&0))
        ==> cexp(clog z) = z /\ --pi < Im(clog z) /\ Im(clog z) <= pi`,
-  GEN_TAC THEN DISCH_TAC THEN REWRITE_TAC[clog] THEN CONV_TAC "SELECT_CONV" SELECT_CONV THEN
+  GEN_TAC THEN DISCH_TAC THEN REWRITE_TAC[clog] THEN CONV_TAC "Multivariate/transcendentals.ml:SELECT_CONV" SELECT_CONV THEN
   MP_TAC(SPEC `z / Cx(norm z)` COMPLEX_UNIMODULAR_POLAR) THEN ANTS_TAC THENL
    [ASM_SIMP_TAC[COMPLEX_NORM_DIV; COMPLEX_NORM_CX] THEN
     ASM_SIMP_TAC[REAL_ABS_NORM; REAL_DIV_REFL; COMPLEX_NORM_ZERO];
@@ -4027,9 +4026,9 @@ let HOLOMORPHIC_ON_CLOG = prove
 let CX_LOG = prove
  (`!z. &0 < z ==> Cx(log z) = clog(Cx z)`,
   REPEAT STRIP_TAC THEN FIRST_ASSUM(fun th ->
-   GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV)
+   GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV)
      [SYM(MATCH_MP EXP_LOG th)]) THEN
-  REWRITE_TAC[CX_EXP] THEN CONV_TAC "SYM_CONV" SYM_CONV THEN
+  REWRITE_TAC[CX_EXP] THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN
   MATCH_MP_TAC CLOG_CEXP THEN REWRITE_TAC[IM_CX] THEN
   MP_TAC PI_POS THEN REAL_ARITH_TAC);;
 
@@ -4041,7 +4040,7 @@ let RE_CLOG_POS_LT = prove
  (`!z. ~(z = Cx(&0)) ==> (abs(Im(clog z)) < pi / &2 <=> &0 < Re(z))`,
   GEN_TAC THEN DISCH_THEN(MP_TAC o MATCH_MP CLOG_WORKS) THEN
   DISCH_THEN(CONJUNCTS_THEN2
-    (fun th -> GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
+    (fun th -> GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
     MP_TAC) THEN
   SIMP_TAC[RE_CEXP; REAL_LT_MUL_EQ; REAL_EXP_POS_LT] THEN
   SPEC_TAC(`clog z`,`z:complex`) THEN GEN_TAC THEN
@@ -4061,7 +4060,7 @@ let RE_CLOG_POS_LE = prove
  (`!z. ~(z = Cx(&0)) ==> (abs(Im(clog z)) <= pi / &2 <=> &0 <= Re(z))`,
   GEN_TAC THEN DISCH_THEN(MP_TAC o MATCH_MP CLOG_WORKS) THEN
   DISCH_THEN(CONJUNCTS_THEN2
-    (fun th -> GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
+    (fun th -> GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
     MP_TAC) THEN
   SIMP_TAC[RE_CEXP; REAL_LE_MUL_EQ; REAL_EXP_POS_LT] THEN
   SPEC_TAC(`clog z`,`z:complex`) THEN GEN_TAC THEN
@@ -4081,7 +4080,7 @@ let IM_CLOG_POS_LT = prove
  (`!z. ~(z = Cx(&0)) ==> (&0 < Im(clog z) /\ Im(clog z) < pi <=> &0 < Im(z))`,
   GEN_TAC THEN DISCH_THEN(MP_TAC o MATCH_MP CLOG_WORKS) THEN
   DISCH_THEN(CONJUNCTS_THEN2
-    (fun th -> GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
+    (fun th -> GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
     MP_TAC) THEN
   SIMP_TAC[IM_CEXP; REAL_LT_MUL_EQ; REAL_EXP_POS_LT] THEN
   SPEC_TAC(`clog z`,`z:complex`) THEN GEN_TAC THEN
@@ -4101,7 +4100,7 @@ let IM_CLOG_POS_LE = prove
  (`!z. ~(z = Cx(&0)) ==> (&0 <= Im(clog z) <=> &0 <= Im(z))`,
   GEN_TAC THEN DISCH_THEN(MP_TAC o MATCH_MP CLOG_WORKS) THEN
   DISCH_THEN(CONJUNCTS_THEN2
-    (fun th -> GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
+    (fun th -> GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV) [SYM th])
     MP_TAC) THEN
   SIMP_TAC[IM_CEXP; REAL_LE_MUL_EQ; REAL_EXP_POS_LT] THEN
   SPEC_TAC(`clog z`,`z:complex`) THEN GEN_TAC THEN
@@ -4130,7 +4129,7 @@ let IM_CLOG_POS_LT_IMP = prove
 let IM_CLOG_EQ_0 = prove
  (`!z. ~(z = Cx(&0)) ==> (Im(clog z) = &0 <=> &0 < Re(z) /\ Im(z) = &0)`,
   REPEAT STRIP_TAC THEN
-  GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV)
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV)
    [REAL_ARITH `z = &0 <=> &0 <= z /\ ~(&0 < z)`] THEN
   ASM_SIMP_TAC[GSYM RE_CLOG_POS_LT; GSYM IM_CLOG_POS_LE;
                GSYM IM_CLOG_POS_LT] THEN
@@ -4198,7 +4197,7 @@ let CLOG_II = prove
 
 let CLOG_NEG_II = prove
  (`clog(--ii) = --ii * Cx(pi / &2)`,
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [COMPLEX_FIELD `--ii = inv ii`] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [COMPLEX_FIELD `--ii = inv ii`] THEN
   SIMP_TAC[CLOG_INV; RE_II; IM_II; REAL_OF_NUM_EQ; ARITH; CLOG_II] THEN
   REWRITE_TAC[COMPLEX_MUL_LNEG]);;
 
@@ -4238,12 +4237,12 @@ let HAS_COMPLEX_DERIVATIVE_CSQRT = prove
   MATCH_MP_TAC HAS_COMPLEX_DERIVATIVE_TRANSFORM_AT THEN
   MAP_EVERY EXISTS_TAC [`\z. cexp(clog(z) / Cx(&2))`; `norm(z:complex)`] THEN
   ASM_REWRITE_TAC[COMPLEX_NORM_NZ] THEN CONJ_TAC THENL
-   [REPEAT STRIP_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN
+   [REPEAT STRIP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN
     MATCH_MP_TAC CSQRT_CEXP_CLOG THEN REWRITE_TAC[GSYM COMPLEX_VEC_0] THEN
     REPEAT(POP_ASSUM MP_TAC) THEN NORM_ARITH_TAC;
     COMPLEX_DIFF_TAC THEN ASM_SIMP_TAC[GSYM CSQRT_CEXP_CLOG] THEN
     UNDISCH_TAC `~(z = Cx(&0))` THEN MP_TAC(SPEC `z:complex` CSQRT) THEN
-    CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD]);;
+    CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD]);;
 
 let COMPLEX_DIFFERENTIABLE_AT_CSQRT = prove
  (`!z. (Im z = &0 ==> &0 < Re(z)) ==> csqrt complex_differentiable at z`,
@@ -4411,7 +4410,7 @@ let HAS_COMPLEX_DERIVATIVE_CPOW = prove
     REWRITE_TAC[COMPLEX_SUB_LZERO; NORM_NEG; REAL_LT_REFL];
     COMPLEX_DIFF_TAC THEN ASM_REWRITE_TAC[CEXP_SUB; COMPLEX_SUB_RDISTRIB] THEN
     ASM_SIMP_TAC[CEXP_CLOG; COMPLEX_MUL_LID] THEN
-    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD]);;
+    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD]);;
 
 add_complex_differentiation_theorems
  (CONJUNCTS(REWRITE_RULE[FORALL_AND_THM]
@@ -4441,9 +4440,9 @@ let COMPLEX_DIFFERENTIABLE_CPOW_RIGHT = prove
 let HOLOMORPHIC_ON_CPOW_RIGHT = prove
  (`!w f s. f holomorphic_on s
            ==> (\z. w cpow (f z)) holomorphic_on s`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
   MATCH_MP_TAC HOLOMORPHIC_ON_COMPOSE THEN ASM_REWRITE_TAC[] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM ETA_AX] THEN
   REWRITE_TAC[holomorphic_on; GSYM complex_differentiable] THEN
   ASM_SIMP_TAC[COMPLEX_DIFFERENTIABLE_CPOW_RIGHT;
                COMPLEX_DIFFERENTIABLE_AT_WITHIN]);;
@@ -4451,9 +4450,9 @@ let HOLOMORPHIC_ON_CPOW_RIGHT = prove
 let CONTINUOUS_ON_CPOW_RIGHT = prove
  (`!w f s. f continuous_on s
            ==> (\z. w cpow (f z)) continuous_on s`,
-  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+  REPEAT STRIP_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
   MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN ASM_REWRITE_TAC[] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM ETA_AX] THEN
   MATCH_MP_TAC HOLOMORPHIC_ON_IMP_CONTINUOUS_ON THEN
   REWRITE_TAC[holomorphic_on; GSYM complex_differentiable] THEN
   ASM_SIMP_TAC[COMPLEX_DIFFERENTIABLE_CPOW_RIGHT;
@@ -4476,8 +4475,8 @@ let CLOG_MUL = prove
   MATCH_MP_TAC CLOG_UNIQUE THEN
   ASM_SIMP_TAC[CEXP_ADD; CEXP_SUB; CEXP_EULER; CEXP_CLOG; CONJ_ASSOC;
                GSYM CX_SIN; GSYM CX_COS; COS_NPI; SIN_NPI] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
-  TRY(CONJ_TAC THENL [ALL_TAC; CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD]) THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  TRY(CONJ_TAC THENL [ALL_TAC; CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD]) THEN
   REPEAT(FIRST_X_ASSUM(MP_TAC o MATCH_MP CLOG_WORKS)) THEN
   REPEAT(POP_ASSUM MP_TAC) THEN
   REWRITE_TAC[IM_ADD; IM_SUB; IM_MUL_II; RE_CX] THEN
@@ -4532,7 +4531,7 @@ let CLOG_NEG = prove
   REWRITE_TAC[TAUT `~(a /\ ~b) /\ ~b <=> ~a /\ ~b`] THEN
   ASM_CASES_TAC `Im(clog z) = pi` THEN ASM_REWRITE_TAC[PI_POS] THEN
   ASM_CASES_TAC `&0 < Im(clog z)` THEN ASM_REWRITE_TAC[] THEN
-  REWRITE_TAC[CX_MUL] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CX_MUL] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CLOG_MUL_II = prove
  (`!z. ~(z = Cx(&0))
@@ -4551,7 +4550,7 @@ let CLOG_MUL_II = prove
     ==> ((if p then x else y) = (if q then b else a))`) THEN
   CONJ_TAC THENL
    [MP_TAC PI_POS THEN REAL_ARITH_TAC;
-    REWRITE_TAC[CX_MUL; CX_DIV] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING]);;
+    REWRITE_TAC[CX_MUL; CX_DIV] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Unwinding number gives another version of log-product formula.            *)
@@ -4625,7 +4624,7 @@ let CTAN_CATN = prove
       COMPLEX_FIELD
      `ii pow 2 = --Cx(&1) /\ ~(z pow 2 = --Cx(&1))
       ==> ~(Cx(&1) - ii * z = Cx(&0)) /\ ~(Cx(&1) + ii * z = Cx(&0))`] THEN
-    POP_ASSUM MP_TAC THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD;
+    POP_ASSUM MP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD;
     ALL_TAC] THEN
   REWRITE_TAC[COMPLEX_RING `-- --Cx (&1) / Cx (&2) = Cx(&1) / Cx(&2)`] THEN
   ASM_SIMP_TAC[CEXP_NZ; COMPLEX_FIELD
@@ -4637,7 +4636,7 @@ let CTAN_CATN = prove
   ASM_SIMP_TAC[CEXP_CLOG; COMPLEX_FIELD
      `~(z pow 2 = --Cx(&1))
       ==> ~((Cx(&1) - ii * z) / (Cx(&1) + ii * z) = Cx(&0))`] THEN
-  UNDISCH_TAC `~(z pow 2 = --Cx(&1))` THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  UNDISCH_TAC `~(z pow 2 = --Cx(&1))` THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CATN_CTAN = prove
  (`!z. abs(Re z) < pi / &2 ==> catn(ctan z) = z`,
@@ -4649,7 +4648,7 @@ let CATN_CTAN = prove
   SUBGOAL_THEN `~(cexp(ii * z) pow 2 = --Cx(&1))` ASSUME_TAC THENL
    [SUBGOAL_THEN `--Cx(&1) = cexp(ii * Cx pi)` SUBST1_TAC THENL
      [REWRITE_TAC[CEXP_EULER; GSYM CX_SIN; GSYM CX_COS; SIN_PI; COS_PI] THEN
-      CONV_TAC "COMPLEX_RING" COMPLEX_RING;
+      CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING;
       ALL_TAC] THEN
     REWRITE_TAC[GSYM CEXP_N; CEXP_EQ] THEN
     DISCH_THEN(X_CHOOSE_THEN `n:real` STRIP_ASSUME_TAC) THEN
@@ -4686,7 +4685,7 @@ let RE_CATN_BOUNDS = prove
   REWRITE_TAC[GSYM complex_div] THEN CONJ_TAC THENL
    [SUBGOAL_THEN `~((Cx(&1) - ii * z) / (Cx(&1) + ii * z) = Cx(&0))`
      (fun th -> MESON_TAC[th; CLOG_WORKS]) THEN
-    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD;
+    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD;
     ALL_TAC] THEN
   DISCH_TAC THEN
   MP_TAC(ISPEC `clog((Cx(&1) - ii * z) / (Cx(&1) + ii * z))` EULER) THEN
@@ -4722,15 +4721,15 @@ let HAS_COMPLEX_DERIVATIVE_CATN = prove
     DISCH_THEN(fun th -> POP_ASSUM MP_TAC THEN SUBST1_TAC th) THEN
     REWRITE_TAC[RE_II; IM_II; RE_NEG; IM_NEG] THEN REAL_ARITH_TAC;
     ALL_TAC] THEN
-  GEN_REWRITE_TAC (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RATOR_CONV o LAND_CONV)" (RATOR_CONV o LAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[catn] THEN COMPLEX_DIFF_TAC THEN
   REWRITE_TAC[RE_SUB; RE_ADD; IM_SUB; IM_ADD;
               RE_CX; RE_MUL_II; IM_CX; IM_MUL_II] THEN
   REWRITE_TAC[GSYM CONJ_ASSOC] THEN CONJ_TAC THENL
    [ASM_REWRITE_TAC[IM_COMPLEX_DIV_LEMMA; RE_COMPLEX_DIV_LEMMA] THEN
-    SIMP_TAC[complex_norm] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    SIMP_TAC[complex_norm] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     ASM_REWRITE_TAC[REAL_ADD_LID; POW_2_SQRT_ABS];
-    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD]);;
+    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD]);;
 
 let COMPLEX_DIFFERENTIABLE_AT_CATN = prove
  (`!z. (Re z = &0 ==> abs(Im z) < &1) ==> catn complex_differentiable at z`,
@@ -4784,7 +4783,7 @@ let CX_ATN = prove
   STRIP_ASSUME_TAC THENL
    [CONJ_TAC THEN DISCH_THEN(MP_TAC o AP_TERM `Re`) THEN
     REWRITE_TAC[RE_ADD; RE_SUB; RE_MUL_II; IM_CX; RE_CX] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV;
     ALL_TAC] THEN
   ASM_SIMP_TAC[CEXP_SUB; CEXP_CLOG; COMPLEX_FIELD
    `~(a = Cx(&0)) /\ ~(b = Cx(&0)) ==> ~(a * inv b = Cx(&0))`] THEN
@@ -4793,14 +4792,14 @@ let CX_ATN = prove
   ASM_REWRITE_TAC[COMPLEX_NORM_ZERO] THEN
   MATCH_MP_TAC(MESON[COMPLEX_NORM_CNJ] `cnj a = b ==> norm a = norm b`) THEN
   REWRITE_TAC[CNJ_SUB; CNJ_MUL; CNJ_MUL; CNJ_II; CNJ_CX] THEN
-  CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let ATN_TAN = prove
  (`!y. tan(atn y) = y`,
   GEN_TAC THEN REWRITE_TAC[tan_def; atn] THEN
   MATCH_MP_TAC EQ_TRANS THEN EXISTS_TAC `Re(ctan(catn(Cx y)))` THEN
   CONJ_TAC THENL [REWRITE_TAC[GSYM CX_ATN; RE_CX]; ALL_TAC] THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM RE_CX] THEN AP_TERM_TAC THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM RE_CX] THEN AP_TERM_TAC THEN
   MATCH_MP_TAC CTAN_CATN THEN MATCH_MP_TAC(COMPLEX_RING
    `~(z = ii) /\ ~(z = --ii) ==> ~(z pow 2 = --Cx(&1))`) THEN
   CONJ_TAC THEN DISCH_THEN(MP_TAC o AP_TERM `Im`) THEN
@@ -4809,7 +4808,7 @@ let ATN_TAN = prove
 let ATN_BOUND = prove
  (`!y. abs(atn y) < pi / &2`,
   GEN_TAC THEN REWRITE_TAC[atn] THEN MATCH_MP_TAC RE_CATN_BOUNDS THEN
-  REWRITE_TAC[IM_CX] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
+  REWRITE_TAC[IM_CX] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV);;
 
 let ATN_BOUNDS = prove
  (`!y. --(pi / &2) < atn(y) /\ atn(y) < (pi / &2)`,
@@ -4820,13 +4819,13 @@ let TAN_ATN = prove
   REPEAT STRIP_TAC THEN REWRITE_TAC[tan_def; atn] THEN
   MATCH_MP_TAC EQ_TRANS THEN EXISTS_TAC `Re(catn(ctan(Cx x)))` THEN
   CONJ_TAC THENL [REWRITE_TAC[GSYM CX_TAN; RE_CX]; ALL_TAC] THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM RE_CX] THEN AP_TERM_TAC THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM RE_CX] THEN AP_TERM_TAC THEN
   MATCH_MP_TAC CATN_CTAN THEN REWRITE_TAC[RE_CX] THEN
   ASM_REAL_ARITH_TAC);;
 
 let ATN_0 = prove
  (`atn(&0) = &0`,
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [SYM TAN_0] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [SYM TAN_0] THEN
   MATCH_MP_TAC TAN_ATN THEN MP_TAC PI_POS THEN REAL_ARITH_TAC);;
 
 let ATN_1 = prove
@@ -4843,7 +4842,7 @@ let ATN_NEG = prove
 let ATN_MONO_LT = prove
  (`!x y. x < y ==> atn(x) < atn(y)`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o BINOP_CONV) [GSYM ATN_TAN] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o BINOP_CONV)" (LAND_CONV o BINOP_CONV) [GSYM ATN_TAN] THEN
   ONCE_REWRITE_TAC[GSYM CONTRAPOS_THM] THEN REWRITE_TAC[REAL_NOT_LT] THEN
   SIMP_TAC[TAN_MONO_LE; ATN_BOUNDS]);;
 
@@ -4886,7 +4885,7 @@ let ATN_LT_PI4 = prove
     (--a < x ==> --b < y)
     ==> abs(x) < a ==> abs(y) < b`) THEN
   SIMP_TAC[ATN_LT_PI4_POS; ATN_LT_PI4_NEG; ATN_0] THEN CONJ_TAC THEN
-  GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV) [GSYM ATN_0] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV) [GSYM ATN_0] THEN
   SIMP_TAC[ATN_MONO_LT]);;
 
 let ATN_LE_PI4 = prove
@@ -4907,7 +4906,7 @@ let COS_ATN_NZ = prove
 let TAN_SEC = prove
  (`!x. ~(cos(x) = &0) ==> (&1 + (tan(x) pow 2) = inv(cos x) pow 2)`,
   MP_TAC SIN_CIRCLE THEN MATCH_MP_TAC MONO_FORALL THEN REWRITE_TAC[tan] THEN
-  CONV_TAC "REAL_FIELD" REAL_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD);;
 
 let COS_ATN = prove
  (`!x. cos(atn x) = &1 / sqrt(&1 + x pow 2)`,
@@ -4933,7 +4932,7 @@ let ATN_ADD = prove
   ANTS_TAC THENL
    [REWRITE_TAC[COS_ATN_NZ] THEN MATCH_MP_TAC REAL_LT_IMP_NZ THEN
     MATCH_MP_TAC COS_POS_PI THEN ASM_REAL_ARITH_TAC;
-    DISCH_THEN(SUBST1_TAC o SYM) THEN CONV_TAC "SYM_CONV" SYM_CONV THEN
+    DISCH_THEN(SUBST1_TAC o SYM) THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN
     MATCH_MP_TAC TAN_ATN THEN ASM_REAL_ARITH_TAC]);;
 
 let ATN_INV = prove
@@ -4967,11 +4966,15 @@ let [MACHIN; MACHIN_EULER; MACHIN_GAUSS] = (CONJUNCTS o prove)
  (`(&4 * atn(&1 / &5) - atn(&1 / &239) = pi / &4) /\
    (&5 * atn(&1 / &7) + &2 * atn(&3 / &79) = pi / &4) /\
    (&12 * atn(&1 / &18) + &8 * atn(&1 / &57) - &5 * atn(&1 / &239) = pi / &4)`,
-  REPEAT CONJ_TAC THEN CONV_TAC "(ONCE_DEPTH_CONV(fun tm -> if is_binop `( * ):real->real->real` tm then LAND_CONV(RAND_CONV(TOP_DEPTH_CONV num_CONV)) tm else failwith ""))" (ONCE_DEPTH_CONV(fun tm -> if is_binop `( * ):real->real->real` tm then LAND_CONV(RAND_CONV(TOP_DEPTH_CONV num_CONV)) tm else failwith "")) THEN
+  REPEAT CONJ_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:(ONCE_DEPTH_CONV(fun tm -> if is_binop `( * ):real->real->real` tm then LAND_CONV(RAND_CONV(TOP_DEPTH_CONV num_CONV)) tm else failwith \"\"))" (ONCE_DEPTH_CONV(fun tm -> if is_binop `( * ):real->real->real` tm then LAND_CONV(RAND_CONV(TOP_DEPTH_CONV num_CONV)) tm else failwith "")) THEN
   REWRITE_TAC[real_sub; GSYM REAL_MUL_RNEG; GSYM ATN_NEG] THEN
   REWRITE_TAC[GSYM REAL_OF_NUM_SUC; REAL_ADD_RDISTRIB] THEN
   REWRITE_TAC[REAL_MUL_LZERO; REAL_MUL_LID; REAL_ADD_LID] THEN
-  CONV_TAC "(DEPTH_CONV (fun tm -> let th1 = PART_MATCH (lhand o rand) ATN_ADD_SMALL tm in let th2 = MP th1 (EQT_ELIM(REAL_RAT_REDUCE_CONV(lhand(concl th1)))) in CONV_RULE(RAND_CONV(RAND_CONV REAL_RAT_REDUCE_CONV)) th2))" (DEPTH_CONV (fun tm -> let th1 = PART_MATCH (lhand o rand) ATN_ADD_SMALL tm in let th2 = MP th1 (EQT_ELIM(REAL_RAT_REDUCE_CONV(lhand(concl th1)))) in CONV_RULE(RAND_CONV(RAND_CONV REAL_RAT_REDUCE_CONV)) th2)) THEN
+  CONV_TAC "Multivariate/transcendentals.ml:(DEPTH_CONV (fun tm -> let th1 = PART_MATCH (lhand o rand) ATN_ADD_SMALL tm in let th2 = MP th1 (EQT_ELIM(REAL_RAT_REDUCE_CONV(lhand(concl th1)))) in CONV_RULE(RAND_CONV(RAND_CONV REAL_RAT_REDUCE_CONV)) th2))"
+  (DEPTH_CONV (fun tm ->
+                let th1 = PART_MATCH (lhand o rand) ATN_ADD_SMALL tm in
+                let th2 = MP th1 (EQT_ELIM(REAL_RAT_REDUCE_CONV(lhand(concl th1)))) in
+                CONV_RULE(RAND_CONV(RAND_CONV REAL_RAT_REDUCE_CONV)) th2)) THEN
   REWRITE_TAC[ATN_1]);;
 
 (* ------------------------------------------------------------------------- *)
@@ -5007,7 +5010,7 @@ let TAN_ABS_GE_X = prove
   REPEAT STRIP_TAC THEN MATCH_MP_TAC REAL_LE_TRANS THEN
   EXISTS_TAC `abs(atn(tan x))` THEN REWRITE_TAC[ATN_ABS_LE_X] THEN
   MATCH_MP_TAC REAL_EQ_IMP_LE THEN AP_TERM_TAC THEN
-  CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC TAN_ATN THEN
+  CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC TAN_ATN THEN
   POP_ASSUM MP_TAC THEN REAL_ARITH_TAC);;
 
 (* ------------------------------------------------------------------------- *)
@@ -5065,7 +5068,7 @@ let casn = new_definition
 let CASN_BODY_LEMMA = prove
  (`!z. ~(ii * z + csqrt(Cx(&1) - z pow 2) = Cx(&0))`,
   GEN_TAC THEN MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CSIN_CASN = prove
  (`!z. csin(casn z) = z`,
@@ -5078,7 +5081,7 @@ let CSIN_CASN = prove
      `~(z = Cx(&0))
       ==> ((z - inv z) / (Cx(&2) * ii) = c <=>
            z pow 2 - Cx(&1) = Cx(&2) * ii * c * z)`] THEN
-  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CASN_CSIN = prove
  (`!z. abs(Re z) < pi / &2 \/ (abs(Re z) = pi / &2 /\ Im z = &0)
@@ -5134,17 +5137,17 @@ let CASN_0 = prove
 let CASN_1 = prove
  (`casn(Cx(&1)) = Cx(pi / &2)`,
   REWRITE_TAC[casn; GSYM CX_POW; GSYM CX_SUB] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[CSQRT_0; COMPLEX_MUL_RID; COMPLEX_ADD_RID] THEN
-  REWRITE_TAC[CLOG_II] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CLOG_II] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CASN_NEG_1 = prove
  (`casn(--Cx(&1)) = --Cx(pi / &2)`,
   REWRITE_TAC[casn; GSYM CX_NEG; GSYM CX_POW; GSYM CX_SUB] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
   REWRITE_TAC[CSQRT_0; COMPLEX_MUL_RID; COMPLEX_ADD_RID] THEN
   REWRITE_TAC[CX_NEG; COMPLEX_MUL_RID; COMPLEX_MUL_RNEG] THEN
-  REWRITE_TAC[CLOG_NEG_II] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[CLOG_NEG_II] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let HAS_COMPLEX_DERIVATIVE_CASN = prove
  (`!z. (Im z = &0 ==> abs(Re z) < &1)
@@ -5165,7 +5168,7 @@ let HAS_COMPLEX_DERIVATIVE_CASN = prove
     POP_ASSUM MP_TAC THEN REWRITE_TAC[RE_CX; IM_CX; RE_NEG; IM_NEG] THEN
     REAL_ARITH_TAC;
     ALL_TAC] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM ETA_AX] THEN REWRITE_TAC[casn] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM ETA_AX] THEN REWRITE_TAC[casn] THEN
   MATCH_MP_TAC CONTINUOUS_COMPLEX_MUL THEN REWRITE_TAC[CONTINUOUS_CONST] THEN
   ONCE_REWRITE_TAC[GSYM o_DEF] THEN MATCH_MP_TAC CONTINUOUS_AT_COMPOSE THEN
   CONJ_TAC THENL
@@ -5191,7 +5194,7 @@ let HAS_COMPLEX_DERIVATIVE_CASN = prove
    [DISCH_THEN(K ALL_TAC) THEN ASM_REWRITE_TAC[csqrt] THEN
     ASM_REWRITE_TAC[IM_SUB; RE_SUB; IM_CX; RE_CX; IM_POW_2; RE_POW_2;
                     REAL_MUL_RZERO; REAL_SUB_REFL] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[REAL_ARITH `&0 <= &1 - (z pow 2 - &0) <=> z pow 2 <= &1 pow 2`;
                 GSYM REAL_LE_SQUARE_ABS] THEN
     ASM_SIMP_TAC[REAL_LT_IMP_LE; REAL_ABS_NUM; RE; REAL_ADD_LID] THEN
@@ -5203,7 +5206,7 @@ let HAS_COMPLEX_DERIVATIVE_CASN = prove
   REWRITE_TAC[csqrt; IM_SUB; RE_SUB; IM_CX; RE_CX; IM_POW_2; RE_POW_2] THEN
   REWRITE_TAC[REAL_RING `&0 - &2 * x * y = &0 <=> x = &0 \/ y = &0`] THEN
   ASM_CASES_TAC `Re z = &0` THEN ASM_REWRITE_TAC[RE; IM] THENL
-   [CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+   [CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[REAL_ARITH `&1 - (&0 - x) = &1 + x`] THEN
     SIMP_TAC[REAL_POW_2; REAL_LE_ADD; REAL_LE_SQUARE; REAL_POS] THEN
     REWRITE_TAC[RE; IM; REAL_ADD_LID; REAL_ARITH `&0 < --x + y <=> x < y`] THEN
@@ -5263,7 +5266,7 @@ let cacs = new_definition
 let CACS_BODY_LEMMA = prove
  (`!z. ~(z + ii * csqrt(Cx(&1) - z pow 2) = Cx(&0))`,
   GEN_TAC THEN MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN
-  CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CCOS_CACS = prove
  (`!z. ccos(cacs z) = z`,
@@ -5276,7 +5279,7 @@ let CCOS_CACS = prove
      `~(z = Cx(&0))
       ==> ((z + inv z) / Cx(&2) = c <=>
            z pow 2 + Cx(&1) = Cx(&2) * c * z)`] THEN
-  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "COMPLEX_FIELD" COMPLEX_FIELD);;
+  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_FIELD" COMPLEX_FIELD);;
 
 let CACS_CCOS = prove
  (`!z. &0 < Re z /\ Re z < pi \/
@@ -5364,7 +5367,7 @@ let HAS_COMPLEX_DERIVATIVE_CACS = prove
     POP_ASSUM MP_TAC THEN REWRITE_TAC[RE_CX; IM_CX; RE_NEG; IM_NEG] THEN
     REAL_ARITH_TAC;
     ALL_TAC] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM ETA_AX] THEN REWRITE_TAC[cacs] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM ETA_AX] THEN REWRITE_TAC[cacs] THEN
   MATCH_MP_TAC CONTINUOUS_COMPLEX_MUL THEN REWRITE_TAC[CONTINUOUS_CONST] THEN
   ONCE_REWRITE_TAC[GSYM o_DEF] THEN MATCH_MP_TAC CONTINUOUS_AT_COMPOSE THEN
   CONJ_TAC THENL
@@ -5390,7 +5393,7 @@ let HAS_COMPLEX_DERIVATIVE_CACS = prove
    [ASM_REWRITE_TAC[csqrt] THEN
     ASM_REWRITE_TAC[IM_SUB; RE_SUB; IM_CX; RE_CX; IM_POW_2; RE_POW_2;
                     REAL_MUL_RZERO; REAL_SUB_REFL] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[REAL_ARITH `&0 <= &1 - (z pow 2 - &0) <=> z pow 2 <= &1 pow 2`;
                 GSYM REAL_LE_SQUARE_ABS] THEN
     ASM_SIMP_TAC[REAL_LT_IMP_LE; REAL_ABS_NUM; RE; REAL_ADD_LID] THEN
@@ -5402,10 +5405,10 @@ let HAS_COMPLEX_DERIVATIVE_CACS = prove
   REWRITE_TAC[csqrt; IM_SUB; RE_SUB; IM_CX; RE_CX; IM_POW_2; RE_POW_2] THEN
   REWRITE_TAC[REAL_RING `&0 - &2 * x * y = &0 <=> x = &0 \/ y = &0`] THEN
   ASM_CASES_TAC `Re z = &0` THEN ASM_REWRITE_TAC[RE; IM] THENL
-   [CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+   [CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[REAL_ARITH `&1 - (&0 - x) = &1 + x`] THEN
     SIMP_TAC[REAL_POW_2; REAL_LE_ADD; REAL_LE_SQUARE; REAL_POS] THEN
-    REWRITE_TAC[RE; IM; REAL_ADD_LID] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    REWRITE_TAC[RE; IM; REAL_ADD_LID] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     DISCH_THEN(MP_TAC o MATCH_MP (REAL_ARITH `a + b = &0 ==> a = --b`)) THEN
     DISCH_THEN(MP_TAC o AP_TERM `\x:real. x pow 2`) THEN
     SIMP_TAC[SQRT_POW_2; REAL_POW_NEG; ARITH; REAL_LE_SQUARE; REAL_LE_ADD;
@@ -5486,8 +5489,8 @@ let CASN_RANGE_LEMMA = prove
   REWRITE_TAC[REAL_NEG_SUB; REAL_ENTIRE; REAL_OF_NUM_EQ; ARITH] THEN
   MAP_EVERY ASM_CASES_TAC [`Re z = &0`; `Im z = &0`] THEN
   ASM_REWRITE_TAC[REAL_SUB_LZERO; REAL_SUB_RZERO] THEN
-  CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
-  REWRITE_TAC[RE; SQRT_1] THEN CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THENL
+  CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+  REWRITE_TAC[RE; SQRT_1] THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THENL
    [REWRITE_TAC[REAL_ARITH `&1 - (&0 - z) = &1 + z`] THEN
     SIMP_TAC[REAL_LE_ADD; REAL_POS; REAL_LE_SQUARE; RE] THEN
     MATCH_MP_TAC REAL_LT_RSQRT THEN REAL_ARITH_TAC;
@@ -5568,7 +5571,7 @@ let CCOS_CASN_NZ = prove
   MATCH_MP_TAC(COMPLEX_RING
    `~(x pow 2 + y pow 2 = Cx(&0)) ==> ~(ii * x = y)`) THEN
   REPEAT(POP_ASSUM MP_TAC) THEN
-  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CSIN_CACS_NZ = prove
  (`!z. ~(z pow 2 = Cx(&1)) ==> ~(csin(cacs z) = Cx(&0))`,
@@ -5586,12 +5589,12 @@ let CSIN_CACS_NZ = prove
   MATCH_MP_TAC(COMPLEX_RING
    `~(x pow 2 + y pow 2 = Cx(&0)) ==> ~(ii * x = y)`) THEN
   REPEAT(POP_ASSUM MP_TAC) THEN
-  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  MP_TAC(SPEC `Cx(&1) - z pow 2` CSQRT) THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CCOS_CSIN_CSQRT = prove
  (`!z. &0 < cos(Re z) \/ cos(Re z) = &0 /\ Im(z) * sin(Re z) <= &0
        ==> ccos(z) = csqrt(Cx(&1) - csin(z) pow 2)`,
-  REPEAT STRIP_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC CSQRT_UNIQUE THEN
+  REPEAT STRIP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC CSQRT_UNIQUE THEN
   REWRITE_TAC[COMPLEX_EQ_SUB_LADD] THEN ONCE_REWRITE_TAC[COMPLEX_ADD_SYM] THEN
   REWRITE_TAC[CSIN_CIRCLE] THEN REWRITE_TAC[RE_CCOS; IM_CCOS] THEN
   ASM_SIMP_TAC[REAL_LT_MUL_EQ; REAL_HALF; REAL_LT_ADD; REAL_EXP_POS_LT] THEN
@@ -5607,7 +5610,7 @@ let CCOS_CSIN_CSQRT = prove
 let CSIN_CCOS_CSQRT = prove
  (`!z. &0 < sin(Re z) \/ sin(Re z) = &0 /\ &0 <= Im(z) * cos(Re z)
        ==> csin(z) = csqrt(Cx(&1) - ccos(z) pow 2)`,
-  REPEAT STRIP_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC CSQRT_UNIQUE THEN
+  REPEAT STRIP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC CSQRT_UNIQUE THEN
   REWRITE_TAC[COMPLEX_EQ_SUB_LADD] THEN ONCE_REWRITE_TAC[COMPLEX_ADD_SYM] THEN
   REWRITE_TAC[ONCE_REWRITE_RULE[COMPLEX_ADD_SYM] CSIN_CIRCLE] THEN
   REWRITE_TAC[RE_CSIN; IM_CSIN] THEN
@@ -5628,7 +5631,7 @@ let CASN_CACS_SQRT_POS = prove
   AP_TERM_TAC THEN AP_TERM_TAC THEN
   MATCH_MP_TAC(COMPLEX_RING `w = z ==> ii * z + s = s + ii * w`) THEN
   MATCH_MP_TAC CSQRT_UNIQUE THEN
-  ASM_REWRITE_TAC[CSQRT] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  ASM_REWRITE_TAC[CSQRT] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CACS_CASN_SQRT_POS = prove
  (`!z. (&0 < Re z \/ Re z = &0 /\ &0 <= Im z)
@@ -5637,13 +5640,13 @@ let CACS_CASN_SQRT_POS = prove
   AP_TERM_TAC THEN AP_TERM_TAC THEN
   MATCH_MP_TAC(COMPLEX_RING `w = z ==> z + ii * s = ii * s + w`) THEN
   MATCH_MP_TAC CSQRT_UNIQUE THEN
-  ASM_REWRITE_TAC[CSQRT] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  ASM_REWRITE_TAC[CSQRT] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let CSIN_CACS = prove
  (`!z. &0 < Re z \/ Re(z) = &0 /\ &0 <= Im z
        ==> csin(cacs z) = csqrt(Cx(&1) - z pow 2)`,
   GEN_TAC THEN DISCH_TAC THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM CSIN_CASN] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM CSIN_CASN] THEN
   AP_TERM_TAC THEN MATCH_MP_TAC CACS_CASN_SQRT_POS THEN
   ASM_REWRITE_TAC[]);;
 
@@ -5651,7 +5654,7 @@ let CCOS_CASN = prove
  (`!z. &0 < Re z \/ Re(z) = &0 /\ &0 <= Im z
        ==> ccos(casn z) = csqrt(Cx(&1) - z pow 2)`,
   GEN_TAC THEN DISCH_TAC THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM CCOS_CACS] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM CCOS_CACS] THEN
   AP_TERM_TAC THEN MATCH_MP_TAC CASN_CACS_SQRT_POS THEN
   ASM_REWRITE_TAC[]);;
 
@@ -5664,7 +5667,7 @@ let asn = new_definition `asn(x) = Re(casn(Cx x))`;;
 let REAL_ASN = prove
  (`!z. real z /\ abs(Re z) <= &1 ==> real(casn z)`,
   GEN_TAC THEN REWRITE_TAC[IMP_CONJ] THEN
-  GEN_REWRITE_TAC LAND_CONV [REAL] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [REAL] THEN
   DISCH_THEN(SUBST1_TAC o SYM) THEN SPEC_TAC(`Re z`,`x:real`) THEN
   REWRITE_TAC[real; casn; COMPLEX_MUL_LNEG; IM_NEG; IM_MUL_II] THEN
   GEN_TAC THEN REWRITE_TAC[RE_CX; REAL_NEG_EQ_0] THEN DISCH_TAC THEN
@@ -5729,7 +5732,7 @@ let ASN_BOUNDS_PI2 = prove
 let ASN_NEG = prove
  (`!x. -- &1 <= x /\ x <= &1 ==> asn(--x) = --asn(x)`,
   GEN_TAC THEN DISCH_TAC THEN
-  FIRST_ASSUM(fun th -> GEN_REWRITE_TAC (LAND_CONV o RAND_CONV o RAND_CONV)
+  FIRST_ASSUM(fun th -> GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV o RAND_CONV)
      [GSYM(MATCH_MP SIN_ASN th)]) THEN
   REWRITE_TAC[GSYM SIN_NEG] THEN MATCH_MP_TAC ASN_SIN THEN
   REWRITE_TAC[REAL_ARITH `--a <= --x /\ --x <= a <=> --a <= x /\ x <= a`] THEN
@@ -5748,7 +5751,7 @@ let ASN_MONO_LT_EQ = prove
  (`!x y. abs(x) <= &1 /\ abs(y) <= &1 ==> (asn(x) < asn(y) <=> x < y)`,
   REPEAT STRIP_TAC THEN MATCH_MP_TAC EQ_TRANS THEN
   EXISTS_TAC `sin(asn(x)) < sin(asn(y))` THEN CONJ_TAC THENL
-   [CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SIN_MONO_LT_EQ THEN
+   [CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SIN_MONO_LT_EQ THEN
     ONCE_REWRITE_TAC[CONJ_ASSOC] THEN CONJ_TAC THEN MATCH_MP_TAC ASN_BOUNDS;
     BINOP_TAC THEN MATCH_MP_TAC SIN_ASN] THEN
   ASM_REAL_ARITH_TAC);;
@@ -5783,7 +5786,7 @@ let acs = new_definition `acs(x) = Re(cacs(Cx x))`;;
 let REAL_ACS = prove
  (`!z. real z /\ abs(Re z) <= &1 ==> real(cacs z)`,
   GEN_TAC THEN REWRITE_TAC[IMP_CONJ] THEN
-  GEN_REWRITE_TAC LAND_CONV [REAL] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [REAL] THEN
   DISCH_THEN(SUBST1_TAC o SYM) THEN SPEC_TAC(`Re z`,`x:real`) THEN
   REWRITE_TAC[real; cacs; COMPLEX_MUL_LNEG; IM_NEG; IM_MUL_II] THEN
   GEN_TAC THEN REWRITE_TAC[RE_CX; REAL_NEG_EQ_0] THEN DISCH_TAC THEN
@@ -5839,7 +5842,7 @@ let ACS_BOUNDS = prove
 let ACS_NEG = prove
  (`!x. -- &1 <= x /\ x <= &1 ==> acs(--x) = pi - acs(x)`,
   GEN_TAC THEN DISCH_TAC THEN
-  FIRST_ASSUM(fun th -> GEN_REWRITE_TAC (LAND_CONV o RAND_CONV o RAND_CONV)
+  FIRST_ASSUM(fun th -> GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV o RAND_CONV)
      [GSYM(MATCH_MP COS_ACS th)]) THEN
   ONCE_REWRITE_TAC[GSYM COS_NEG] THEN REWRITE_TAC[GSYM COS_PERIODIC_PI] THEN
   REWRITE_TAC[REAL_ARITH `--x + y:real = y - x`] THEN MATCH_MP_TAC ACS_COS THEN
@@ -5859,7 +5862,7 @@ let ACS_MONO_LT_EQ = prove
  (`!x y. abs(x) <= &1 /\ abs(y) <= &1 ==> (acs(x) < acs(y) <=> y < x)`,
   REPEAT STRIP_TAC THEN MATCH_MP_TAC EQ_TRANS THEN
   EXISTS_TAC `cos(acs(y)) < cos(acs(x))` THEN CONJ_TAC THENL
-   [CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC COS_MONO_LT_EQ THEN
+   [CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC COS_MONO_LT_EQ THEN
     ONCE_REWRITE_TAC[CONJ_ASSOC] THEN CONJ_TAC THEN MATCH_MP_TAC ACS_BOUNDS;
     BINOP_TAC THEN MATCH_MP_TAC COS_ACS] THEN
   ASM_REAL_ARITH_TAC);;
@@ -5909,7 +5912,7 @@ let ACS_ATN = prove
    [REWRITE_TAC[TAN_COT; ATN_TAN] THEN REWRITE_TAC[tan] THEN
     ASM_SIMP_TAC[SIN_ACS; COS_ACS; REAL_LT_IMP_LE; REAL_INV_DIV];
     ALL_TAC] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM REAL_SUB_0] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_SUB_0] THEN
   ASM_SIMP_TAC[SIN_ACS_NZ; GSYM SIN_COS; COS_ATN_NZ; REAL_SUB_TAN; REAL_FIELD
    `~(y = &0) /\ ~(z = &0) ==> (x / (y * z) = &0 <=> x = &0)`]);;
 
@@ -5963,7 +5966,7 @@ let ACS_ASN_SQRT_NEG = prove
   REPEAT STRIP_TAC THEN MP_TAC(SPEC `--x:real` ACS_ASN_SQRT_POS) THEN
   ANTS_TAC THENL [ASM_REAL_ARITH_TAC; SIMP_TAC[REAL_POW_NEG; ARITH]] THEN
   DISCH_THEN(SUBST1_TAC o SYM) THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM REAL_NEG_NEG] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM REAL_NEG_NEG] THEN
   MATCH_MP_TAC ACS_NEG THEN ASM_REAL_ARITH_TAC);;
 
 (* ------------------------------------------------------------------------- *)
@@ -6061,8 +6064,7 @@ let LIM_CX_OVER_CEXP = prove
   ASM_SIMP_TAC[COMPLEX_NORM_DIV; NORM_CEXP; COMPLEX_NORM_CX; RE_CX] THEN
   SIMP_TAC[REAL_LT_LDIV_EQ; REAL_EXP_POS_LT] THEN
   ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN
-  ASM_SIMP_TAC[GSYM REAL_LT_LDIV_EQ] THEN GEN_REWRITE_TAC
-   (RAND_CONV o RAND_CONV) [REAL_ARITH `x = x / &2 + x / &2`] THEN
+  ASM_SIMP_TAC[GSYM REAL_LT_LDIV_EQ] THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o RAND_CONV)" (RAND_CONV o RAND_CONV) [REAL_ARITH `x = x / &2 + x / &2`] THEN
   REWRITE_TAC[REAL_EXP_ADD; REAL_ARITH
    `x / e < y * y <=> x / &2 * &2 / e < y * y`] THEN
   MATCH_MP_TAC REAL_LT_MUL2 THEN REPEAT CONJ_TAC THENL
@@ -6095,9 +6097,9 @@ let LIM_Z_TIMES_CLOG = prove
     ONCE_REWRITE_TAC[REAL_MUL_SYM] THEN
     REWRITE_TAC[real_div; REAL_INV_INV; REAL_ABS_NEG] THEN
     DISCH_THEN MATCH_MP_TAC THEN
-    GEN_REWRITE_TAC I [GSYM REAL_EXP_MONO_LE] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [GSYM REAL_EXP_MONO_LE] THEN
     ASM_SIMP_TAC[EXP_LOG; REAL_EXP_NEG] THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM REAL_INV_INV] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_INV_INV] THEN
     MATCH_MP_TAC REAL_LE_INV2 THEN ASM_REAL_ARITH_TAC;
     MATCH_MP_TAC LIM_NULL_COMPLEX_RMUL_BOUNDED THEN
     REWRITE_TAC[LIM_AT_ID] THEN EXISTS_TAC `pi` THEN
@@ -6119,7 +6121,7 @@ let LIM_LOG_OVER_Z = prove
   REWRITE_TAC[EVENTUALLY_AT; dist; COMPLEX_SUB_RZERO; COMPLEX_NORM_NZ] THEN
   EXISTS_TAC `&1` THEN SIMP_TAC[REAL_LT_01] THEN
   X_GEN_TAC `z:complex` THEN STRIP_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [COMPLEX_EXPAND] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [COMPLEX_EXPAND] THEN
   ASM_SIMP_TAC[RE_ADD; RE_CLOG; REAL_LT_INV_EQ; COMPLEX_INV_EQ_0;
                COMPLEX_NORM_INV; LOG_INV; COMPLEX_NORM_NZ] THEN
   REWRITE_TAC[REAL_ADD_RINV; COMPLEX_ADD_LID; COMPLEX_NORM_MUL] THEN
@@ -6204,7 +6206,7 @@ let LIM_INV_Z_OFFSET = prove
   GEN_TAC THEN REWRITE_TAC[LIM_AT_INFINITY_COMPLEX_0; o_DEF] THEN
   SIMP_TAC[COMPLEX_INV_DIV; COMPLEX_FIELD
    `~(w = Cx(&0)) ==> inv w + z = (Cx(&1) + w * z) / w`] THEN
-  GEN_REWRITE_TAC LAND_CONV
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV
    [COMPLEX_FIELD `Cx(&0) = Cx(&0) / (Cx(&1) + Cx(&0) * z)`] THEN
   MATCH_MP_TAC LIM_COMPLEX_DIV THEN
   REWRITE_TAC[COMPLEX_RING `~(Cx(&1) + Cx(&0) * z = Cx(&0))`] THEN
@@ -6289,7 +6291,7 @@ let LIM_1_OVER_LOG = prove
   RULE_ASSUM_TAC(REWRITE_RULE
    [GSYM REAL_OF_NUM_LT; GSYM REAL_OF_NUM_LE; GSYM REAL_OF_NUM_ADD]) THEN
   ASM_SIMP_TAC[GSYM CX_LOG; COMPLEX_NORM_CX; COMPLEX_NORM_INV] THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM REAL_INV_INV] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM REAL_INV_INV] THEN
   MATCH_MP_TAC REAL_LT_INV2 THEN ASM_REWRITE_TAC[REAL_LT_INV_EQ] THEN
   MATCH_MP_TAC(REAL_ARITH `a < x ==> a < abs x`) THEN
   ONCE_REWRITE_TAC[GSYM REAL_EXP_MONO_LT] THEN
@@ -6318,12 +6320,12 @@ let LIM_N_TIMES_POWN = prove
                LOG_POS; REAL_OF_NUM_LE] THEN
   ONCE_REWRITE_TAC[REAL_ARITH `a / b * &2 = (&2 * a) / b`] THEN
   ASM_SIMP_TAC[REAL_LT_LDIV_EQ; REAL_OF_NUM_LT; LE_1] THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [REAL_MUL_SYM] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM REAL_EXP_MONO_LT] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [REAL_MUL_SYM] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_EXP_MONO_LT] THEN
   ASM_SIMP_TAC[REAL_EXP_N; EXP_LOG; REAL_OF_NUM_LT; LE_1;
                REAL_LT_INV_EQ; COMPLEX_NORM_NZ] THEN
   REWRITE_TAC[REAL_POW_INV] THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM REAL_MUL_LID] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM REAL_MUL_LID] THEN
   ASM_SIMP_TAC[GSYM real_div; REAL_LT_RDIV_EQ; REAL_POW_LT; COMPLEX_NORM_NZ;
                COMPLEX_NORM_MUL; COMPLEX_NORM_NUM; COMPLEX_NORM_POW] THEN
   DISCH_TAC THEN MATCH_MP_TAC REAL_LET_TRANS THEN EXISTS_TAC `inv(&N2)` THEN
@@ -6364,15 +6366,15 @@ let LIM_CSIN_OVER_X = prove
     REWRITE_TAC[GSYM CX_EXP; COMPLEX_NORM_MUL; COMPLEX_NORM_CX] THEN
     REWRITE_TAC[real_abs; REAL_EXP_POS_LE] THEN REWRITE_TAC[GSYM real_abs] THEN
     MP_TAC(ISPECL [`0`; `z:complex`] TAYLOR_CSIN) THEN
-    REWRITE_TAC[VSUM_SING_NUMSEG] THEN CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+    REWRITE_TAC[VSUM_SING_NUMSEG] THEN CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
     REWRITE_TAC[complex_pow; COMPLEX_POW_1; COMPLEX_DIV_1] THEN
     REWRITE_TAC[COMPLEX_MUL_LID] THEN
     MATCH_MP_TAC(REWRITE_RULE[IMP_CONJ_ALT] REAL_LE_TRANS) THEN
     MATCH_MP_TAC REAL_EQ_IMP_LE THEN
     REWRITE_TAC[COMPLEX_NORM_DIV; COMPLEX_NORM_CX; REAL_ABS_NUM] THEN
     REWRITE_TAC[COMPLEX_NORM_POW] THEN REAL_ARITH_TAC;
-    LIM_TAC THEN TRY(CONV_TAC "COMPLEX_RING" COMPLEX_RING) THEN
-    GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF] THEN
+    LIM_TAC THEN TRY(CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING) THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF] THEN
     MATCH_MP_TAC CONTINUOUS_AT_COMPOSE THEN
     REWRITE_TAC[CONTINUOUS_AT_CEXP] THEN
     REWRITE_TAC[CONTINUOUS_AT; LIM_AT; dist; COMPLEX_SUB_RZERO;
@@ -6395,7 +6397,7 @@ let COMPLEX_ROOT_POLYFUN = prove
                            ==> ~(i = n)`] THEN
   REWRITE_TAC[COMPLEX_MUL_LZERO; complex_pow; COMPLEX_MUL_RID] THEN
   REWRITE_TAC[GSYM COMPLEX_VEC_0; VSUM_0; VECTOR_ADD_RID] THEN
-  REWRITE_TAC[COMPLEX_VEC_0] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[COMPLEX_VEC_0] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let COMPLEX_ROOT_UNITY = prove
  (`!n j. ~(n = 0)
@@ -6435,7 +6437,7 @@ let COMPLEX_ROOT_UNITY_EQ_1 = prove
     ONCE_REWRITE_TAC[COMPLEX_RING `t * p * ii = ii * t * p`] THEN
     REWRITE_TAC[CEXP_EULER; GSYM CX_MUL; GSYM CX_SIN; GSYM CX_COS] THEN
     REWRITE_TAC[COS_NPI; SIN_NPI] THEN SIMPLE_COMPLEX_ARITH_TAC;
-    ASM_SIMP_TAC[COMPLEX_ROOT_UNITY_EQ] THEN CONV_TAC "NUMBER_RULE" NUMBER_RULE]);;
+    ASM_SIMP_TAC[COMPLEX_ROOT_UNITY_EQ] THEN CONV_TAC "Multivariate/transcendentals.ml:NUMBER_RULE" NUMBER_RULE]);;
 
 let FINITE_CARD_COMPLEX_ROOTS_UNITY = prove
  (`!n. 1 <= n
@@ -6443,7 +6445,7 @@ let FINITE_CARD_COMPLEX_ROOTS_UNITY = prove
   REPEAT GEN_TAC THEN DISCH_TAC THEN ASM_SIMP_TAC[COMPLEX_ROOT_POLYFUN] THEN
   MATCH_MP_TAC COMPLEX_POLYFUN_ROOTBOUND THEN
   DISCH_THEN(MP_TAC o SPEC `n:num`) THEN
-  ASM_SIMP_TAC[IN_NUMSEG; LE_1; LE_0; LE_REFL] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  ASM_SIMP_TAC[IN_NUMSEG; LE_1; LE_0; LE_REFL] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 let FINITE_COMPLEX_ROOTS_UNITY = prove
  (`!n. ~(n = 0) ==> FINITE {z | z pow n = Cx(&1)}`,
@@ -6476,10 +6478,10 @@ let COMPLEX_ROOTS_UNITY = prove
  (`!n. 1 <= n
        ==> {z | z pow n = Cx(&1)} =
            {cexp(Cx(&2) * Cx pi * ii * Cx(&j / &n)) | j | j < n}`,
-  REPEAT STRIP_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC CARD_SUBSET_LE THEN
+  REPEAT STRIP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC CARD_SUBSET_LE THEN
   ASM_SIMP_TAC[FINITE_CARD_COMPLEX_ROOTS_UNITY;
                FINITE_CARD_COMPLEX_ROOTS_UNITY_EXPLICIT] THEN
-  GEN_REWRITE_TAC LAND_CONV [SIMPLE_IMAGE_GEN] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [SIMPLE_IMAGE_GEN] THEN
   REWRITE_TAC[SUBSET; FORALL_IN_IMAGE; IN_ELIM_THM] THEN
   ASM_SIMP_TAC[COMPLEX_ROOT_UNITY; LE_1]);;
 
@@ -6503,7 +6505,7 @@ let COMPLEX_NOT_ROOT_UNITY = prove
   ASM_SIMP_TAC[CX_DIV; LE_1; CX_INJ; REAL_OF_NUM_EQ; COMPLEX_FIELD
        `~(n = Cx(&0)) ==> n * p * i * Cx(&1) / n = i * p`] THEN
   REWRITE_TAC[CEXP_EULER; RE_CX; IM_CX; GSYM CX_COS; GSYM CX_SIN] THEN
-  REWRITE_TAC[COS_PI; SIN_PI] THEN CONV_TAC "COMPLEX_RING" COMPLEX_RING);;
+  REWRITE_TAC[COS_PI; SIN_PI] THEN CONV_TAC "Multivariate/transcendentals.ml:COMPLEX_RING" COMPLEX_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* Relation between clog and Arg, and hence continuity of Arg.               *)
@@ -6555,7 +6557,7 @@ let CONTINUOUS_AT_ARG = prove
     REWRITE_TAC[CONTINUOUS_AT_CX_IM] THEN
     MATCH_MP_TAC CONTINUOUS_ADD THEN REWRITE_TAC[CONTINUOUS_CONST] THEN
     MATCH_MP_TAC(REWRITE_RULE[o_DEF] CONTINUOUS_AT_COMPOSE) THEN
-    GEN_REWRITE_TAC (LAND_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o LAND_CONV)" (LAND_CONV o LAND_CONV) [GSYM ETA_AX] THEN
     SIMP_TAC[CONTINUOUS_NEG; CONTINUOUS_AT_ID] THEN
     MATCH_MP_TAC CONTINUOUS_AT_CLOG THEN POP_ASSUM MP_TAC THEN
     REWRITE_TAC[real; IM_NEG; RE_NEG] THEN REAL_ARITH_TAC]);;
@@ -6576,7 +6578,7 @@ let CONTINUOUS_WITHIN_UPPERHALF_ARG = prove
   SUBGOAL_THEN `~(Re z = &0)` ASSUME_TAC THENL
    [DISCH_TAC THEN UNDISCH_TAC `~(z = Cx(&0))` THEN
     ASM_REWRITE_TAC[COMPLEX_EQ; RE_CX; IM_CX];
-    GEN_REWRITE_TAC LAND_CONV [REAL_LE_LT]] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [REAL_LE_LT]] THEN
   ASM_REWRITE_TAC[] THEN DISCH_TAC THEN
   MP_TAC(ISPEC `rotate2d (pi / &2) z` CONTINUOUS_AT_ARG) THEN ANTS_TAC THENL
    [ASM_REWRITE_TAC[ROTATE2D_PI2; real; IM_MUL_II]; ALL_TAC] THEN
@@ -6634,14 +6636,14 @@ let CONTINUOUS_ON_COMPOSE_ARG = prove
     SUBGOAL_THEN `Arg z = &0`
      (fun th -> ASM_REWRITE_TAC[REAL_SUB_RZERO; th]) THEN
     ASM_REWRITE_TAC[ARG_EQ_0];
-    GEN_REWRITE_TAC RAND_CONV [GSYM ulemma] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM ulemma] THEN
     MATCH_MP_TAC CONTINUOUS_ON_CASES_LOCAL THEN REWRITE_TAC[ulemma] THEN
     SIMP_TAC[CLOSED_IN_CLOSED_INTER; CLOSED_HALFSPACE_IM_LE;
              REWRITE_RULE[real_ge] CLOSED_HALFSPACE_IM_GE] THEN
     REWRITE_TAC[IN_INTER; IN_DIFF; IN_UNIV; IN_SING; IN_ELIM_THM] THEN
     SIMP_TAC[GSYM CONJ_ASSOC; REAL_LE_ANTISYM; TAUT `~(p /\ ~p)`] THEN
     REWRITE_TAC[CONJ_ASSOC] THEN CONJ_TAC THENL
-     [GEN_REWRITE_TAC (BINOP_CONV o LAND_CONV) [GSYM o_DEF] THEN
+     [GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(BINOP_CONV o LAND_CONV)" (BINOP_CONV o LAND_CONV) [GSYM o_DEF] THEN
       SUBGOAL_THEN `(p:real->real^N) = (p o drop) o lift` SUBST1_TAC THENL
        [REWRITE_TAC[o_DEF; LIFT_DROP; ETA_AX]; ALL_TAC] THEN
       ONCE_REWRITE_TAC[GSYM o_ASSOC] THEN
@@ -6657,7 +6659,7 @@ let CONTINUOUS_ON_COMPOSE_ARG = prove
         SIMP_TAC[ARG; REAL_LT_IMP_LE];
         REWRITE_TAC[o_DEF; LIFT_SUB] THEN MATCH_MP_TAC CONTINUOUS_ON_SUB THEN
         REWRITE_TAC[CONTINUOUS_ON_CONST] THEN
-        GEN_REWRITE_TAC (LAND_CONV o TOP_DEPTH_CONV) [GSYM o_DEF] THEN
+        GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o TOP_DEPTH_CONV)" (LAND_CONV o TOP_DEPTH_CONV) [GSYM o_DEF] THEN
         REWRITE_TAC[o_ASSOC] THEN MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
         REWRITE_TAC[CONTINUOUS_ON_CNJ; o_DEF; GSYM CONTINUOUS_ON_CX_LIFT] THEN
         MP_TAC CONTINUOUS_ON_UPPERHALF_ARG THEN REWRITE_TAC[o_DEF] THEN
@@ -6729,12 +6731,12 @@ let ARG_ATAN_UPPERHALF = prove
    [MATCH_MP_TAC SQRT_UNIQUE THEN
     ASM_SIMP_TAC[REAL_LE_DIV; NORM_POS_LE; REAL_LT_IMP_LE] THEN
     REWRITE_TAC[REAL_POW_DIV; COMPLEX_SQNORM] THEN
-    UNDISCH_TAC `&0 < Im z` THEN CONV_TAC "REAL_FIELD" REAL_FIELD;
+    UNDISCH_TAC `&0 < Im z` THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD;
     REWRITE_TAC[REAL_ADD_LID; REAL_SUB_RZERO; real_div] THEN
     REWRITE_TAC[COMPLEX_EQ; RE_MUL_CX; IM_MUL_CX; RE_MUL_II; IM_MUL_II;
                 RE_ADD; IM_ADD; RE_CX; IM_CX] THEN
     FIRST_X_ASSUM(MP_TAC o GEN_REWRITE_RULE I [GSYM COMPLEX_NORM_NZ]) THEN
-    POP_ASSUM MP_TAC THEN CONV_TAC "REAL_FIELD" REAL_FIELD]);;
+    POP_ASSUM MP_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:REAL_FIELD" REAL_FIELD]);;
 
 (* ------------------------------------------------------------------------- *)
 (* Real n'th roots. Regardless of whether n is odd or even, we totalize by   *)
@@ -6755,7 +6757,7 @@ let ROOT_1 = prove
 
 let ROOT_2 = prove
  (`!x. root 2 x = sqrt x`,
-  GEN_TAC THEN CONV_TAC "SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SQRT_UNIQUE_GEN THEN
+  GEN_TAC THEN CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC SQRT_UNIQUE_GEN THEN
   REWRITE_TAC[root; REAL_SGN_MUL; REAL_POW_MUL; REAL_SGN_REAL_SGN] THEN
   REWRITE_TAC[REAL_SGN_POW_2; GSYM REAL_SGN_POW] THEN
   SIMP_TAC[real_sgn; REAL_EXP_POS_LT; REAL_MUL_RID] THEN
@@ -7151,7 +7153,7 @@ let RPOW_SQRT = prove
   CONJ_TAC THENL
    [ASM_SIMP_TAC[SQRT_POW_2] THEN
     ASM_SIMP_TAC[GSYM RPOW_POW; RPOW_RPOW] THEN
-    CONV_TAC "REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
+    CONV_TAC "Multivariate/transcendentals.ml:REAL_RAT_REDUCE_CONV" REAL_RAT_REDUCE_CONV THEN
     REWRITE_TAC[RPOW_POW; REAL_POW_1];
     MATCH_MP_TAC(REAL_ARITH
      `&0 <= x /\ &0 <= y ==> x + y = &0 ==> x = &0 /\ y = &0`) THEN
@@ -7180,7 +7182,7 @@ let RPOW_INJ = prove
   REPEAT STRIP_TAC THEN REPEAT_TCL DISJ_CASES_THEN ASSUME_TAC
    (REAL_ARITH `x = &1 \/ &1 < x \/ x < &1`) THEN
   ASM_SIMP_TAC[RPOW_ONE; REAL_LT_IMP_NE] THENL
-   [ALL_TAC; GEN_REWRITE_TAC LAND_CONV [GSYM REAL_EQ_INV2]] THEN
+   [ALL_TAC; GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM REAL_EQ_INV2]] THEN
   ASM_SIMP_TAC[REAL_INV_RPOW; GSYM REAL_LE_ANTISYM; RPOW_MONO_LE_EQ;
                REAL_INV_1_LT]);;
 
@@ -7195,7 +7197,7 @@ let RPOW_LT_1 = prove
 let RPOW_MONO_INV = prove
  (`!a b x. &0 < x /\ x <= &1 /\ b <= a ==> x rpow a <= x rpow b`,
   REPEAT STRIP_TAC THEN
-  GEN_REWRITE_TAC BINOP_CONV [GSYM REAL_INV_INV] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:BINOP_CONV" BINOP_CONV [GSYM REAL_INV_INV] THEN
   MATCH_MP_TAC REAL_LE_INV2 THEN
   ASM_SIMP_TAC[REAL_LT_INV_EQ; RPOW_POS_LT; GSYM RPOW_INV] THEN
   MATCH_MP_TAC RPOW_MONO_LE THEN
@@ -7405,7 +7407,7 @@ let HOMOTOPIC_LOOPS_IMP_HOMOTOPIC_CIRCLEMAPS = prove
                  PASTECART_IN_PCROSS] THEN
     SET_TAC[REAL_LE_TOTAL]) in
   REPEAT GEN_TAC THEN REWRITE_TAC[homotopic_loops; sphere; DIST_0] THEN
-  GEN_REWRITE_TAC LAND_CONV [homotopic_with] THEN
+  GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [homotopic_with] THEN
   SIMP_TAC[pathstart; pathfinish; LEFT_IMP_EXISTS_THM; HOMOTOPIC_WITH] THEN
   X_GEN_TAC `h:real^(1,1)finite_sum->real^N` THEN STRIP_TAC THEN
   EXISTS_TAC `\w. (h:real^(1,1)finite_sum->real^N)
@@ -7428,7 +7430,7 @@ let HOMOTOPIC_LOOPS_IMP_HOMOTOPIC_CIRCLEMAPS = prove
       SIMP_TAC[PI_POS; LIFT_SUB; LIFT_NUM; REAL_FIELD
         `&0 < pi ==> (&2 * pi - z) / (&2 * pi) = &1 - z / (&2 * pi)`] THEN
       REWRITE_TAC[VECTOR_ARITH `a - (a - b):real^N = b`];
-      GEN_REWRITE_TAC RAND_CONV [GSYM ulemma] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM ulemma] THEN
       MATCH_MP_TAC CONTINUOUS_ON_CASES_LOCAL THEN REWRITE_TAC[ulemma] THEN
       SIMP_TAC[CLOSED_IN_CLOSED_INTER; CLOSED_HALFSPACE_IM_LE; CLOSED_UNIV;
         CLOSED_PCROSS; REWRITE_RULE[real_ge] CLOSED_HALFSPACE_IM_GE] THEN
@@ -7447,13 +7449,13 @@ let HOMOTOPIC_LOOPS_IMP_HOMOTOPIC_CIRCLEMAPS = prove
                  ARITH_EQ; PI_NZ] THEN
         SIMP_TAC[real_div; REAL_MUL_LZERO; REAL_SUB_REFL; REAL_SUB_RZERO] THEN
         ASM_SIMP_TAC[LIFT_NUM]] THEN
-      GEN_REWRITE_TAC (BINOP_CONV o LAND_CONV) [GSYM o_DEF] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(BINOP_CONV o LAND_CONV)" (BINOP_CONV o LAND_CONV) [GSYM o_DEF] THEN
       CONJ_TAC THEN MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN CONJ_TAC THENL
        [MATCH_MP_TAC CONTINUOUS_ON_PASTECART THEN
         SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_FSTCART] THEN
         REWRITE_TAC[real_div; REWRITE_RULE[REAL_MUL_SYM] LIFT_CMUL] THEN
         MATCH_MP_TAC CONTINUOUS_ON_VMUL THEN
-        GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM o_DEF] THEN
+        GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM o_DEF] THEN
         REWRITE_TAC[o_ASSOC] THEN MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
         SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_SNDCART] THEN
         REWRITE_TAC[o_DEF; GSYM CONTINUOUS_ON_CX_LIFT] THEN
@@ -7480,9 +7482,9 @@ let HOMOTOPIC_LOOPS_IMP_HOMOTOPIC_CIRCLEMAPS = prove
         REWRITE_TAC[CONTINUOUS_ON_CONST] THEN
         REWRITE_TAC[real_div; REWRITE_RULE[REAL_MUL_SYM] LIFT_CMUL] THEN
         MATCH_MP_TAC CONTINUOUS_ON_VMUL THEN
-        GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM o_DEF] THEN
+        GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM o_DEF] THEN
         REWRITE_TAC[o_ASSOC] THEN MATCH_MP_TAC CONTINUOUS_ON_COMPOSE THEN
-        GEN_REWRITE_TAC (LAND_CONV o LAND_CONV) [GSYM o_DEF] THEN
+        GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o LAND_CONV)" (LAND_CONV o LAND_CONV) [GSYM o_DEF] THEN
         SIMP_TAC[LINEAR_CONTINUOUS_ON; LINEAR_SNDCART; CONTINUOUS_ON_COMPOSE;
                  CONTINUOUS_ON_CNJ] THEN
         REWRITE_TAC[o_DEF; GSYM CONTINUOUS_ON_CX_LIFT] THEN
@@ -7632,7 +7634,7 @@ let HAS_DERIVATIVE_POLAR = prove
   ANTS_TAC THENL
    [MATCH_MP_TAC HAS_DERIVATIVE_LINEAR THEN
     MATCH_MP_TAC LINEAR_COMPLEX_LMUL THEN
-    GEN_REWRITE_TAC RAND_CONV [GSYM o_DEF] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM o_DEF] THEN
     REWRITE_TAC[LINEAR_CX_IM];
     REWRITE_TAC[o_DEF] THEN DISCH_TAC] THEN
   MP_TAC(ISPECL
@@ -7787,14 +7789,14 @@ let FUBINI_POLAR = prove
    [MP_TAC(ISPECL [`g:complex->real^N`; `(:real^(1,1)finite_sum)`;
                    `\n:num. n`] ABSOLUTELY_INTEGRABLE_TWIZZLE_EQ) THEN
     REWRITE_TAC[PERMUTES_ID; DIMINDEX_FINITE_SUM; DIMINDEX_1; DIMINDEX_2] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
-    GEN_REWRITE_TAC (LAND_CONV o RAND_CONV o LAND_CONV) [GSYM o_DEF] THEN
+    CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV o LAND_CONV)" (LAND_CONV o RAND_CONV o LAND_CONV) [GSYM o_DEF] THEN
     ASM_REWRITE_TAC[];
     MP_TAC(ISPECL [`g:complex->real^N`; `(:real^(1,1)finite_sum)`;
                    `\n:num. n`] INTEGRAL_TWIZZLE_EQ) THEN
     REWRITE_TAC[PERMUTES_ID; DIMINDEX_FINITE_SUM; DIMINDEX_1; DIMINDEX_2] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
-    GEN_REWRITE_TAC (LAND_CONV o RAND_CONV o RAND_CONV) [GSYM o_DEF] THEN
+    CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o RAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV o RAND_CONV) [GSYM o_DEF] THEN
     ASM_REWRITE_TAC[] THEN DISCH_THEN(SUBST1_TAC o SYM)] THEN
   SUBGOAL_THEN
    `!x y. ((g:complex->real^N) o h) (pastecart x y) =
@@ -7815,16 +7817,16 @@ let FUBINI_POLAR = prove
     X_GEN_TAC `r:real^1` THEN ASM_CASES_TAC `&0 <= drop r` THEN
     ASM_REWRITE_TAC[LIFT_DROP];
     MATCH_MP_TAC EQ_IMP THEN AP_THM_TAC THEN AP_TERM_TAC THEN
-    GEN_REWRITE_TAC I [FUN_EQ_THM] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [FUN_EQ_THM] THEN
     X_GEN_TAC `r:real^1` THEN REWRITE_TAC[IN_ELIM_THM] THEN
-    GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV)
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV)
      [GSYM INTEGRAL_RESTRICT_UNIV] THEN
     ASM_CASES_TAC `&0 <= drop r` THEN
     ASM_REWRITE_TAC[INTEGRAL_0; IN_INTERVAL_1; LIFT_DROP; DROP_VEC];
     DISCH_THEN(SUBST1_TAC o SYM) THEN AP_TERM_TAC THEN
-    GEN_REWRITE_TAC I [FUN_EQ_THM] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [FUN_EQ_THM] THEN
     X_GEN_TAC `r:real^1` THEN REWRITE_TAC[IN_ELIM_THM] THEN
-    GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV)
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV)
      [GSYM INTEGRAL_RESTRICT_UNIV] THEN
     ASM_CASES_TAC `&0 <= drop r` THEN
     ASM_REWRITE_TAC[INTEGRAL_0; IN_INTERVAL_1; LIFT_DROP; DROP_VEC]]);;
@@ -7872,7 +7874,7 @@ let FUBINI_TONELLI_POLAR = prove
       DISCH_THEN SUBST1_TAC] THEN
     EXPAND_TAC "g" THEN
     REWRITE_TAC[REWRITE_RULE[IN] MEASURABLE_ON_UNIV] THEN
-    GEN_REWRITE_TAC RAND_CONV [SET_RULE `(\x. P x) = {x | P x}`] THEN
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [SET_RULE `(\x. P x) = {x | P x}`] THEN
     MATCH_MP_TAC(REWRITE_RULE[IMP_IMP] MEASURABLE_ON_SPIKE_SET) THEN
     EXISTS_TAC `{z | &0 < Re z /\ &0 < Im z /\ Im z < &2 * pi}` THEN
     CONJ_TAC THENL
@@ -7896,7 +7898,7 @@ let FUBINI_TONELLI_POLAR = prove
      [MATCH_MP_TAC CONTINUOUS_IMP_MEASURABLE_ON_LEBESGUE_MEASURABLE_SUBSET THEN
       ASM_REWRITE_TAC[] THEN MATCH_MP_TAC LINEAR_CONTINUOUS_ON THEN
       REWRITE_TAC[RE_DEF; LINEAR_LIFT_COMPONENT];
-      GEN_REWRITE_TAC LAND_CONV [GSYM o_DEF]] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:LAND_CONV" LAND_CONV [GSYM o_DEF]] THEN
     MATCH_MP_TAC MEASURABLE_ON_CONTINUOUS_COMPOSE THEN
     EXISTS_TAC `(:complex)` THEN
     ASM_REWRITE_TAC[LEBESGUE_MEASURABLE_UNIV; SUBSET_UNIV] THEN CONJ_TAC THENL
@@ -7920,17 +7922,17 @@ let FUBINI_TONELLI_POLAR = prove
       REWRITE_TAC[HAS_DERIVATIVE_POLAR]];
     ALL_TAC] THEN
   MATCH_MP_TAC EQ_IMP THEN BINOP_TAC THENL
-   [GEN_REWRITE_TAC RAND_CONV
+   [GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV
      [ABSOLUTELY_INTEGRABLE_CHANGE_OF_VARIABLES_POLAR] THEN
-    GEN_REWRITE_TAC RAND_CONV
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV
      [GSYM ABSOLUTELY_INTEGRABLE_RESTRICT_UNIV] THEN
     ASM_REWRITE_TAC[IN_ELIM_THM] THEN
     FIRST_X_ASSUM(fun th ->
-      GEN_REWRITE_TAC (RAND_CONV o RAND_CONV) [GSYM th]) THEN
-    CONV_TAC "SYM_CONV" SYM_CONV THEN EXPAND_TAC "h" THEN REWRITE_TAC[o_DEF] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o RAND_CONV)" (RAND_CONV o RAND_CONV) [GSYM th]) THEN
+    CONV_TAC "Multivariate/transcendentals.ml:SYM_CONV" SYM_CONV THEN EXPAND_TAC "h" THEN REWRITE_TAC[o_DEF] THEN
     MATCH_MP_TAC ABSOLUTELY_INTEGRABLE_TWIZZLE_EQ THEN
     REWRITE_TAC[PERMUTES_ID; DIMINDEX_2; DIMINDEX_1; DIMINDEX_FINITE_SUM] THEN
-    CONV_TAC "NUM_REDUCE_CONV" NUM_REDUCE_CONV;
+    CONV_TAC "Multivariate/transcendentals.ml:NUM_REDUCE_CONV" NUM_REDUCE_CONV;
     SUBGOAL_THEN
      `!x y. ((g:complex->real^N) o h) (pastecart x y) =
             g(complex(drop x,drop y))`
@@ -7944,23 +7946,23 @@ let FUBINI_TONELLI_POLAR = prove
       REWRITE_TAC[GSYM RE_DEF; GSYM IM_DEF; RE; IM] THEN REWRITE_TAC[drop];
       ALL_TAC] THEN
     EXPAND_TAC "g" THEN REWRITE_TAC[RE; IM] THEN
-    GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV)
+    GEN_REWRITE_TAC "Multivariate/transcendentals.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV)
      [GSYM ABSOLUTELY_INTEGRABLE_RESTRICT_UNIV;
       GSYM INTEGRABLE_RESTRICT_UNIV] THEN
     BINOP_TAC THENL
-     [AP_TERM_TAC THEN GEN_REWRITE_TAC I [EXTENSION] THEN
+     [AP_TERM_TAC THEN GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [EXTENSION] THEN
       X_GEN_TAC `r:real^1` THEN REWRITE_TAC[IN_ELIM_THM] THEN
       ASM_CASES_TAC `&0 <= drop r` THEN
       ASM_REWRITE_TAC[ABSOLUTELY_INTEGRABLE_0] THEN
       REWRITE_TAC[IN_INTERVAL_1; LIFT_DROP; DROP_VEC];
       AP_THM_TAC THEN AP_TERM_TAC THEN
-      GEN_REWRITE_TAC I [FUN_EQ_THM] THEN X_GEN_TAC `r:real^1` THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [FUN_EQ_THM] THEN X_GEN_TAC `r:real^1` THEN
       REWRITE_TAC[IN_ELIM_THM] THEN
       ASM_CASES_TAC `&0 <= drop r` THEN
       ASM_REWRITE_TAC[NORM_0; LIFT_NUM; INTEGRAL_0] THEN
-      GEN_REWRITE_TAC RAND_CONV [GSYM INTEGRAL_RESTRICT_UNIV] THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:RAND_CONV" RAND_CONV [GSYM INTEGRAL_RESTRICT_UNIV] THEN
       AP_TERM_TAC THEN
-      GEN_REWRITE_TAC I [FUN_EQ_THM] THEN X_GEN_TAC `t:real^1` THEN
+      GEN_REWRITE_TAC "Multivariate/transcendentals.ml:I" I [FUN_EQ_THM] THEN X_GEN_TAC `t:real^1` THEN
       REWRITE_TAC[IN_INTERVAL_1; LIFT_DROP; DROP_VEC] THEN
       COND_CASES_TAC THEN ASM_REWRITE_TAC[NORM_0; LIFT_NUM] THEN
       ASM_REWRITE_TAC[NORM_MUL; LIFT_CMUL; real_abs]]]);;
