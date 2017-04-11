@@ -142,7 +142,7 @@ CAMLP5_WHERE=-I `camlp5 -where`
 CAMLP5_PRE=$(CAMLP5_WHERE) odyl.cmxa camlp5.cmxa
 CAMLP5_POST=odyl.cmx -linkall
 CAMLP5_REVISED=pa_r.cmx pa_rp.cmx pr_dump.cmx pa_lexer.cmx pa_extend.cmx q_MLast.cmx pa_reloc.cmx pa_macro.cmx
-NATIVE_PRE=-linkall nums.cmxa $(CAMLP5_WHERE) quotation.cmx
+NATIVE_PRE=-linkall str.cmxa nums.cmxa $(CAMLP5_WHERE) quotation.cmx
 
 revised:
 	$(OCAMLOPT) $(OCAMLFLAGS) -o $@ $(CAMLP5_PRE) $(CAMLP5_REVISED) $(CAMLP5_POST)
