@@ -1,3 +1,3 @@
 ARGV.each do |fn|
-  puts "mv #{fn} #{fn.gsub(/\.bak/,'')}"
+  puts "cp #{fn} #{fn.gsub(/\.bak5/,'')}"
 end

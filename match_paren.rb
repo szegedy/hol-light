@@ -32,27 +32,31 @@ end
     
 counts = {}
 
+def sanitize(s)
+  return s.gsub(/\s+/, " ").gsub(/"/, "\\\"")
+end
+
 ARGV.each do |fname|
   s = IO.read(fname)
-  system("cp #{fname} #{fname}.bak")
+  # system("cp #{fname} #{fname}.bak7")
   last = 0
-  File.open(fname, "w") do |f|
-    s.to_enum(:scan,/CONV_TAC/).map do |m,|
+  File.open(fname + ".out", "w") do |f|
+    s.to_enum(:scan,/[^"](CONV_TAC|GEN_REWRITE_TAC)/).map do |m,|    
       index = $`.size
+      token = $1
       start = index + m.size
       p = next_nonspace(s, start)
-      # puts "#{fname} #{index} #{start} '#{s[index...p]}' '#{s[p]} #{p}"
       c = start
       param = ""
       if s[p] == "(" then
         c = find_closing_paren(s, p)
-        param = "(" + s[p+1...c].gsub(/\s+/, " ") + ")"
+        param = "(" + s[p+1...c] + ")"
         c += 1
       else
         c = match_nonalnum(s, p)
         param = s[p...c]
       end
-      f.print "#{s[last...index]}CONV_TAC \"#{param}\" #{param}"
+      f.print "#{s[last...index]}#{token} \"#{sanitize(param)}\" #{param}"
       last = c
     end
     f.puts s[last..-1]
