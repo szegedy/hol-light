@@ -324,12 +324,10 @@ let (USE_THEN:string->thm_tactic->tactic) =
     ttac th gl;;
 
 let (REMOVE_THEN:string->thm_tactic->tactic) =
-  fun s ttac (asl,w) ->
-    let th = try assoc s asl with Failure _ ->
-             failwith("USE_TAC: didn't find assumption "^s) in
-    let asl1,asl2 = chop_list(index s (map fst asl)) asl in
-    let asl' = asl1 @ tl asl2 in
-    ttac th (asl',w);;
+  fun s ttac (asl,w as g) ->
+    let n,(_,th),asl = try removei ((=) s o fst) asl with Failure _ ->
+                       failwith("USE_TAC: didn't find assumption "^s) in
+    add_tactic_log' g (Raw_pop_tac_log n) (ttac th) (asl,w);;
 
 (* ------------------------------------------------------------------------- *)
 (* General tools to augment a required set of theorems with assumptions.     *)
@@ -659,17 +657,18 @@ let (TRANS_TAC:thm->term->tactic) =
 (* Theorem continuations.                                                    *)
 (* ------------------------------------------------------------------------- *)
 
+(* For easy proof replay *)
+let RAW_CONJUNCTS_TAC: thm_tactic =
+  fun cth g ->
+    null_meta,[g],fun i [th,log] ->
+      let th1,th2 = CONJ_PAIR(INSTANTIATE_ALL i cth) in
+      PROVE_HYP th1 (PROVE_HYP th2 th),
+      Proof_log (g, Raw_conjuncts_tac_log cth, [log])
+
 let (CONJUNCTS_THEN2:thm_tactic->thm_tactic->thm_tactic) =
   fun ttac1 ttac2 cth ->
-      let c1,c2 = dest_conj(concl cth) in
-      fun gl -> let ti,gls,(jfn:justification) = (ttac1(ASSUME c1) THEN ttac2(ASSUME c2)) gl in
-                let jfn' i ths =
-                  let th1,th2 = CONJ_PAIR(INSTANTIATE_ALL i cth) in
-                  (* NOTE: (jfn i ths) will log ttac1 and ttac2, but only with concl of cth. *)
-                  let jth = jfn i ths in
-                  PROVE_HYP th1 (PROVE_HYP th2 (fst jth)),
-                  Proof_log(gl, Conjuncts_then2_log (ttac1, ttac2, cth), [snd jth]) in
-                ti,gls,jfn';;
+    let c1,c2 = dest_conj(concl cth) in
+    RAW_CONJUNCTS_TAC cth THEN ttac1(ASSUME c1) THEN ttac2(ASSUME c2)
 
 let (CONJUNCTS_THEN: thm_tactical) =
   W CONJUNCTS_THEN2;;

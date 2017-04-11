@@ -51,6 +51,7 @@ and 'a tactic_log =
   | Freeze_then_log of 'a
   | Backchain_tac_log of 'a
   | Imp_subst_tac_log of 'a
+  | Raw_conjuncts_tac_log of 'a
   (* term -> tactic *)
   | Undisch_tac_log of term
   | X_gen_tac_log of term
@@ -62,7 +63,6 @@ and 'a tactic_log =
   | Gen_rewrite_tac_log of string (* conv *) * 'a list
   | Spec_tac_log of term * term
   | X_choose_tac_log of term * 'a
-  | Conjuncts_then2_log of thm_tactic * thm_tactic * 'a
   | Unify_accept_tac_log of term list * 'a
   | Trans_tac_log of 'a * term
   | Asm_meson_tac_log of 'a list
@@ -285,7 +285,7 @@ let tactic_name taclog =
   | Contr_tac_log _ -> "Contr_tac_log"
   | Match_accept_tac_log _ -> "Match_accept_tac_log"
   | Match_mp_tac_log _ -> "Match_mp_tac_log"
-  | Conjuncts_then2_log _ -> "Conjuncts_then2_log"
+  | Raw_conjuncts_tac_log _ -> "Raw_conjuncts_tac_log"
   | Raw_subgoal_tac_log _ -> "Raw_subgoal_tac_log"
   | Freeze_then_log _ -> "Freeze_then_log"
   | X_meta_exists_tac_log _ -> "X_mpeta_exists_tac_log"
@@ -350,6 +350,7 @@ let sexp_tactic_log f taclog =
     | Match_mp_tac_log th
     | Backchain_tac_log th
     | Subst1_tac_log th
+    | Raw_conjuncts_tac_log th
     | Imp_subst_tac_log th -> Snode [name; f th]
     (* term -> tactic *)
     | Undisch_tac_log tm
@@ -362,8 +363,6 @@ let sexp_tactic_log f taclog =
     | Conv_tac_log c -> Snode [name; sexp_conv c]
     | Spec_tac_log (tm1, tm2) -> Snode [name; sexp_term tm1; sexp_term tm2]
     | X_choose_tac_log (tm, th) -> Snode [name; sexp_term tm; f th]
-    | Conjuncts_then2_log (thm_tac1, thm_tac2, th) ->
-        Snode [name; sexp_thm_tactic thm_tac1; sexp_thm_tactic thm_tac2; f th]
     | Freeze_then_log th -> Snode [name; f th]
     | Unify_accept_tac_log (tml, th) -> Snode [name; Snode (map sexp_term tml); f th]
     | Trans_tac_log (th,tm) -> Snode [name; f th; sexp_term tm]
@@ -426,7 +425,7 @@ let referenced_thms plog =
     | Contr_tac_log th
     | Match_accept_tac_log th
     | Match_mp_tac_log th
-    | Conjuncts_then2_log (_,_,th)
+    | Raw_conjuncts_tac_log th
     | Freeze_then_log th
     | Backchain_tac_log th
     | Imp_subst_tac_log th

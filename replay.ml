@@ -19,7 +19,7 @@ open Itab;;
 (* ------------------------------------------------------------------------- *)
 
 type conv = term->thm;;
-  
+
 (* Tactics filled in by future files *)
 let backchain_tac : thm_tactic option ref = ref None
 let imp_subst_tac : thm_tactic option ref = ref None
@@ -38,7 +38,7 @@ let real_arith_tac2 : tactic option ref = ref None
 let get name x = match !x with
     None -> failwith ("Downstream tactic "^name^" not filled in")
   | Some t -> t
-                
+
 type env = ((int * int) * thm) list
 
 let conv_tac_lookup tag =
@@ -98,9 +98,9 @@ let replay_tactic_log (env : env) log : tactic =
     | Contr_tac_log th -> replay_ttac CONTR_TAC th
     | Match_accept_tac_log th -> replay_ttac MATCH_ACCEPT_TAC th
     | Match_mp_tac_log th -> replay_ttac MATCH_MP_TAC th
+    | Raw_conjuncts_tac_log th -> replay_ttac RAW_CONJUNCTS_TAC th
     (* other *)
     | Conv_tac_log tag -> conv_tac_lookup tag
-    | Conjuncts_then2_log (tac1, tac2, th) -> failwith "TODO: Can't replay Conjuncts_then2_log"
     | Raw_subgoal_tac_log tm -> RAW_SUBGOAL_TAC tm
     | Backchain_tac_log th -> replay_ttac (get "BACKCHAIN_TAC" backchain_tac) th
     | Imp_subst_tac_log th -> replay_ttac (get "IMP_SUBST_TAC" imp_subst_tac) th
@@ -116,6 +116,11 @@ let replay_tactic_log (env : env) log : tactic =
 
 exception Hard_failure of string
 let hard_failwith s = raise (Hard_failure s)
+
+let map_error f delay =
+  try delay () with
+      Failure s -> failwith (f s)
+    | Hard_failure s -> hard_failwith (f s)
 
 (* Check that logged goals match goals generated during replay.  This ensures
    failful replay especially when we add or remove hypotheses. *)
@@ -142,15 +147,15 @@ let assert_goals_match: goal -> goal -> unit =
   fun (asl,w) (asl',w') ->
     if length asl != length asl' then
       let show asl = string_of_int (length asl) in
-      failwith ("assert_goals_match: different numbers of hypotheses: " ^
+      hard_failwith ("assert_goals_match: different numbers of hypotheses: " ^
         show asl ^ " != " ^ show asl')
     else (term w w'; List.iter hyp (zip asl asl'));;
 
 let replay_proof_log : src proof_log -> tactic =
   let rec proof n above (env : env) (Proof_log ((asl,_ as g), tac, logs)) g' =
     let above = tactic_name tac :: above in
-    (try assert_goals_match g g'
-     with Failure s -> failwith (s ^ ", stack " ^ String.concat " " (rev above)));
+    map_error (fun s -> s ^ ", stack " ^ String.concat " " (rev above))
+              (fun () -> assert_goals_match g g');
     let rec hyps k env asl = match asl with
         [] -> env
       | (_,a)::asl -> hyps (succ k) (((n,k),a)::env) asl in
@@ -214,7 +219,7 @@ let finalize_proof_log : int -> thm proof_log -> src proof_log = fun before_thms
       | Contr_tac_log th -> Contr_tac_log (thm th)
       | Match_accept_tac_log th -> Match_accept_tac_log (thm th)
       | Match_mp_tac_log th -> Match_mp_tac_log (thm th)
-      | Conjuncts_then2_log (tac1,tac2,th) -> Conjuncts_then2_log (tac1,tac2,thm th)
+      | Raw_conjuncts_tac_log th -> Raw_conjuncts_tac_log (thm th)
       | Raw_subgoal_tac_log tm -> Raw_subgoal_tac_log tm
       | Freeze_then_log th -> Freeze_then_log (thm th)
       | X_meta_exists_tac_log tm -> X_meta_exists_tac_log tm
