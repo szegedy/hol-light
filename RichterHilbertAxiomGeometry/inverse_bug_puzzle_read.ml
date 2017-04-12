@@ -25,7 +25,7 @@ let VEC2_TAC =
   SIMP_TAC[CART_EQ; LAMBDA_BETA; FORALL_2; SUM_2; DIMINDEX_2; VECTOR_2;
            vector_add; vec; dot; orthogonal; basis;
            vector_neg; vector_sub; vector_mul; ARITH] THEN
-  CONV_TAC REAL_RING;;
+  CONV_TAC "RichterHilbertAxiomGeometry/inverse_bug_puzzle_read.ml:REAL_RING" REAL_RING;;
 
 let oriented_area = new_definition
   `oriented_area (a:real^2,b:real^2,c:real^2) =

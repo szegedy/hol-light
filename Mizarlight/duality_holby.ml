@@ -152,9 +152,9 @@ let EXISTS_LINE = prove
 (* ------------------------------------------------------------------------- *)
 
 let FANO_TAC =
-  GEN_REWRITE_TAC DEPTH_CONV
+  GEN_REWRITE_TAC "Mizarlight/duality_holby.ml:DEPTH_CONV" DEPTH_CONV
    [FORALL_POINT; EXISTS_LINE; EXISTS_POINT; FORALL_LINE] THEN
-  GEN_REWRITE_TAC DEPTH_CONV
+  GEN_REWRITE_TAC "Mizarlight/duality_holby.ml:DEPTH_CONV" DEPTH_CONV
    (basic_rewrites() @ [ON_CLAUSES; Point_DISTINCT; Line_DISTINCT]);;
 
 let AXIOM_1 = time prove

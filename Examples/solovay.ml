@@ -35,7 +35,7 @@ let NORM_ELIM_CONV =
                          (BINDER_CONV(RAND_CONV BETA_CONV))) th1;;
 
 let NORM_ELIM_TAC =
-  CONV_TAC NORM_ELIM_CONV THEN GEN_TAC;;
+  CONV_TAC "Examples/solovay.ml:NORM_ELIM_CONV" NORM_ELIM_CONV THEN GEN_TAC;;
 
 let SOLOVAY_TAC =
   REWRITE_TAC[orthogonal; GSYM DOT_EQ_0] THEN
@@ -146,7 +146,7 @@ let ORTHOGONAL_SIMP_CLAUSES = prove
        (u dot (a % x + y) = u dot y) /\ ((a % x + y) dot u = y dot u) /\
        (u dot (y + a % x) = u dot y) /\ ((y + a % x) dot u = y dot u)`,
   SIMP_TAC[orthogonal; DOT_LADD; DOT_RADD; DOT_LMUL; DOT_RMUL] THEN
-  GEN_REWRITE_TAC (LAND_CONV o LAND_CONV) [DOT_SYM] THEN
+  GEN_REWRITE_TAC "Examples/solovay.ml:(LAND_CONV o LAND_CONV)" (LAND_CONV o LAND_CONV) [DOT_SYM] THEN
   SIMP_TAC[REAL_MUL_LZERO; REAL_MUL_RZERO; REAL_ADD_LID; REAL_ADD_RID]);;
 
 (* ------------------------------------------------------------------------- *)
@@ -175,12 +175,12 @@ let SOLOVAY_PROFORMA_EQ = prove
   MP_TAC(ISPEC `\w:real^N vs.  P (MAP ((dot) w) (CONS w vs)) vs :bool`
                SOLOVAY_LEMMA) THEN
   REWRITE_TAC[] THEN
-  DISCH_THEN(fun th -> GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [th]) THEN
-  GEN_REWRITE_TAC LAND_CONV [SWAP_FORALL_THM] THEN
-  AP_TERM_TAC THEN GEN_REWRITE_TAC I [FUN_EQ_THM] THEN
+  DISCH_THEN(fun th -> GEN_REWRITE_TAC "Examples/solovay.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [th]) THEN
+  GEN_REWRITE_TAC "Examples/solovay.ml:LAND_CONV" LAND_CONV [SWAP_FORALL_THM] THEN
+  AP_TERM_TAC THEN GEN_REWRITE_TAC "Examples/solovay.ml:I" I [FUN_EQ_THM] THEN
   X_GEN_TAC `u:real^N` THEN REWRITE_TAC[] THEN
   REWRITE_TAC[RIGHT_IMP_FORALL_THM] THEN
-  AP_TERM_TAC THEN GEN_REWRITE_TAC I [FUN_EQ_THM] THEN
+  AP_TERM_TAC THEN GEN_REWRITE_TAC "Examples/solovay.ml:I" I [FUN_EQ_THM] THEN
   X_GEN_TAC `as:(real)list` THEN REWRITE_TAC[IMP_IMP] THEN
   MATCH_MP_TAC(TAUT `(a ==> (b = c)) ==> (a ==> b <=> a ==> c)`) THEN
   STRIP_TAC THEN REWRITE_TAC[MAP] THEN BINOP_TAC THEN
@@ -189,7 +189,7 @@ let SOLOVAY_PROFORMA_EQ = prove
   REWRITE_TAC[VECTOR_ARITH
    `(a + u) dot (a + u) = a dot a + &2 * (u dot a) + u dot u`] THEN
   REWRITE_TAC[REAL_ARITH `(a + &2 * b + c = a + c) <=> (b = &0)`] THEN
-  GEN_REWRITE_TAC (RAND_CONV o BINOP_CONV o LAND_CONV) [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Examples/solovay.ml:(RAND_CONV o BINOP_CONV o LAND_CONV)" (RAND_CONV o BINOP_CONV o LAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[DOT_LADD] THEN CONJ_TAC THENL
    [POP_ASSUM_LIST(MP_TAC o end_itlist CONJ) THEN
     SPEC_TAC(`vs:(real^N)list`,`vs:(real^N)list`) THEN
@@ -220,7 +220,7 @@ let SOLOVAY_PROFORMA = prove
                     vs)
    ==> !w:real^N. P (MAP ((dot) w) (CONS w vs)) vs`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC RAND_CONV [SOLOVAY_PROFORMA_EQ] THEN
+  GEN_REWRITE_TAC "Examples/solovay.ml:RAND_CONV" RAND_CONV [SOLOVAY_PROFORMA_EQ] THEN
   REWRITE_TAC[RIGHT_IMP_FORALL_THM; IMP_IMP] THEN
   REPEAT STRIP_TAC THEN FIRST_X_ASSUM MATCH_MP_TAC THEN
   ASM_REWRITE_TAC[DOT_POS_LE]);;
@@ -303,7 +303,7 @@ let PYTHAGORAS = prove
  (`!A B C:real^N.
         orthogonal (A - B) (C - B)
         ==> norm(C - A) pow 2 = norm(B - A) pow 2 + norm(C - B) pow 2`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_RING);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_RING" REAL_RING);;
 
 (*** Actually in this case we can fairly easily do things manually, though
      we do need to explicitly use symmetry of the dot product.
@@ -313,7 +313,7 @@ let PYTHAGORAS = prove
         orthogonal (A - B) (C - B)
         ==> norm(C - A) pow 2 = norm(B - A) pow 2 + norm(C - B) pow 2`,
   REWRITE_TAC[NORM_POW_2; orthogonal; DOT_LSUB; DOT_RSUB; DOT_SYM] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "Examples/solovay.ml:REAL_RING" REAL_RING);;
 
  ***)
 
@@ -325,27 +325,27 @@ needs "Examples/sos.ml";;
 
 let EXAMPLE_1 = prove
  (`!x y:real^N. x dot y <= norm x * norm y`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 let EXAMPLE_2 = prove
  (`!x y:real^N. a % (x + y) = a % x + a % y`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 (*** Takes a few minutes but does work
 
 let EXAMPLE_3 = prove
  (`!x y:real^N. norm (x + y) <= norm x + norm y`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 ****)
 
 let EXAMPLE_4 = prove
  (`!x y z. x dot (y + z) = (x dot y) + (x dot z)`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 let EXAMPLE_5 = prove
  (`!x y. (x dot x = &0) ==> (x dot y = &0)`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* This is NORM_INCREASES_ONLINE.                                            *)
@@ -356,7 +356,7 @@ g `!a d:real^N.
 
 time e SOLOVAY_VECTOR_TAC;;
 
-time e (CONV_TAC REAL_SOS);;
+time e (CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* DIST_INCREASES_ONLINE                                                     *)
@@ -367,7 +367,7 @@ g `!b a d:real^N.
 
 time e SOLOVAY_VECTOR_TAC;;
 
-time e (CONV_TAC REAL_SOS);;
+time e (CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* This one doesn't seem to work easily, but I think it does eventually.     *)
@@ -376,18 +376,18 @@ time e (CONV_TAC REAL_SOS);;
 (****
 let EXAMPLE_6 = prove
  (`!a x. norm(a % x) = abs(a) * norm x`;;
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
  ****)
 
 let EXAMPLE_7 = prove
  (`!x. abs(norm x) = norm x`,
-   SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+   SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 
 (*** But this is (at least) really slow
 
 let EXAMPLE_8 = prove
  (`!x y. abs(norm(x) - norm(y)) <= abs(norm(x - y))`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Examples/solovay.ml:REAL_SOS" REAL_SOS);;
 ****)
 
 (* ------------------------------------------------------------------------- *)
@@ -400,7 +400,7 @@ let EXAMPLE_9 = prove
  (`!x:real^N y. x dot y > &0 ==> ?u. &0 < u /\ norm(u % y - x) < norm x`,
   SOLOVAY_VECTOR_TAC THEN
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC REAL_QELIM_CONV);;
+  CONV_TAC "Examples/solovay.ml:REAL_QELIM_CONV" REAL_QELIM_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Even richer set of quantifier alternations.                               *)
@@ -413,4 +413,4 @@ let EXAMPLE_10 = prove
                 !v. &0 < v /\ v <= u ==> norm(v % y - x) < norm x`,
   SOLOVAY_VECTOR_TAC THEN
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC REAL_QELIM_CONV);;
+  CONV_TAC "Examples/solovay.ml:REAL_QELIM_CONV" REAL_QELIM_CONV);;

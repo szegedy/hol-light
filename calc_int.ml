@@ -151,16 +151,16 @@ let REAL_LE_LNEG = prove
 let REAL_LE_NEG2 = prove
  (`!x y. --x <= --y <=> y <= x`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (RAND_CONV o LAND_CONV) [GSYM REAL_NEG_NEG] THEN
+  GEN_REWRITE_TAC "calc_int.ml:(RAND_CONV o LAND_CONV)" (RAND_CONV o LAND_CONV) [GSYM REAL_NEG_NEG] THEN
   REWRITE_TAC[REAL_LE_LNEG] THEN
   AP_TERM_TAC THEN MATCH_ACCEPT_TAC REAL_ADD_SYM);;
 
 let REAL_LE_RNEG = prove
  (`!x y. x <= --y <=> x + y <= &0`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o LAND_CONV) [GSYM REAL_NEG_NEG] THEN
+  GEN_REWRITE_TAC "calc_int.ml:(LAND_CONV o LAND_CONV)" (LAND_CONV o LAND_CONV) [GSYM REAL_NEG_NEG] THEN
   REWRITE_TAC[REAL_LE_LNEG; GSYM REAL_NEG_ADD] THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM REAL_LE_NEG2] THEN
+  GEN_REWRITE_TAC "calc_int.ml:RAND_CONV" RAND_CONV [GSYM REAL_LE_NEG2] THEN
   AP_THM_TAC THEN AP_TERM_TAC THEN
   REWRITE_TAC[GSYM REAL_ADD_LINV] THEN
   REWRITE_TAC[REAL_NEG_ADD; REAL_NEG_NEG] THEN
@@ -221,7 +221,7 @@ let REAL_INT_LE_CONV,REAL_INT_LT_CONV,
      (--(&m) < &n <=> ~((m = 0) /\ (n = 0)))`,
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3;
                 GSYM NOT_LE; real_lt] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "calc_int.ml:TAUT" TAUT) in
   let REAL_INT_LT_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_lt1];
     GEN_REWRITE_CONV I [pth_lt2a; pth_lt2b] THENC NUM_LT_CONV;
@@ -232,7 +232,7 @@ let REAL_INT_LE_CONV,REAL_INT_LT_CONV,
      (--(&m) >= --(&n) <=> m <= n) /\
      (--(&m) >= &n <=> (m = 0) /\ (n = 0))`,
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3; real_ge] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "calc_int.ml:TAUT" TAUT) in
   let REAL_INT_GE_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_ge1];
     GEN_REWRITE_CONV I [pth_ge2a; pth_ge2b] THENC NUM_LE_CONV;
@@ -243,7 +243,7 @@ let REAL_INT_LE_CONV,REAL_INT_LT_CONV,
      (--(&m) > --(&n) <=> m < n) /\
      (&m > --(&n) <=> ~((m = 0) /\ (n = 0)))`,
     REWRITE_TAC[pth_lt1; pth_lt2a; pth_lt2b; pth_lt3; real_gt] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "calc_int.ml:TAUT" TAUT) in
   let REAL_INT_GT_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_gt1];
     GEN_REWRITE_CONV I [pth_gt2a; pth_gt2b] THENC NUM_LT_CONV;
@@ -255,7 +255,7 @@ let REAL_INT_LE_CONV,REAL_INT_LT_CONV,
      ((&m = --(&n)) <=> (m = 0) /\ (n = 0))`,
     REWRITE_TAC[GSYM REAL_LE_ANTISYM; GSYM LE_ANTISYM] THEN
     REWRITE_TAC[pth_le1; pth_le2a; pth_le2b; pth_le3; LE; LE_0] THEN
-    CONV_TAC TAUT) in
+    CONV_TAC "calc_int.ml:TAUT" TAUT) in
   let REAL_INT_EQ_CONV = FIRST_CONV
    [GEN_REWRITE_CONV I [pth_eq1a; pth_eq1b] THENC NUM_EQ_CONV;
     GEN_REWRITE_CONV I [pth_eq2a; pth_eq2b] THENC NUM2_EQ_CONV] in

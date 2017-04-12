@@ -51,7 +51,7 @@ let mdiff = new_definition
 
 let MEXTENSION = prove
  (`(M = N) = !a. multiplicity M a = multiplicity N a`,
-  REWRITE_TAC[GSYM FUN_EQ_THM] THEN CONV_TAC(ONCE_DEPTH_CONV ETA_CONV) THEN
+  REWRITE_TAC[GSYM FUN_EQ_THM] THEN CONV_TAC "Examples/multiwf.ml:(ONCE_DEPTH_CONV ETA_CONV)" (ONCE_DEPTH_CONV ETA_CONV) THEN
   MESON_TAC[multiset_tybij]);;
 
 (* ------------------------------------------------------------------------- *)
@@ -78,7 +78,7 @@ let MUNION = prove
  (`multiplicity (M munion N) a = multiplicity M a + multiplicity N a`,
   REWRITE_TAC[munion] THEN MATCH_MP_TAC MULTIPLICITY_MULTISET THEN
   REWRITE_TAC[UNION_NONZERO; FINITE_UNION] THEN SIMP_TAC[multiset_tybij] THEN
-  CONV_TAC(ONCE_DEPTH_CONV ETA_CONV) THEN REWRITE_TAC[multiset_tybij]);;
+  CONV_TAC "Examples/multiwf.ml:(ONCE_DEPTH_CONV ETA_CONV)" (ONCE_DEPTH_CONV ETA_CONV) THEN REWRITE_TAC[multiset_tybij]);;
 
 let MDIFF = prove
  (`multiplicity (M mdiff N) (a:A) = multiplicity M a - multiplicity N a`,
@@ -86,7 +86,7 @@ let MDIFF = prove
   REWRITE_TAC[] THEN MATCH_MP_TAC FINITE_SUBSET THEN
   EXISTS_TAC `{a:A | ~(multiplicity M a = 0)}` THEN
   SIMP_TAC[SUBSET; IN_ELIM_THM; multiset_tybij] THEN
-  CONV_TAC(ONCE_DEPTH_CONV ETA_CONV) THEN REWRITE_TAC[multiset_tybij] THEN
+  CONV_TAC "Examples/multiwf.ml:(ONCE_DEPTH_CONV ETA_CONV)" (ONCE_DEPTH_CONV ETA_CONV) THEN REWRITE_TAC[multiset_tybij] THEN
   ARITH_TAC);;
 
 (* ------------------------------------------------------------------------- *)
@@ -186,7 +186,7 @@ let MULTISET_INDUCT = prove
   GEN_TAC THEN DISCH_THEN MATCH_MP_TAC THEN
   EXISTS_TAC `{a:A | ~(multiplicity M a = 0)}` THEN
   REWRITE_TAC[SUBSET_REFL; multiset_tybij] THEN
-  CONV_TAC(ONCE_DEPTH_CONV ETA_CONV) THEN REWRITE_TAC[multiset_tybij]);;
+  CONV_TAC "Examples/multiwf.ml:(ONCE_DEPTH_CONV ETA_CONV)" (ONCE_DEPTH_CONV ETA_CONV) THEN REWRITE_TAC[multiset_tybij]);;
 
 (* ========================================================================= *)
 (* Part 2: Transcription of Tobias's paper.                                  *)
@@ -240,7 +240,7 @@ let LEMMA_2_0 = prove
  (`morder(<<) N (M0 munion (msing a))
    ==> (?M. morder(<<) M M0 /\ (N = M munion (msing a))) \/
        (?K. (N = M0 munion K) /\ (!b:A. b mmember K ==> b << a))`,
-  GEN_REWRITE_TAC LAND_CONV [morder] THEN
+  GEN_REWRITE_TAC "Examples/multiwf.ml:LAND_CONV" LAND_CONV [morder] THEN
   DISCH_THEN(EVERY_TCL (map X_CHOOSE_THEN
    [`M1:(A)multiset`; `b:A`; `K:(A)multiset`]) STRIP_ASSUME_TAC) THEN
   ASM_CASES_TAC `b:A = a` THENL

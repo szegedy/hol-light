@@ -17,7 +17,7 @@ needs "Examples/sos.ml";;
 
 let CANTOR_LEMMA = prove
  (`cantor(x,y) = cantor(x',y') ==> x + y = x' + y'`,
-  REWRITE_TAC[cantor] THEN CONV_TAC SOS_RULE);;
+  REWRITE_TAC[cantor] THEN CONV_TAC "Tutorial/Sets_and_functions.ml:SOS_RULE" SOS_RULE);;
 
 ****)
 

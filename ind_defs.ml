@@ -286,7 +286,7 @@ let MONO_TAC =
     let th1 = rev_itlist (C AP_THM) args1 (BETA_CONV hd1)
     and th2 = rev_itlist (C AP_THM) args1 (BETA_CONV hd2) in
     let th3 = MK_COMB(AP_TERM imp th1,th2) in
-    CONV_TAC(REWR_CONV th3) (asl,w)
+    CONV_TAC "ind_defs.ml:(REWR_CONV th3)" (REWR_CONV th3) (asl,w)
   and APPLY_MONOTAC tacs (asl,w) =
     let a,c = dest_imp w in
     if aconv a c then ACCEPT_TAC (SPEC a IMP_REFL) (asl,w) else

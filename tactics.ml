@@ -366,14 +366,16 @@ let (ACCEPT_TAC: thm_tactic) =
 (* the form "T" automatically.                                               *)
 (* ------------------------------------------------------------------------- *)
 
-let (CONV_TAC: conv -> tactic) =
+let (CONV_TAC : string -> conv -> tactic) =
   let t_tm = `T` in
-  fun conv -> replace_tactic_log (Conv_tac_log conv) (fun ((asl,w) as g) ->
+  fun args conv ->
+  let conv = register_conv args conv in
+  replace_tactic_log (Conv_tac_log args) (fun ((asl,w) as g) ->
     let th = conv w in
     let tm = concl th in
     if aconv tm w then ACCEPT_TAC th g else
     let l,r = dest_eq tm in
-    if not(aconv l w) then failwith "CONV_TAC: bad equation" else
+    if not(aconv l w) then failwith "CONV_TAC "" : bad equation" else
     if r = t_tm then ACCEPT_TAC(EQT_ELIM th) g else
     let th' = SYM th in
     null_meta,[asl,r],fun i [th,log] -> EQ_MP (INSTANTIATE_ALL i th') th,
@@ -423,13 +425,14 @@ let (BINOP_TAC: tactic) =
   let tac = MK_COMB_TAC THENL [AP_TERM_TAC; ALL_TAC] in
   fun gl -> try tac gl with Failure _ -> failwith "AP_THM_TAC";;
 
-let (SUBST1_TAC: thm_tactic) =
-  fun th -> CONV_TAC(SUBS_CONV [th]);;
+let SUBST1_TAC th =
+  replace_tactic_log
+    (Subst1_tac_log th) (CONV_TAC "tactics.ml:(SUBS_CONV [th])" (SUBS_CONV [th]));;
 
 let SUBST_ALL_TAC rth =
   SUBST1_TAC rth THEN RULE_ASSUM_TAC (SUBS [rth]);;
 
-let BETA_TAC = CONV_TAC(REDEPTH_CONV BETA_CONV);;
+let BETA_TAC = CONV_TAC "tactics.ml:(REDEPTH_CONV BETA_CONV)" (REDEPTH_CONV BETA_CONV);;
 
 (* ------------------------------------------------------------------------- *)
 (* Just use an equation to substitute if possible and uninstantiable.        *)

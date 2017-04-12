@@ -130,7 +130,7 @@ let PAIR = prove
 let pair_INDUCT = prove
  (`!P. (!x y. P (x,y)) ==> !p. P p`,
   REPEAT STRIP_TAC THEN
-  GEN_REWRITE_TAC RAND_CONV [GSYM PAIR] THEN
+  GEN_REWRITE_TAC "pair.ml:RAND_CONV" RAND_CONV [GSYM PAIR] THEN
   FIRST_ASSUM MATCH_ACCEPT_TAC);;
 
 let pair_RECURSION = prove
@@ -362,7 +362,7 @@ let EXISTS_UNPAIR_THM = prove
 
 let FORALL_PAIRED_THM = prove
  (`!P. (!(x,y). P x y) <=> (!x y. P x y)`,
-  GEN_TAC THEN GEN_REWRITE_TAC (LAND_CONV o RATOR_CONV) [FORALL_DEF] THEN
+  GEN_TAC THEN GEN_REWRITE_TAC "pair.ml:(LAND_CONV o RATOR_CONV)" (LAND_CONV o RATOR_CONV) [FORALL_DEF] THEN
   REWRITE_TAC[FUN_EQ_THM; FORALL_PAIR_THM]);;
 
 let EXISTS_PAIRED_THM = prove
@@ -376,7 +376,7 @@ let EXISTS_PAIRED_THM = prove
 
 let FORALL_TRIPLED_THM = prove
  (`!P. (!(x,y,z). P x y z) <=> (!x y z. P x y z)`,
-  GEN_TAC THEN GEN_REWRITE_TAC (LAND_CONV o RATOR_CONV) [FORALL_DEF] THEN
+  GEN_TAC THEN GEN_REWRITE_TAC "pair.ml:(LAND_CONV o RATOR_CONV)" (LAND_CONV o RATOR_CONV) [FORALL_DEF] THEN
   REWRITE_TAC[FUN_EQ_THM; FORALL_PAIR_THM]);;
 
 let EXISTS_TRIPLED_THM = prove
@@ -464,4 +464,4 @@ let (LET_TAC:tactic) =
                   SUBST_ALL_TAC th' THEN ASSUME_TAC th')) deprths THEN
      W(fun (asl',w') ->
         let tm' = follow_path path w' in
-        CONV_TAC(PATH_CONV path (K(let_CONV tm'))))) gl;;
+        CONV_TAC "pair.ml:(PATH_CONV path (K(let_CONV tm')))" (PATH_CONV path (K(let_CONV tm'))))) gl;;

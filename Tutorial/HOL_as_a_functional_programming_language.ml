@@ -97,7 +97,7 @@ let holds = define
 let HOLDS_NORM = prove
  (`!e v. holds v (norm e) <=> holds v e`,
   MATCH_MP_TAC ITE_INDUCT THEN SIMP_TAC[holds; norm] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "Tutorial/HOL_as_a_functional_programming_language.ml:TAUT" TAUT);;
 
 let taut = define
  `(taut (t,f) False <=> F) /\
@@ -142,7 +142,7 @@ let HOLDS_BACK = prove
        (!p q. (holds v p <=> holds v q) <=>
                    holds v (Ite p q (Ite q False True))) /\
        (!p q. holds v p ==> holds v q <=> holds v (Ite p q True))`,
-  REWRITE_TAC[holds] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[holds] THEN CONV_TAC "Tutorial/HOL_as_a_functional_programming_language.ml:TAUT" TAUT);;
 
 let COND_CONV = GEN_REWRITE_CONV I [COND_CLAUSES];;
 let AND_CONV = GEN_REWRITE_CONV I [TAUT `(F /\ a <=> F) /\ (T /\ a <=> a)`];;
@@ -173,6 +173,6 @@ e(MP_TAC HOLDS_BACK THEN MATCH_MP_TAC MONO_FORALL THEN
   SPEC_TAC(`v:num->bool`,`v:num->bool`) THEN
   REWRITE_TAC[GSYM TAUTOLOGY; tautology]);;
 
-time e (GEN_REWRITE_TAC COMPUTE_DEPTH_CONV [norm; taut; MEM; ARITH_EQ]);;
+time e (GEN_REWRITE_TAC "Tutorial/HOL_as_a_functional_programming_language.ml:COMPUTE_DEPTH_CONV" COMPUTE_DEPTH_CONV [norm; taut; MEM; ARITH_EQ]);;
 
 ignore(b()); time e (REWRITE_TAC[norm; taut; MEM; ARITH_EQ]);;

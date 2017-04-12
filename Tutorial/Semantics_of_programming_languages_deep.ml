@@ -75,7 +75,7 @@ let WP_DISJUNCTIVE = prove
 let WP_SEQ = prove
  (`!c1 c2 q. wp (c1 ;; c2) = wp c1 o wp c2`,
   REWRITE_TAC[wp; wlp; terminates; FUN_EQ_THM; o_THM] THEN REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [sem_CASES] THEN
+  GEN_REWRITE_TAC "Tutorial/Semantics_of_programming_languages_deep.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [sem_CASES] THEN
   REWRITE_TAC[injectivity "command"; distinctness "command"] THEN
   MESON_TAC[DETERMINISM]);;
 

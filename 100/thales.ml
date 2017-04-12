@@ -42,7 +42,7 @@ let THALES = prove
   ABBREV_TAC `rad = radius pow 2` THEN POP_ASSUM_LIST(K ALL_TAC) THEN
   SIMP_TAC[dot; SUM_2; VECTOR_SUB_COMPONENT; DIMINDEX_2; VECTOR_ADD_COMPONENT;
    orthogonal; CART_EQ; FORALL_2; VECTOR_MUL_COMPONENT; ARITH] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "100/thales.ml:REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* But for another natural version, we need to use the reals.                *)
@@ -62,7 +62,7 @@ let MIDPOINT = prove
    orthogonal; CART_EQ; FORALL_2; VECTOR_MUL_COMPONENT; ARITH] THEN
   DISCH_THEN(CONJUNCTS_THEN2 STRIP_ASSUME_TAC MP_TAC) THEN
   REPEAT(FIRST_X_ASSUM SUBST_ALL_TAC) THEN
-  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_SOS);;
+  REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/thales.ml:REAL_SOS" REAL_SOS);;
 
 (* ------------------------------------------------------------------------- *)
 (* Now we get a more natural formulation of Thales's theorem.                *)
@@ -84,4 +84,4 @@ let THALES = prove
   ABBREV_TAC `rad = radius pow 2` THEN POP_ASSUM_LIST(K ALL_TAC) THEN
   SIMP_TAC[dot; SUM_2; VECTOR_SUB_COMPONENT; DIMINDEX_2; VECTOR_ADD_COMPONENT;
    orthogonal; CART_EQ; FORALL_2; VECTOR_MUL_COMPONENT; ARITH] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "100/thales.ml:REAL_RING" REAL_RING);;

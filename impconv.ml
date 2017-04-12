@@ -804,7 +804,7 @@ let IMPCONV_RULE:imp_conv->thm->thm =
     MATCH_MP (c Contra t) th
 
 (* From an implicational conversion builds a tactic. *)
-let IMPCONV_TAC:imp_conv->tactic =
+let IMPCONV_TAC "impconv.ml:" :imp_conv->tactic =
   fun cnv (_,c as g) ->
     (MATCH_MP_TAC (cnv Co c) THEN TRY (ACCEPT_TAC TRUTH)) g
 
@@ -1853,9 +1853,7 @@ let TARGET_REWRITE_IMPCONV : thm list -> term list -> imp_conv =
 let TARGET_REWRITE_TAC sths th =
   let sths' = flat (map preprocess sths) in
   let ths = preprocess th and (+) = THEN_IMPCONV in
-  IMPCONV_TAC
-  (TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths)
-    + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))
+  IMPCONV_TAC "impconv.ml:(TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))" (TARGET_REWRITE_IMPCONV sths' (map patterns_of_thm ths) + imp_conv_of_ctx_imp_conv (REWRITE_CTXIMPCONV ths))
 
 let HINT_EXISTS_TAC = CTXIMPCONV_TAC (TOP_DEPTH_CTXIMPCONV EXISTS_CTXIMPCONV)
 

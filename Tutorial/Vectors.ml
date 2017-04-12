@@ -6,7 +6,7 @@ g `orthogonal (A - B) (C - B)
    ==> norm(C - A) pow 2 = norm(B - A) pow 2 + norm(C - B) pow 2`;;
 
 e SOLOVAY_VECTOR_TAC;;
-e(CONV_TAC REAL_RING);;
+e(CONV_TAC "Tutorial/Vectors.ml:REAL_RING" REAL_RING);;
 
 g`!x y:real^N. x dot y <= norm x * norm y`;;
 e SOLOVAY_VECTOR_TAC;;
@@ -14,11 +14,11 @@ e SOLOVAY_VECTOR_TAC;;
 (**** Needs external SDP solver
 needs "Examples/sos.ml";;
 
-e(CONV_TAC REAL_SOS);;
+e(CONV_TAC "Tutorial/Vectors.ml:REAL_SOS" REAL_SOS);;
 
 let EXAMPLE_0 = prove
  (`!a x y:real^N. (y - x) dot (a - y) >= &0 ==> norm(y - a) <= norm(x - a)`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Tutorial/Vectors.ml:REAL_SOS" REAL_SOS);;
 ****)
 
 (*** Needs Rqe loaded
@@ -31,7 +31,7 @@ let EXAMPLE_10 = prove
                 !v. &0 < v /\ v <= u ==> norm(v % y - x) < norm x`,
   SOLOVAY_VECTOR_TAC THEN
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC REAL_QELIM_CONV);;
+  CONV_TAC "Tutorial/Vectors.ml:REAL_QELIM_CONV" REAL_QELIM_CONV);;
 
 ****)
 
@@ -76,7 +76,7 @@ let cross = new_definition
 let VEC3_TAC =
   SIMP_TAC[CART_EQ; LAMBDA_BETA; FORALL_3; SUM_3; DIMINDEX_3; VECTOR_3;
            vector_add; vec; dot; cross; orthogonal; basis; ARITH] THEN
-  CONV_TAC REAL_RING;;
+  CONV_TAC "Tutorial/Vectors.ml:REAL_RING" REAL_RING;;
 
 let VEC3_RULE tm = prove(tm,VEC3_TAC);;
 

@@ -47,4 +47,4 @@ let arith_net() = itlist (uncurry net_of_conv)
 let ARITH_REWRITE_CONV thl =
   GENERAL_REWRITE_CONV true TOP_DEPTH_CONV (arith_net()) thl;;
 
-let ARITH_SIMP_TAC thl = CONV_TAC (ARITH_SIMP_CONV thl);;
+let ARITH_SIMP_TAC thl = CONV_TAC "Rqe/num_calc_simp.ml:(ARITH_SIMP_CONV thl)" (ARITH_SIMP_CONV thl);;

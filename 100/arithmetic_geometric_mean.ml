@@ -13,7 +13,7 @@ prioritize_real();;
 let LEMMA_1 = prove
  (`!x n. x pow (n + 1) - (&n + &1) * x + &n =
          (x - &1) pow 2 * sum(1..n) (\k. &k * x pow (n - k))`,
-  CONV_TAC(ONCE_DEPTH_CONV SYM_CONV) THEN GEN_TAC THEN INDUCT_TAC THEN
+  CONV_TAC "100/arithmetic_geometric_mean.ml:(ONCE_DEPTH_CONV SYM_CONV)" (ONCE_DEPTH_CONV SYM_CONV) THEN GEN_TAC THEN INDUCT_TAC THEN
   REWRITE_TAC[SUM_CLAUSES_NUMSEG; ARITH_EQ; ADD_CLAUSES] THENL
    [REAL_ARITH_TAC; REWRITE_TAC[ARITH_RULE `1 <= SUC n`]] THEN
   SIMP_TAC[ARITH_RULE `k <= n ==> SUC n - k = SUC(n - k)`; SUB_REFL] THEN
@@ -57,7 +57,7 @@ let LEMMA_3 = prove
   ASM_SIMP_TAC[REAL_LE_RDIV_EQ; REAL_POW_LT] THEN
   MATCH_MP_TAC EQ_IMP THEN AP_THM_TAC THEN AP_TERM_TAC THEN
   REWRITE_TAC[REAL_POW_ADD] THEN UNDISCH_TAC `~(b = &0)` THEN
-  CONV_TAC REAL_FIELD);;
+  CONV_TAC "100/arithmetic_geometric_mean.ml:REAL_FIELD" REAL_FIELD);;
 
 let AGM = prove
  (`!n a. 1 <= n /\ (!i. 1 <= i /\ i <= n ==> &0 <= a(i))
@@ -71,7 +71,7 @@ let AGM = prove
     EXISTS_TAC `x(n + 1) * (sum(1..n) x / &n) pow n` THEN
     ASM_SIMP_TAC[LEMMA_3; GSYM REAL_OF_NUM_ADD; LE_1;
                  ARITH_RULE `i <= n ==> i <= n + 1`] THEN
-    GEN_REWRITE_TAC RAND_CONV [REAL_MUL_SYM] THEN MATCH_MP_TAC REAL_LE_RMUL THEN
+    GEN_REWRITE_TAC "100/arithmetic_geometric_mean.ml:RAND_CONV" RAND_CONV [REAL_MUL_SYM] THEN MATCH_MP_TAC REAL_LE_RMUL THEN
     ASM_SIMP_TAC[LE_REFL; LE_1; ARITH_RULE `i <= n ==> i <= n + 1`]]);;
 
 (* ------------------------------------------------------------------------- *)

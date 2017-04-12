@@ -33,13 +33,13 @@ let I_DEF = new_definition
 let o_THM = prove
  (`!f:B->C. !g:A->B. !x:A. (f o g) x = f(g(x))`,
   PURE_REWRITE_TAC [o_DEF] THEN
-  CONV_TAC (DEPTH_CONV BETA_CONV) THEN
+  CONV_TAC "trivia.ml:(DEPTH_CONV BETA_CONV)" (DEPTH_CONV BETA_CONV) THEN
   REPEAT GEN_TAC THEN REFL_TAC);;
 
 let o_ASSOC = prove
  (`!f:C->D. !g:B->C. !h:A->B. f o (g o h) = (f o g) o h`,
   REPEAT GEN_TAC THEN REWRITE_TAC [o_DEF] THEN
-  CONV_TAC (REDEPTH_CONV BETA_CONV) THEN
+  CONV_TAC "trivia.ml:(REDEPTH_CONV BETA_CONV)" (REDEPTH_CONV BETA_CONV) THEN
   REFL_TAC);;
 
 let I_THM = prove

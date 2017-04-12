@@ -88,34 +88,34 @@ MESON [ADD_ASSOC; ADD_SYM] `m + (n + p) = n + (m + p)`;;
 g `2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`;;
 e DISCH_TAC;;
 b();;
-e(CONV_TAC(REWRITE_CONV[LE_ANTISYM]));;
+e(CONV_TAC "Tutorial/all.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]));;
 e(SIMP_TAC[]);;
 e(ONCE_REWRITE_TAC[EQ_SYM_EQ]);;
 e DISCH_TAC;;
 e(ASM_REWRITE_TAC[]);;
-e(CONV_TAC ARITH_RULE);;
+e(CONV_TAC "Tutorial/all.ml:ARITH_RULE" ARITH_RULE);;
 let trivial = top_thm();;
 
 g `2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`;;
-e(CONV_TAC(REWRITE_CONV[LE_ANTISYM]));;
+e(CONV_TAC "Tutorial/all.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]));;
 e(SIMP_TAC[]);;
 e(ONCE_REWRITE_TAC[EQ_SYM_EQ]);;
 e DISCH_TAC;;
 e(ASM_REWRITE_TAC[]);;
-e(CONV_TAC ARITH_RULE);;
+e(CONV_TAC "Tutorial/all.ml:ARITH_RULE" ARITH_RULE);;
 let trivial = top_thm();;
 
 g `2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`;;
-e(CONV_TAC(REWRITE_CONV[LE_ANTISYM]) THEN
+e(CONV_TAC "Tutorial/all.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]) THEN
   SIMP_TAC[] THEN ONCE_REWRITE_TAC[EQ_SYM_EQ] THEN
-  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC ARITH_RULE);;
+  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "Tutorial/all.ml:ARITH_RULE" ARITH_RULE);;
 let trivial = top_thm();;
 
 let trivial = prove
  (`2 <= n /\ n <= 2 ==> f(2,2) + n < f(n,n) + 7`,
-  CONV_TAC(REWRITE_CONV[LE_ANTISYM]) THEN
+  CONV_TAC "Tutorial/all.ml:(REWRITE_CONV[LE_ANTISYM])" (REWRITE_CONV[LE_ANTISYM]) THEN
   SIMP_TAC[] THEN ONCE_REWRITE_TAC[EQ_SYM_EQ] THEN
-  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC ARITH_RULE);;
+  DISCH_TAC THEN ASM_REWRITE_TAC[] THEN CONV_TAC "Tutorial/all.ml:ARITH_RULE" ARITH_RULE);;
 
 let trivial = prove
  (`!x y:real. &0 < x * y ==> (&0 < x <=> &0 < y)`,
@@ -300,7 +300,7 @@ let oriented_area = new_definition
 
 let MOVE_INVARIANT = prove
  (`!p p'. move p p' ==> oriented_area p = oriented_area p'`,
-  REWRITE_TAC[FORALL_PAIR_THM; move; oriented_area] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[FORALL_PAIR_THM; move; oriented_area] THEN CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 let REACHABLE_INVARIANT = prove
  (`!p p'. reachable p p' ==> oriented_area p = oriented_area p'`,
@@ -410,7 +410,7 @@ let consider (x,lab,t) tac =
   SUBGOAL_THEN tm (X_CHOOSE_THEN x (LABEL_TAC lab)) THENL [tac; ALL_TAC];;
 
 let trivial = MESON_TAC[];;
-let algebra = CONV_TAC NUM_RING;;
+let algebra = CONV_TAC "Tutorial/all.ml:NUM_RING" NUM_RING;;
 let arithmetic = ARITH_TAC;;
 
 let by labs tac = MAP_EVERY (fun l -> USE_THEN l MP_TAC) labs THEN tac;;
@@ -492,7 +492,7 @@ let BINOM_FACT = prove
   INDUCT_TAC THEN REWRITE_TAC[FACT; ADD_CLAUSES; MULT_CLAUSES; BINOM_REFL] THEN
   INDUCT_TAC THEN REWRITE_TAC[ADD_CLAUSES; FACT; MULT_CLAUSES; binom] THEN
   FIRST_X_ASSUM(MP_TAC o SPEC `SUC k`) THEN POP_ASSUM MP_TAC THEN
-  REWRITE_TAC[ADD_CLAUSES; FACT; binom] THEN CONV_TAC NUM_RING);;
+  REWRITE_TAC[ADD_CLAUSES; FACT; binom] THEN CONV_TAC "Tutorial/all.ml:NUM_RING" NUM_RING);;
 
 let BINOMIAL_THEOREM = prove
  (`!n. (x + y) EXP n = nsum(0..n) (\k. binom(n,k) * x EXP k * y EXP (n - k))`,
@@ -533,7 +533,7 @@ needs "Examples/sos.ml";;
 
 let CANTOR_LEMMA = prove
  (`cantor(x,y) = cantor(x',y') ==> x + y = x' + y'`,
-  REWRITE_TAC[cantor] THEN CONV_TAC SOS_RULE);;
+  REWRITE_TAC[cantor] THEN CONV_TAC "Tutorial/all.ml:SOS_RULE" SOS_RULE);;
 
 ****)
 
@@ -623,9 +623,9 @@ let EXISTS_LINE = prove
   REWRITE_TAC[DE_MORGAN_THM; NOT_EXISTS_THM; FORALL_LINE]);;
 
 let FANO_TAC =
-  GEN_REWRITE_TAC DEPTH_CONV
+  GEN_REWRITE_TAC "Tutorial/all.ml:DEPTH_CONV" DEPTH_CONV
    [FORALL_POINT; EXISTS_LINE; EXISTS_POINT; FORALL_LINE] THEN
-  GEN_REWRITE_TAC DEPTH_CONV
+  GEN_REWRITE_TAC "Tutorial/all.ml:DEPTH_CONV" DEPTH_CONV
    (basic_rewrites() @
     [ON_CLAUSES; distinctness "point"; distinctness "line"]);;
 
@@ -727,7 +727,7 @@ let WP_DISJUNCTIVE = prove
 let WP_SEQ = prove
  (`!c1 c2 q. wp (c1 ;; c2) = wp c1 o wp c2`,
   REWRITE_TAC[wp; wlp; terminates; FUN_EQ_THM; o_THM] THEN REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [sem_CASES] THEN
+  GEN_REWRITE_TAC "Tutorial/all.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [sem_CASES] THEN
   REWRITE_TAC[injectivity "command"; distinctness "command"] THEN
   MESON_TAC[DETERMINISM]);;
 
@@ -953,7 +953,7 @@ b();;
 e(REPEAT VC_TAC THEN REWRITE_TAC[SUBSET; FORALL_PAIR_THM] THEN
   MAP_EVERY X_GEN_TAC [`m:num`; `n:num`; `x:num`; `y:num`] THEN
   REWRITE_TAC[IN; INTER; UNIV; DIFF; o_DEF; IN_ELIM_THM; PAIR_EQ] THEN
-  CONV_TAC(TOP_DEPTH_CONV GEN_BETA_CONV) THEN SIMP_TAC[]);;
+  CONV_TAC "Tutorial/all.ml:(TOP_DEPTH_CONV GEN_BETA_CONV)" (TOP_DEPTH_CONV GEN_BETA_CONV) THEN SIMP_TAC[]);;
 
 e(SIMP_TAC[GCD_SUB; LT_IMP_LE]);;
 e ARITH_TAC;;
@@ -1057,7 +1057,7 @@ let FLT_LEMMA = prove
    [FIRST_ASSUM(MP_TAC o MATCH_MP PRIME_IMP_NZ) THEN ARITH_TAC; ALL_TAC] THEN
   ASM_SIMP_TAC[NSUM_CLAUSES_LEFT; LE_0; ARITH; NSUM_CLAUSES_RIGHT] THEN
   REWRITE_TAC[SUB_0; SUB_REFL; EXP; binom; BINOM_REFL; MULT_CLAUSES] THEN
-  GEN_REWRITE_TAC LAND_CONV [ARITH_RULE `a + b = (b + 0) + a`] THEN
+  GEN_REWRITE_TAC "Tutorial/all.ml:LAND_CONV" LAND_CONV [ARITH_RULE `a + b = (b + 0) + a`] THEN
   REPEAT(MATCH_MP_TAC CONG_ADD THEN REWRITE_TAC[CONG_REFL]) THEN
   REWRITE_TAC[CONG_0] THEN MATCH_MP_TAC DIVIDES_NSUM THEN
   ASM_MESON_TAC[DIVIDES_RMUL; DIVIDES_BINOM_PRIME; ARITH_RULE
@@ -1083,7 +1083,7 @@ let FERMAT_LITTLE_VARIANT = prove
   FIRST_ASSUM(DISJ_CASES_TAC o SPEC `a:num` o MATCH_MP PRIME_COPRIME_STRONG)
   THENL [ASM_MESON_TAC[CONG_TRIVIAL; ADD_AC; ADD1; DIVIDES_REXP_SUC];
          ALL_TAC] THEN
-  GEN_REWRITE_TAC LAND_CONV [ARITH_RULE `a = a * 1`] THEN
+  GEN_REWRITE_TAC "Tutorial/all.ml:LAND_CONV" LAND_CONV [ARITH_RULE `a = a * 1`] THEN
   REWRITE_TAC[EXP_ADD; EXP_1] THEN MATCH_MP_TAC CONG_MULT THEN
   REWRITE_TAC[GSYM EXP_EXP; CONG_REFL] THEN
   ASM_MESON_TAC[COPRIME_SYM; COPRIME_EXP; PHI_PRIME; FERMAT_LITTLE_COPRIME]);;
@@ -1097,7 +1097,7 @@ let RSA = prove
   ASM_SIMP_TAC[MOD_EXP_MOD; MULT_EQ_0; PRIME_IMP_NZ; EXP_EXP] THEN
   SUBGOAL_THEN `(plaintext == plaintext EXP (e * d)) (mod (p * q))` MP_TAC THENL
    [ALL_TAC; ASM_SIMP_TAC[CONG; MULT_EQ_0; PRIME_IMP_NZ; MOD_LT]] THEN
-  GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [MULT_SYM] THEN
+  GEN_REWRITE_TAC "Tutorial/all.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [MULT_SYM] THEN
   FIRST_X_ASSUM(DISJ_CASES_TAC o GEN_REWRITE_RULE I [CONG_TO_1]) THENL
    [ASM_MESON_TAC[MULT_EQ_1; ARITH_RULE `p - 1 = 1 <=> p = 2`]; ALL_TAC] THEN
   MATCH_MP_TAC CONG_CHINESE THEN ASM_SIMP_TAC[DISTINCT_PRIME_COPRIME] THEN
@@ -1129,7 +1129,7 @@ let CHEB_COS = prove
   REPEAT STRIP_TAC THEN
   ASM_REWRITE_TAC[GSYM REAL_OF_NUM_ADD; REAL_MUL_LID; REAL_ADD_RDISTRIB] THEN
   REWRITE_TAC[COS_ADD; COS_DOUBLE; SIN_DOUBLE] THEN
-  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC REAL_RING);;
+  MP_TAC(SPEC `x:real` SIN_CIRCLE) THEN CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 let CHEB_RIPPLE = prove
  (`!x. abs(x) <= &1 ==> abs(cheb n x) <= &1`,
@@ -1172,7 +1172,7 @@ let CHEB_2N1 = prove
                 ARITH_RULE `n + 3 = (n + 1) + 2`;
 
                 cheb])) THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 let IVT_LEMMA1 = prove
  (`!f. (!x. f contl x)
@@ -1271,7 +1271,7 @@ let HOLDS_FORALL_LEMMA = prove
  (`!W R P. (!A V. P(holds (W,R) V A)) <=> (!p:W->bool. P p)`,
   REPEAT GEN_TAC THEN EQ_TAC THENL [DISCH_TAC THEN GEN_TAC; SIMP_TAC[]] THEN
   POP_ASSUM(MP_TAC o SPECL [`Atom a`; `\a:string. (p:W->bool)`]) THEN
-  GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+  GEN_REWRITE_TAC "Tutorial/all.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
   REWRITE_TAC[holds] THEN REWRITE_TAC[ETA_AX]);;
 
 let MODAL_SCHEMA_TAC =
@@ -1446,7 +1446,7 @@ let holds = define
 let HOLDS_NORM = prove
  (`!e v. holds v (norm e) <=> holds v e`,
   MATCH_MP_TAC ITE_INDUCT THEN SIMP_TAC[holds; norm] THEN
-  REPEAT STRIP_TAC THEN CONV_TAC TAUT);;
+  REPEAT STRIP_TAC THEN CONV_TAC "Tutorial/all.ml:TAUT" TAUT);;
 
 let taut = define
  `(taut (t,f) False <=> F) /\
@@ -1491,7 +1491,7 @@ let HOLDS_BACK = prove
        (!p q. (holds v p <=> holds v q) <=>
                    holds v (Ite p q (Ite q False True))) /\
        (!p q. holds v p ==> holds v q <=> holds v (Ite p q True))`,
-  REWRITE_TAC[holds] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[holds] THEN CONV_TAC "Tutorial/all.ml:TAUT" TAUT);;
 
 let COND_CONV = GEN_REWRITE_CONV I [COND_CLAUSES];;
 let AND_CONV = GEN_REWRITE_CONV I [TAUT `(F /\ a <=> F) /\ (T /\ a <=> a)`];;
@@ -1522,7 +1522,7 @@ e(MP_TAC HOLDS_BACK THEN MATCH_MP_TAC MONO_FORALL THEN
   SPEC_TAC(`v:num->bool`,`v:num->bool`) THEN
   REWRITE_TAC[GSYM TAUTOLOGY; tautology]);;
 
-time e (GEN_REWRITE_TAC COMPUTE_DEPTH_CONV [norm; taut; MEM; ARITH_EQ]);;
+time e (GEN_REWRITE_TAC "Tutorial/all.ml:COMPUTE_DEPTH_CONV" COMPUTE_DEPTH_CONV [norm; taut; MEM; ARITH_EQ]);;
 
 ignore(b()); time e (REWRITE_TAC[norm; taut; MEM; ARITH_EQ]);;
 
@@ -1538,7 +1538,7 @@ g `orthogonal (A - B) (C - B)
    ==> norm(C - A) pow 2 = norm(B - A) pow 2 + norm(C - B) pow 2`;;
 
 e SOLOVAY_VECTOR_TAC;;
-e(CONV_TAC REAL_RING);;
+e(CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 g`!x y:real^N. x dot y <= norm x * norm y`;;
 e SOLOVAY_VECTOR_TAC;;
@@ -1546,11 +1546,11 @@ e SOLOVAY_VECTOR_TAC;;
 (**** Needs external SDP solver
 needs "Examples/sos.ml";;
 
-e(CONV_TAC REAL_SOS);;
+e(CONV_TAC "Tutorial/all.ml:REAL_SOS" REAL_SOS);;
 
 let EXAMPLE_0 = prove
  (`!a x y:real^N. (y - x) dot (a - y) >= &0 ==> norm(y - a) <= norm(x - a)`,
-  SOLOVAY_VECTOR_TAC THEN CONV_TAC REAL_SOS);;
+  SOLOVAY_VECTOR_TAC THEN CONV_TAC "Tutorial/all.ml:REAL_SOS" REAL_SOS);;
 ****)
 
 needs "Rqe/make.ml";;
@@ -1561,7 +1561,7 @@ let EXAMPLE_10 = prove
                 !v. &0 < v /\ v <= u ==> norm(v % y - x) < norm x`,
   SOLOVAY_VECTOR_TAC THEN
   W(fun (asl,w) -> MAP_EVERY (fun v -> SPEC_TAC(v,v)) (frees w)) THEN
-  CONV_TAC REAL_QELIM_CONV);;
+  CONV_TAC "Tutorial/all.ml:REAL_QELIM_CONV" REAL_QELIM_CONV);;
 
 let FORALL_3 = prove
  (`(!i. 1 <= i /\ i <= 3 ==> P i) <=> P 1 /\ P 2 /\ P 3`,
@@ -1604,7 +1604,7 @@ let cross = new_definition
 let VEC3_TAC =
   SIMP_TAC[CART_EQ; LAMBDA_BETA; FORALL_3; SUM_3; DIMINDEX_3; VECTOR_3;
            vector_add; vec; dot; cross; orthogonal; basis; ARITH] THEN
-  CONV_TAC REAL_RING;;
+  CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING;;
 
 let VEC3_RULE tm = prove(tm,VEC3_TAC);;
 
@@ -1695,15 +1695,15 @@ let SQRT_2_POW = prove
 let PROVE_NONTRIVIAL =
   let ptm = `~(x :real^3 = vec 0)` and xtm = `x:real^3` in
   fun x -> prove(vsubst [hol_of_point x,xtm] ptm,
-                 GEN_REWRITE_TAC RAND_CONV [VECTOR_ZERO] THEN
-                 MP_TAC SQRT_2_POW THEN CONV_TAC REAL_RING);;
+                 GEN_REWRITE_TAC "Tutorial/all.ml:RAND_CONV" RAND_CONV [VECTOR_ZERO] THEN
+                 MP_TAC SQRT_2_POW THEN CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 let PROVE_ORTHOGONAL =
   let ptm = `orthogonal:real^3->real^3->bool` in
   fun (x,y) ->
    prove(list_mk_comb(ptm,[hol_of_point x;hol_of_point y]),
          ONCE_REWRITE_TAC[ORTHOGONAL_VECTOR] THEN
-         MP_TAC SQRT_2_POW THEN CONV_TAC REAL_RING);;
+         MP_TAC SQRT_2_POW THEN CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 let ppoint = let p = `P:real^3->bool` in fun v -> mk_comb(p,hol_of_point v);;
 
@@ -2204,12 +2204,12 @@ let SIN_N_CLAUSES = prove
   REWRITE_TAC[NUMERAL; BIT0; BIT1] THEN
   REWRITE_TAC[ADD1; GSYM REAL_OF_NUM_ADD] THEN
   REWRITE_TAC[REAL_ADD_RDISTRIB; SIN_ADD; COS_ADD; REAL_MUL_LID] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING);;
 
 let TRIG_IDENT_TAC x =
   REWRITE_TAC[SIN_N_CLAUSES; SIN_ADD; COS_ADD] THEN
   REWRITE_TAC[REAL_MUL_LZERO; SIN_0; COS_0; REAL_MUL_RZERO] THEN
-  MP_TAC(SPEC x SIN_CIRCLE) THEN CONV_TAC REAL_RING;;
+  MP_TAC(SPEC x SIN_CIRCLE) THEN CONV_TAC "Tutorial/all.ml:REAL_RING" REAL_RING;;
 
 let ANTIDERIV_CONV tm =
   let x,bod = dest_abs tm in

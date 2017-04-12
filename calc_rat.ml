@@ -10,6 +10,8 @@
 set_jrh_lexer;;
 open System;;
 open Lib;;
+open Log;;
+open Replay;;
 open Fusion;;
 open Basics;;
 open Nets;;
@@ -52,9 +54,9 @@ let RAT_LEMMA1 = prove
    [REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN AP_TERM_TAC THEN ONCE_REWRITE_TAC
      [AC REAL_MUL_AC `a * b * c = (b * a) * c`];
     REWRITE_TAC[REAL_MUL_ASSOC] THEN AP_THM_TAC THEN AP_TERM_TAC] THEN
-  GEN_REWRITE_TAC LAND_CONV [GSYM REAL_MUL_RID] THEN
+  GEN_REWRITE_TAC "calc_rat.ml:LAND_CONV" LAND_CONV [GSYM REAL_MUL_RID] THEN
   REWRITE_TAC[GSYM REAL_MUL_ASSOC] THEN REWRITE_TAC[REAL_EQ_MUL_LCANCEL] THEN
-  DISJ2_TAC THEN CONV_TAC SYM_CONV THEN MATCH_MP_TAC REAL_MUL_RINV THEN
+  DISJ2_TAC THEN CONV_TAC "calc_rat.ml:SYM_CONV" SYM_CONV THEN MATCH_MP_TAC REAL_MUL_RINV THEN
   ASM_REWRITE_TAC[]);;
 
 let RAT_LEMMA2 = prove
@@ -143,7 +145,7 @@ let REAL_RAT_LT_CONV =
   let pth = prove
    (`&0 < y1 ==> &0 < y2 ==> (x1 / y1 < x2 / y2 <=> x1 * y2 < x2 * y1)`,
     REWRITE_TAC[IMP_IMP] THEN
-    GEN_REWRITE_TAC (RAND_CONV o ONCE_DEPTH_CONV) [GSYM REAL_NOT_LE] THEN
+    GEN_REWRITE_TAC "calc_rat.ml:(RAND_CONV o ONCE_DEPTH_CONV)" (RAND_CONV o ONCE_DEPTH_CONV) [GSYM REAL_NOT_LE] THEN
     SIMP_TAC[TAUT `(~a <=> ~b) <=> (a <=> b)`; RAT_LEMMA4])
   and x1 = `x1:real` and x2 = `x2:real`
   and y1 = `y1:real` and y2 = `y2:real`
@@ -322,7 +324,7 @@ let REAL_RAT_MUL_CONV =
       (u1 * u2) * (iv1 * iv2) * (id2 * d2) * (id1 * d1)`] THEN
     ASM_SIMP_TAC[REAL_MUL_LINV; REAL_MUL_RID])
   and dest_divop = dest_binop `(/)`
-  and dest_mulop = dest_binop `(*)`
+  and dest_mulop = dest_binop `( * )`
   and x1 = `x1:real` and x2 = `x2:real`
   and y1 = `y1:real` and y2 = `y2:real`
   and u1 = `u1:real` and u2 = `u2:real`
@@ -446,7 +448,7 @@ let REAL_POLY_CONV =
   and inv_tm = `inv:real->real`
   and add_tm = `(+):real->real->real`
   and sub_tm = `(-):real->real->real`
-  and mul_tm = `(*):real->real->real`
+  and mul_tm = `( * ):real->real->real`
   and div_tm = `(/):real->real->real`
   and pow_tm = `(pow):real->num->real`
   and abs_tm = `abs:real->real`
@@ -501,7 +503,7 @@ let REAL_RING,real_ideal_cofactors =
   and REAL_RABINOWITSCH = prove
    (`!x y:real. ~(x = y) <=> ?z. (x - y) * z = &1`,
     REPEAT GEN_TAC THEN
-    GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM REAL_SUB_0] THEN
+    GEN_REWRITE_TAC "calc_rat.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM REAL_SUB_0] THEN
     MESON_TAC[REAL_MUL_RINV; REAL_MUL_LZERO; REAL_ARITH `~(&1 = &0)`])
   and init = GEN_REWRITE_CONV ONCE_DEPTH_CONV [DECIMAL]
   and real_ty = `:real` in
@@ -509,7 +511,7 @@ let REAL_RING,real_ideal_cofactors =
     RING_AND_IDEAL_CONV
         (rat_of_term,term_of_rat,REAL_RAT_EQ_CONV,
          `(--):real->real`,`(+):real->real->real`,`(-):real->real->real`,
-         `(inv):real->real`,`(*):real->real->real`,`(/):real->real->real`,
+         `(inv):real->real`,`( * ):real->real->real`,`(/):real->real->real`,
          `(pow):real->num->real`,
          REAL_INTEGRAL,REAL_RABINOWITSCH,REAL_POLY_CONV) in
   (fun tm -> let th = init tm in EQ_MP (SYM th) (pure(rand(concl th)))),
@@ -547,7 +549,10 @@ let REAL_ARITH =
   and pure = GEN_REAL_ARITH REAL_LINEAR_PROVER in
   fun tm -> let th = init tm in EQ_MP (SYM th) (pure(rand(concl th)));;
 
-let REAL_ARITH_TAC = CONV_TAC REAL_ARITH;;
+let REAL_ARITH_TAC = replace_tactic_log Real_arith_tac_log
+                                      (CONV_TAC "calc_rat.ml:REAL_ARITH" REAL_ARITH);;
+
+let () = real_arith_tac := Some REAL_ARITH_TAC;;
 
 let ASM_REAL_ARITH_TAC =
   REPEAT(FIRST_X_ASSUM(MP_TAC o check (not o is_forall o concl))) THEN

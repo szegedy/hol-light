@@ -31,7 +31,7 @@ let num_cases' = prove
   REPEAT STRIP_TAC THEN
   MP_TAC(SPEC `t:term` (MATCH_MP spec num_cases)) THEN
   REWRITE_TAC[formsubst] THEN
-  CONV_TAC(ONCE_DEPTH_CONV TERMSUBST_CONV) THEN
+  CONV_TAC "Arithmetic/sigmacomplete.ml:(ONCE_DEPTH_CONV TERMSUBST_CONV)" (ONCE_DEPTH_CONV TERMSUBST_CONV) THEN
   REWRITE_TAC[FV; FVT; SET_RULE `({1} UNION {0}) DELETE 0 = {1} DIFF {0}`] THEN
   REWRITE_TAC[IN_DIFF; IN_SING; UNWIND_THM2; GSYM CONJ_ASSOC; ASSIGN] THEN
   REWRITE_TAC[ARITH_EQ] THEN LET_TAC THEN
@@ -50,7 +50,7 @@ let num_cases' = prove
     REWRITE_TAC[iexists] THEN REWRITE_TAC[formsubst] THEN
     ASM_REWRITE_TAC[termsubst; ASSIGN] THEN
     MATCH_MP_TAC(MESON[imp_refl] `p = q ==> A |-- p --> q`) THEN
-    AP_THM_TAC THEN AP_TERM_TAC THEN CONV_TAC SYM_CONV THEN
+    AP_THM_TAC THEN AP_TERM_TAC THEN CONV_TAC "Arithmetic/sigmacomplete.ml:SYM_CONV" SYM_CONV THEN
     MATCH_MP_TAC TERMSUBST_TRIVIAL THEN REWRITE_TAC[ASSIGN] THEN
     ASM_MESON_TAC[]]);;
 
@@ -142,7 +142,7 @@ let suc_le_eq = prove
   TRANS_TAC iff_trans `??2 (Suc(V 0) ++ V 2 === Suc(V 1))` THEN
   REWRITE_TAC[itlist spec_rule [`Suc(V 1)`; `Suc(V 0)`] le_def] THEN
   TRANS_TAC iff_trans `??2 (V 0 ++ V 2 === V 1)` THEN
-  GEN_REWRITE_TAC RAND_CONV [iff_sym] THEN
+  GEN_REWRITE_TAC "Arithmetic/sigmacomplete.ml:RAND_CONV" RAND_CONV [iff_sym] THEN
   REWRITE_TAC[itlist spec_rule [`V 1`; `V 0`] le_def] THEN
   MATCH_MP_TAC exiff THEN
   TRANS_TAC iff_trans `Suc(V 0 ++ V 2) === Suc(V 1)` THEN
@@ -166,7 +166,7 @@ let not_suc_eq_0 = prove
    [ALL_TAC; REWRITE_TAC[canonize_clauses]] THEN
   SUBGOAL_THEN `{robinson} |-- ?? 0 (Suc(V 1) === Suc(V 0))` MP_TAC THENL
    [MATCH_MP_TAC exists_intro THEN EXISTS_TAC `V 1` THEN
-    CONV_TAC(RAND_CONV FORMSUBST_CONV) THEN REWRITE_TAC[axiom_eqrefl];
+    CONV_TAC "Arithmetic/sigmacomplete.ml:(RAND_CONV FORMSUBST_CONV)" (RAND_CONV FORMSUBST_CONV) THEN REWRITE_TAC[axiom_eqrefl];
     MESON_TAC[iff_imp2; modusponens; spec_rule `Suc(V 1)` num_cases]]);;
 
 let not_suc_le_0 = prove
@@ -237,7 +237,7 @@ let ATOM_LE_TRUE = prove
    [MP_TAC(itlist spec_rule [`numeral(m + n)`; `numeral m`] le_def) THEN
     MESON_TAC[iff_imp2];
     MATCH_MP_TAC exists_intro THEN EXISTS_TAC `numeral n` THEN
-    CONV_TAC(RAND_CONV FORMSUBST_CONV) THEN
+    CONV_TAC "Arithmetic/sigmacomplete.ml:(RAND_CONV FORMSUBST_CONV)" (RAND_CONV FORMSUBST_CONV) THEN
     REWRITE_TAC[SIGMA1_COMPLETE_ADD]]);;
 
 let ATOM_LT_TRUE = prove
@@ -290,12 +290,12 @@ let num_cases_rule = prove
     REPEAT GEN_TAC THEN
     MATCH_MP_TAC(REWRITE_RULE[IMP_CONJ] modusponens) THEN
     MATCH_MP_TAC imp_swap THEN
-    GEN_REWRITE_TAC (funpow 3 RAND_CONV) [GSYM FORMSUBST_TRIV] THEN
-    CONV_TAC(funpow 3 RAND_CONV(SUBS_CONV[SYM(SPEC `x:num` ASSIGN_TRIV)])) THEN
+    GEN_REWRITE_TAC "Arithmetic/sigmacomplete.ml:(funpow 3 RAND_CONV)" (funpow 3 RAND_CONV) [GSYM FORMSUBST_TRIV] THEN
+    CONV_TAC "Arithmetic/sigmacomplete.ml:(funpow 3 RAND_CONV(SUBS_CONV[SYM(SPEC `x:num` ASSIGN_TRIV)]))" (funpow 3 RAND_CONV(SUBS_CONV[SYM(SPEC `x:num` ASSIGN_TRIV)])) THEN
     TRANS_TAC imp_trans `t === V x` THEN REWRITE_TAC[isubst; eq_sym]) in
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (RAND_CONV o RAND_CONV) [GSYM FORMSUBST_TRIV] THEN
-  CONV_TAC(RAND_CONV(SUBS_CONV[SYM(SPEC `x:num` ASSIGN_TRIV)])) THEN
+  GEN_REWRITE_TAC "Arithmetic/sigmacomplete.ml:(RAND_CONV o RAND_CONV)" (RAND_CONV o RAND_CONV) [GSYM FORMSUBST_TRIV] THEN
+  CONV_TAC "Arithmetic/sigmacomplete.ml:(RAND_CONV(SUBS_CONV[SYM(SPEC `x:num` ASSIGN_TRIV)]))" (RAND_CONV(SUBS_CONV[SYM(SPEC `x:num` ASSIGN_TRIV)])) THEN
   SUBGOAL_THEN `?z. ~(z = x) /\ ~(z IN VARS p)` STRIP_ASSUME_TAC THENL
    [EXISTS_TAC `VARIANT(x INSERT VARS p)` THEN
     REWRITE_TAC[GSYM DE_MORGAN_THM; GSYM IN_INSERT] THEN
@@ -610,7 +610,7 @@ let TRUE_GENERALIZE = prove
  (`!vs p. true(generalize vs p) <=> true p`,
   REWRITE_TAC[generalize; true_def] THEN
   LIST_INDUCT_TAC THEN REWRITE_TAC[ITLIST; holds] THEN GEN_TAC THEN
-  FIRST_X_ASSUM(fun th -> GEN_REWRITE_TAC RAND_CONV [GSYM th]) THEN
+  FIRST_X_ASSUM(fun th -> GEN_REWRITE_TAC "Arithmetic/sigmacomplete.ml:RAND_CONV" RAND_CONV [GSYM th]) THEN
   MESON_TAC[VALMOD_REPEAT]);;
 
 let PROVABLE_GENERALIZE = prove

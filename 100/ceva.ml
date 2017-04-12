@@ -43,7 +43,7 @@ let COLLINEAR = prove
   let lemma = prove
    (`~(y1 = &0) /\ x2 * y1 = x1 * y2 ==> ?c. x1 = c * y1 /\ x2 = c * y2`,
     STRIP_TAC THEN EXISTS_TAC `x1 / y1` THEN
-    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD) in
+    REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/ceva.ml:REAL_FIELD" REAL_FIELD) in
   REPEAT GEN_TAC THEN ASM_CASES_TAC `a:real^2 = b` THENL
    [ASM_REWRITE_TAC[REAL_SUB_REFL; REAL_MUL_RZERO; REAL_MUL_LZERO] THEN
     REWRITE_TAC[COLLINEAR_SING; COLLINEAR_2; INSERT_AC];
@@ -66,7 +66,7 @@ let COLLINEAR = prove
            VECTOR_SUB_COMPONENT; ARITH]
   THENL [ALL_TAC; ONCE_REWRITE_TAC[CONJ_SYM]] THEN
   FIRST_X_ASSUM(CONJUNCTS_THEN(REPEAT_TCL STRIP_THM_THEN SUBST1_TAC)) THEN
-  MATCH_MP_TAC lemma THEN REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD);;
+  MATCH_MP_TAC lemma THEN REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/ceva.ml:REAL_FIELD" REAL_FIELD);;
 
 (* ------------------------------------------------------------------------- *)
 (* More or less automatic proof of the main direction.                       *)
@@ -86,7 +86,7 @@ let CEVA_WEAK = prove
   SIMP_TAC[dot; SUM_2; VECTOR_SUB_COMPONENT; DIMINDEX_2; VECTOR_ADD_COMPONENT;
            CART_EQ; FORALL_2; VECTOR_MUL_COMPONENT; ARITH] THEN
   FIRST_X_ASSUM(MP_TAC o check(is_neg o concl)) THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "100/ceva.ml:REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* More laborious proof of equivalence.                                      *)
@@ -121,7 +121,7 @@ let CEVA = prove
     FIRST_X_ASSUM(MP_TAC o GEN_REWRITE_RULE RAND_CONV [COLLINEAR]) THEN
     SIMP_TAC[dot; SUM_2; VECTOR_SUB_COMPONENT; DIMINDEX_2; FORALL_2;
             VECTOR_ADD_COMPONENT; CART_EQ; VECTOR_MUL_COMPONENT; ARITH] THEN
-    CONV_TAC REAL_RING] THEN
+    CONV_TAC "100/ceva.ml:REAL_RING" REAL_RING] THEN
   DISCH_TAC THEN REWRITE_TAC[VECTOR_ADD_LDISTRIB; VECTOR_MUL_ASSOC] THEN
   SUBGOAL_THEN
    `?u v w. w = (&1 - u) * (&1 - x) /\
@@ -147,19 +147,19 @@ let CEVA = prove
     REPEAT(MATCH_MP_TAC(TAUT `(a ==> b /\ c) /\ (a /\ b /\ c ==> d)
                               ==> a ==> b /\ c /\ d`) THEN
            CONJ_TAC THENL
-            [CONV_TAC REAL_RING ORELSE CONV_TAC REAL_SOS; ALL_TAC]) THEN
-    CONV_TAC REAL_SOS;
+            [CONV_TAC "100/ceva.ml:REAL_RING" REAL_RING ORELSE CONV_TAC "100/ceva.ml:REAL_SOS" REAL_SOS; ALL_TAC]) THEN
+    CONV_TAC "100/ceva.ml:REAL_SOS" REAL_SOS;
     ALL_TAC] THEN
   RULE_ASSUM_TAC(REWRITE_RULE[COLLINEAR]) THEN
   ASM_CASES_TAC `x = &0` THENL
    [EXISTS_TAC `&1 - y / (&1 - x + x * y)` THEN
     REPEAT(FIRST_X_ASSUM(MP_TAC o check (not o is_neg o concl))) THEN
-    CONV_TAC REAL_FIELD; ALL_TAC] THEN
+    CONV_TAC "100/ceva.ml:REAL_FIELD" REAL_FIELD; ALL_TAC] THEN
   EXISTS_TAC `&1 - (&1 - z) / (x + (&1 - x) * (&1 - z))` THEN
   SUBGOAL_THEN `~(x + (&1 - x) * (&1 - z) = &0)` MP_TAC THENL
    [ALL_TAC;
     REPEAT(FIRST_X_ASSUM(MP_TAC o check (not o is_neg o concl))) THEN
-    CONV_TAC REAL_FIELD] THEN
+    CONV_TAC "100/ceva.ml:REAL_FIELD" REAL_FIELD] THEN
   MATCH_MP_TAC(REAL_ARITH
    `z * (&1 - x) < &1 ==> ~(x + (&1 - x) * (&1 - z) = &0)`) THEN
   ASM_CASES_TAC `z = &0` THEN ASM_REWRITE_TAC[REAL_MUL_LZERO; REAL_LT_01] THEN
@@ -182,11 +182,11 @@ let BETWEEN_SYM = prove
 
 let BETWEEN_METRICAL = prove
  (`!u v w:real^N. between v (u,w) <=> dist(u,v) + dist(v,w) = dist(u,w)`,
-  REPEAT GEN_TAC THEN CONV_TAC SYM_CONV THEN
+  REPEAT GEN_TAC THEN CONV_TAC "100/ceva.ml:SYM_CONV" SYM_CONV THEN
   ONCE_REWRITE_TAC[BETWEEN_SYM] THEN REWRITE_TAC[BETWEEN_THM; dist] THEN
   REWRITE_TAC[VECTOR_ARITH `x % u + (&1 - x) % v = v + x % (u - v)`] THEN
   SUBST1_TAC(VECTOR_ARITH `u - w:real^N = (u - v) + (v - w)`) THEN
-  CONV_TAC(LAND_CONV SYM_CONV) THEN REWRITE_TAC[NORM_TRIANGLE_EQ] THEN
+  CONV_TAC "100/ceva.ml:(LAND_CONV SYM_CONV)" (LAND_CONV SYM_CONV) THEN REWRITE_TAC[NORM_TRIANGLE_EQ] THEN
   EQ_TAC THENL
    [ALL_TAC;
     STRIP_TAC THEN ASM_REWRITE_TAC[] THEN

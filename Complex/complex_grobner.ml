@@ -459,14 +459,14 @@ let COMPLEX_ARITH =
   let pth0 = SIMPLE_COMPLEX_ARITH `(x = y) <=> (x - y = Cx(&0))`
   and pth1 = prove
    (`!x. ~(x = Cx(&0)) <=> ?z. z * x + Cx(&1) = Cx(&0)`,
-    CONV_TAC(time FULL_COMPLEX_QUELIM_CONV))
+    CONV_TAC "Complex/complex_grobner.ml:(time FULL_COMPLEX_QUELIM_CONV)" (time FULL_COMPLEX_QUELIM_CONV))
   and pth2a = prove
    (`!x y u v. ~(x = y) \/ ~(u = v) <=>
                 ?w z. w * (x - y) + z * (u - v) + Cx(&1) = Cx(&0)`,
-    CONV_TAC(time FULL_COMPLEX_QUELIM_CONV))
+    CONV_TAC "Complex/complex_grobner.ml:(time FULL_COMPLEX_QUELIM_CONV)" (time FULL_COMPLEX_QUELIM_CONV))
   and pth2b = prove
    (`!x y. ~(x = y) <=> ?z. z * (x - y) + Cx(&1) = Cx(&0)`,
-    CONV_TAC(time FULL_COMPLEX_QUELIM_CONV))
+    CONV_TAC "Complex/complex_grobner.ml:(time FULL_COMPLEX_QUELIM_CONV)" (time FULL_COMPLEX_QUELIM_CONV))
   and pth3 = TAUT `(p ==> F) ==> (~q <=> p) ==> q` in
   let GEN_PRENEX_CONV =
     GEN_REWRITE_CONV REDEPTH_CONV

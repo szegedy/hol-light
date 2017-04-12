@@ -133,13 +133,13 @@ let (GEN_NNF_CONV:bool->conv*(term->thm*thm)->conv) =
      (~((?) P) <=> !x:A. ~(P x)) /\
      (~((?!) P) <=> (!x:A. ~(P x)) \/ ?x y. P x /\ P y /\ ~(y = x))`,
     REPEAT CONJ_TAC THEN
-    GEN_REWRITE_TAC (LAND_CONV o funpow 2 RAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "canon.ml:(LAND_CONV o funpow 2 RAND_CONV)" (LAND_CONV o funpow 2 RAND_CONV) [GSYM ETA_AX] THEN
     REWRITE_TAC[NOT_EXISTS_THM; NOT_FORALL_THM; EXISTS_UNIQUE_DEF;
                 DE_MORGAN_THM; NOT_IMP] THEN
     REWRITE_TAC[CONJ_ASSOC; EQ_SYM_EQ])
   and pth_exu = prove
    (`((?!) P) <=> (?x:A. P x) /\ !x y. ~(P x) \/ ~(P y) \/ (y = x)`,
-    GEN_REWRITE_TAC (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
+    GEN_REWRITE_TAC "canon.ml:(LAND_CONV o RAND_CONV)" (LAND_CONV o RAND_CONV) [GSYM ETA_AX] THEN
     REWRITE_TAC[EXISTS_UNIQUE_DEF; TAUT `a /\ b ==> c <=> ~a \/ ~b \/ c`] THEN
     REWRITE_TAC[EQ_SYM_EQ])
   and p_tm = `p:bool` and q_tm = `q:bool` in
@@ -559,7 +559,7 @@ let SELECT_ELIM_TAC =
           IMP_TRANS (SELECT_ELIMS_ICONV tm') th
       with Failure _ -> DISCH tm (ASSUME tm) in
     SELECT_ELIMS_ICONV in
-  CONV_TAC SELECT_ELIM_CONV THEN W(MATCH_MP_TAC o SELECT_ELIM_ICONV o snd);;
+  CONV_TAC "canon.ml:SELECT_ELIM_CONV" SELECT_ELIM_CONV THEN W(MATCH_MP_TAC o SELECT_ELIM_ICONV o snd);;
 
 (* ------------------------------------------------------------------------- *)
 (* Eliminate all lambda-terms except those part of quantifiers.              *)

@@ -36,7 +36,7 @@ let CIRCLES_TANGENT = prove
                    REAL_FIELD `&0 < r1 /\ &0 < r2
                        ==> r1 / (r1 + r2) - &1 = --r2 / (r1 + r2)`] THEN
       ASM_SIMP_TAC[real_abs; REAL_LT_IMP_LE; REAL_LT_ADD] THEN
-      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD;
+      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/feuerbach.ml:REAL_FIELD" REAL_FIELD;
       X_GEN_TAC `y:real^2` THEN STRIP_TAC THEN
       SUBGOAL_THEN `(y:real^2) IN segment[c1,c2]` MP_TAC THENL
        [ASM_REWRITE_TAC[GSYM BETWEEN_IN_SEGMENT; between] THEN
@@ -53,7 +53,7 @@ let CIRCLES_TANGENT = prove
       REWRITE_TAC[VECTOR_ARITH `--(a % (x - y)):real^N = a % (y - x)`] THEN
       ASM_REWRITE_TAC[NORM_MUL; GSYM dist; real_abs] THEN
       DISCH_TAC THEN AP_TERM_TAC THEN AP_THM_TAC THEN AP_TERM_TAC THEN
-      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD];
+      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/feuerbach.ml:REAL_FIELD" REAL_FIELD];
     ASM_CASES_TAC `r1:real = r2` THENL
      [ASM_MESON_TAC[REAL_SUB_REFL; DIST_EQ_0]; DISJ2_TAC] THEN
     SUBGOAL_THEN `r1 < r2` ASSUME_TAC THENL [ASM_REAL_ARITH_TAC; ALL_TAC] THEN
@@ -66,7 +66,7 @@ let CIRCLES_TANGENT = prove
       ASM_SIMP_TAC[REAL_ABS_DIV; REAL_ABS_NEG;
         REAL_FIELD `r1 < r2 ==> &1 - r2 / (r2 - r1) = --(r1 / (r2 - r1))`] THEN
       ASM_SIMP_TAC[real_abs; REAL_SUB_LE; REAL_LT_IMP_LE] THEN
-      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD;
+      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/feuerbach.ml:REAL_FIELD" REAL_FIELD;
       X_GEN_TAC `y:real^2` THEN STRIP_TAC THEN
       SUBGOAL_THEN `(c1:real^2) IN segment[c2,y]` MP_TAC THENL
        [ASM_REWRITE_TAC[GSYM BETWEEN_IN_SEGMENT; between] THEN
@@ -93,7 +93,7 @@ let CIRCLES_TANGENT = prove
        `y:real^2 = c + u % v % (y - c) <=>
         (&1 - u * v) % (y - c) = vec 0`] THEN
       DISJ1_TAC THEN
-      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC REAL_FIELD]]);;
+      REPEAT(POP_ASSUM MP_TAC) THEN CONV_TAC "100/feuerbach.ml:REAL_FIELD" REAL_FIELD]]);;
 
 (* ------------------------------------------------------------------------- *)
 (*                       Feuerbach's theorem                                 *)
@@ -148,7 +148,7 @@ let FEUERBACH = prove
   REWRITE_TAC[DOT_2; DOT_LSUB; DOT_RSUB] THEN
   SIMP_TAC[VECTOR_ADD_COMPONENT; VECTOR_SUB_COMPONENT; VEC_COMPONENT;
            VECTOR_MUL_COMPONENT; BASIS_COMPONENT; DIMINDEX_2; ARITH] THEN
-  CONV_TAC REAL_RING);;
+  CONV_TAC "100/feuerbach.ml:REAL_RING" REAL_RING);;
 
 (* ------------------------------------------------------------------------- *)
 (* As a little bonus, verify that the circle passing through the             *)
@@ -182,7 +182,7 @@ let NINE_POINT_CIRCLE_1 = prove
   REWRITE_TAC[DOT_2; DOT_LSUB; DOT_RSUB] THEN
   REWRITE_TAC[VECTOR_ADD_COMPONENT; VECTOR_SUB_COMPONENT;
               VECTOR_MUL_COMPONENT; VEC_COMPONENT] THEN
-  SIMP_TAC[] THEN CONV_TAC REAL_RING);;
+  SIMP_TAC[] THEN CONV_TAC "100/feuerbach.ml:REAL_RING" REAL_RING);;
 
 let NINE_POINT_CIRCLE_2 = prove
  (`!a b c:real^2 mbc mac mab fbc fac fab ncenter nradius.
@@ -210,4 +210,4 @@ let NINE_POINT_CIRCLE_2 = prove
   REWRITE_TAC[DOT_2; DOT_LSUB; DOT_RSUB] THEN
   REWRITE_TAC[VECTOR_ADD_COMPONENT; VECTOR_SUB_COMPONENT;
               VECTOR_MUL_COMPONENT; VEC_COMPONENT] THEN
-  SIMP_TAC[] THEN CONV_TAC REAL_RING);;
+  SIMP_TAC[] THEN CONV_TAC "100/feuerbach.ml:REAL_RING" REAL_RING);;

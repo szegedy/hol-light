@@ -26,7 +26,7 @@ loadt "miz3/miz3.ml";;
 new_type_abbrev("triple",`:real^2#real^2#real^2`);;
 
 default_prover := ("ya prover",
-    fun thl -> REWRITE_TAC thl THEN CONV_TAC (HOL_BY thl));;
+    fun thl -> REWRITE_TAC thl THEN CONV_TAC "Examples/inverse_bug_puzzle_miz3.ml:(HOL_BY thl)" (HOL_BY thl));;
 
 horizon := 0;;
 timeout := 500;;
@@ -35,7 +35,7 @@ let VEC2_TAC =
   SIMP_TAC[CART_EQ; LAMBDA_BETA; FORALL_2; SUM_2; DIMINDEX_2; VECTOR_2;
            vector_add; vec; dot; orthogonal; basis;
            vector_neg; vector_sub; vector_mul; ARITH] THEN
-  CONV_TAC REAL_RING;;
+  CONV_TAC "Examples/inverse_bug_puzzle_miz3.ml:REAL_RING" REAL_RING;;
 
 let COLLINEAR_3_2Dzero = thm `;
   !y z:real^2. collinear{vec 0,y,z} <=>
@@ -246,7 +246,7 @@ let ORIENTED_AREA_COLLINEAR_CONG = thm `;
   let A B C A' B' C' be real^2;
   assume oriented_area (A,B,C) = oriented_area (A',B',C')               [H1];
   thus collinear {A,B,C} <=> collinear {A',B',C'}
-  by     H1, REWRITE_TAC[COLLINEAR_3_2D; oriented_area] THEN CONV_TAC REAL_RING;
+  by     H1, REWRITE_TAC[COLLINEAR_3_2D; oriented_area] THEN CONV_TAC "Examples/inverse_bug_puzzle_miz3.ml:REAL_RING" REAL_RING;
 `;;
 
 let Basic2move_THM = thm `;

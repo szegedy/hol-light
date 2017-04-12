@@ -474,18 +474,22 @@ let PURE_ONCE_ASM_REWRITE_RULE thl th =
 let ONCE_ASM_REWRITE_RULE thl th =
     ONCE_REWRITE_RULE ((map ASSUME (hyp th)) @ thl) th;;
 
-let GEN_REWRITE_TAC cnvl thl = CONV_TAC(GEN_REWRITE_CONV cnvl thl);;
+let GEN_REWRITE_TAC pstring cnvl thl =
+  let cnvl = register_conv2conv pstring cnvl in
+  replace_tactic_log
+    (Gen_rewrite_tac_log (pstring, thl))
+    (CONV_TAC "simp.ml:(GEN_REWRITE_CONV cnvl thl)" (GEN_REWRITE_CONV cnvl thl));;
 
 let rewrite_log ty thl tac = replace_tactic_log (Rewrite_tac_log (ty,thl)) tac;;
 
-let PURE_REWRITE_TAC thl = rewrite_log Pure_rewrite_type thl (CONV_TAC(PURE_REWRITE_CONV thl));;
+let PURE_REWRITE_TAC thl = rewrite_log Pure_rewrite_type thl (CONV_TAC "simp.ml:(PURE_REWRITE_CONV thl)" (PURE_REWRITE_CONV thl));;
 
-let REWRITE_TAC thl = rewrite_log Rewrite_type thl (CONV_TAC(REWRITE_CONV thl));;
+let REWRITE_TAC thl = rewrite_log Rewrite_type thl (CONV_TAC "simp.ml:(REWRITE_CONV thl)" (REWRITE_CONV thl));;
 
 let PURE_ONCE_REWRITE_TAC thl = rewrite_log Pure_once_rewrite_type thl
-  (CONV_TAC(PURE_ONCE_REWRITE_CONV thl));;
+  (CONV_TAC "simp.ml:(PURE_ONCE_REWRITE_CONV thl)" (PURE_ONCE_REWRITE_CONV thl));;
 
-let ONCE_REWRITE_TAC thl = rewrite_log Once_rewrite_type thl (CONV_TAC(ONCE_REWRITE_CONV thl));;
+let ONCE_REWRITE_TAC thl = rewrite_log Once_rewrite_type thl (CONV_TAC "simp.ml:(ONCE_REWRITE_CONV thl)" (ONCE_REWRITE_CONV thl));;
 
 let (PURE_ASM_REWRITE_TAC: thm list -> tactic) =
   ASM PURE_REWRITE_TAC;;
@@ -498,12 +502,6 @@ let (PURE_ONCE_ASM_REWRITE_TAC: thm list -> tactic) =
 
 let (ONCE_ASM_REWRITE_TAC: thm list -> tactic) =
   ASM ONCE_REWRITE_TAC;;
-
-let () =
-  Replay.pure_rewrite_tac := Some PURE_REWRITE_TAC;
-  Replay.rewrite_tac := Some REWRITE_TAC;
-  Replay.pure_once_rewrite_tac := Some PURE_ONCE_REWRITE_TAC;
-  Replay.once_rewrite_tac := Some ONCE_REWRITE_TAC;;
 
 (* ------------------------------------------------------------------------- *)
 (* Simplification functions.                                                 *)
@@ -543,11 +541,12 @@ let PURE_SIMP_RULE thl = CONV_RULE(PURE_SIMP_CONV thl);;
 
 let ONCE_SIMP_RULE thl = CONV_RULE(ONCE_SIMP_CONV thl);;
 
-let SIMP_TAC thl = CONV_TAC(SIMP_CONV thl);;
+let SIMP_TAC thl = replace_tactic_log
+    (Simp_tac_log thl) (CONV_TAC "simp.ml:(SIMP_CONV thl)" (SIMP_CONV thl));;
 
-let PURE_SIMP_TAC thl = CONV_TAC(PURE_SIMP_CONV thl);;
+let PURE_SIMP_TAC thl = CONV_TAC "simp.ml:(PURE_SIMP_CONV thl)" (PURE_SIMP_CONV thl);;
 
-let ONCE_SIMP_TAC thl = CONV_TAC(ONCE_SIMP_CONV thl);;
+let ONCE_SIMP_TAC thl = CONV_TAC "simp.ml:(ONCE_SIMP_CONV thl)" (ONCE_SIMP_CONV thl);;
 
 let ASM_SIMP_TAC = ASM SIMP_TAC;;
 
@@ -579,3 +578,11 @@ let ABBREV_TAC tm =
 
 let EXPAND_TAC s = FIRST_ASSUM(SUBST1_TAC o SYM o
   check((=) s o fst o dest_var o rhs o concl)) THEN BETA_TAC;;
+
+let () =
+  Replay.pure_rewrite_tac := Some PURE_REWRITE_TAC;
+  Replay.rewrite_tac := Some REWRITE_TAC;
+  Replay.pure_once_rewrite_tac := Some PURE_ONCE_REWRITE_TAC;
+  Replay.once_rewrite_tac := Some ONCE_REWRITE_TAC;;
+  Replay.simp_tac := Some SIMP_TAC;
+  Replay.gen_rewrite_tac := Some GEN_REWRITE_TAC;;

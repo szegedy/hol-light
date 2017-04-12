@@ -35,11 +35,11 @@ open Calc_int;;
 
 let REAL_LTE_TOTAL = prove
  (`!x y. x < y \/ y <= x`,
-  REWRITE_TAC[real_lt] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[real_lt] THEN CONV_TAC "realarith.ml:TAUT" TAUT);;
 
 let REAL_LET_TOTAL = prove
  (`!x y. x <= y \/ y < x`,
-  REWRITE_TAC[real_lt] THEN CONV_TAC TAUT);;
+  REWRITE_TAC[real_lt] THEN CONV_TAC "realarith.ml:TAUT" TAUT);;
 
 let REAL_LT_IMP_LE = prove
  (`!x y. x < y ==> x <= y`,
@@ -90,7 +90,7 @@ let REAL_NOT_LT = prove
 let REAL_SUB_0 = prove
  (`!x y. (x - y = &0) <=> (x = y)`,
   REPEAT GEN_TAC THEN REWRITE_TAC[GSYM REAL_LE_ANTISYM] THEN
-  GEN_REWRITE_TAC (LAND_CONV o LAND_CONV) [GSYM REAL_NOT_LT] THEN
+  GEN_REWRITE_TAC "realarith.ml:(LAND_CONV o LAND_CONV)" (LAND_CONV o LAND_CONV) [GSYM REAL_NOT_LT] THEN
   REWRITE_TAC[REAL_SUB_LE; REAL_SUB_LT] THEN REWRITE_TAC[REAL_NOT_LT]);;
 
 let REAL_LT_LE = prove

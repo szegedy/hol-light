@@ -196,7 +196,7 @@ let parallel = new_definition
 let ON_HOMOL = prove
  (`!p l. p on l <=> orthogonal (homop p) (homol l)`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [homop; homol] THEN
+  GEN_REWRITE_TAC "100/desargues.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [homop; homol] THEN
   REWRITE_TAC[on; projp; projl; REWRITE_RULE[] point_tybij] THEN
   REWRITE_TAC[GSYM perpl_th; perpdir] THEN BINOP_TAC THEN
   MESON_TAC[homol; homop; direction_tybij]);;
@@ -204,7 +204,7 @@ let ON_HOMOL = prove
 let EQ_HOMOL = prove
  (`!l l'. l = l' <=> parallel (homol l) (homol l')`,
   REPEAT GEN_TAC THEN
-  GEN_REWRITE_TAC (LAND_CONV o BINOP_CONV) [homol] THEN
+  GEN_REWRITE_TAC "100/desargues.ml:(LAND_CONV o BINOP_CONV)" (LAND_CONV o BINOP_CONV) [homol] THEN
   REWRITE_TAC[projl; MESON[fst line_tybij; snd line_tybij]
    `mk_line((||) l) = mk_line((||) l') <=> (||) l = (||) l'`] THEN
   REWRITE_TAC[PARDIR_EQUIV] THEN REWRITE_TAC[pardir; parallel] THEN
@@ -224,7 +224,7 @@ let PARALLEL_PROJL_HOMOL = prove
   GEN_TAC THEN REWRITE_TAC[parallel] THEN ASM_CASES_TAC `x:real^3 = vec 0` THEN
   ASM_REWRITE_TAC[CROSS_0] THEN MP_TAC(ISPEC `projl x` homol) THEN
   DISCH_THEN(CONJUNCTS_THEN2 ASSUME_TAC MP_TAC) THEN
-  GEN_REWRITE_TAC (LAND_CONV o ONCE_DEPTH_CONV) [projl] THEN
+  GEN_REWRITE_TAC "100/desargues.ml:(LAND_CONV o ONCE_DEPTH_CONV)" (LAND_CONV o ONCE_DEPTH_CONV) [projl] THEN
   DISCH_THEN(MP_TAC o AP_TERM `dest_line`) THEN
   REWRITE_TAC[MESON[fst line_tybij; snd line_tybij]
    `dest_line(mk_line((||) l)) = (||) l`] THEN
@@ -285,7 +285,7 @@ let COLLINEAR_BRACKET = prove
     GEN_TAC THEN DISCH_THEN(MP_TAC o CONJUNCT1) THEN
     REWRITE_TAC[DET_3; orthogonal; DOT_3; VECTOR_3; CART_EQ;
               DIMINDEX_3; FORALL_3; VEC_COMPONENT] THEN
-    CONV_TAC REAL_RING;
+    CONV_TAC "100/desargues.ml:REAL_RING" REAL_RING;
     ASM_CASES_TAC `p1:point = p2` THENL
      [ASM_REWRITE_TAC[INSERT_AC; COLLINEAR_PAIR]; ALL_TAC] THEN
     POP_ASSUM MP_TAC THEN
@@ -307,7 +307,7 @@ let BRACKET_SWAP,BRACKET_SHUFFLE = (CONJ_PAIR o prove)
  (`bracket[x;y;z] = --bracket[x;z;y] /\
    bracket[x;y;z] = bracket[y;z;x] /\
    bracket[x;y;z] = bracket[z;x;y]`,
-  REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC "100/desargues.ml:REAL_RING" REAL_RING);;
 
 let BRACKET_SWAP_CONV =
   let conv = GEN_REWRITE_CONV I [BRACKET_SWAP] in
@@ -379,7 +379,7 @@ let DESARGUES_DIRECT = prove
      ==> bracket[A';S;C'] * bracket[A';B';Q] =
          bracket[A';S;Q] * bracket[A';B';C'])`
   MP_TAC THENL
-   [REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC REAL_RING;
+   [REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC "100/desargues.ml:REAL_RING" REAL_RING;
     ALL_TAC] THEN
   REPEAT(MATCH_MP_TAC(TAUT
    `(c ==> d ==> b ==> e) ==> ((a ==> b) /\ c ==> a /\ d ==> e)`)) THEN
@@ -388,12 +388,12 @@ let DESARGUES_DIRECT = prove
          DISCH_THEN(MP_TAC o MATCH_MP (REAL_RING
           `a = b /\ x:real = y ==> a * x = b * y`))) THEN
   POP_ASSUM MP_TAC THEN REWRITE_TAC[BRACKET_SHUFFLE] THEN
-  CONV_TAC(ONCE_DEPTH_CONV BRACKET_SWAP_CONV) THEN
+  CONV_TAC "100/desargues.ml:(ONCE_DEPTH_CONV BRACKET_SWAP_CONV)" (ONCE_DEPTH_CONV BRACKET_SWAP_CONV) THEN
   REWRITE_TAC[GSYM REAL_MUL_ASSOC; REAL_MUL_LNEG; REAL_MUL_RNEG] THEN
   REWRITE_TAC[REAL_NEG_NEG; REAL_NEG_EQ_0] THEN DISCH_TAC THEN
   MATCH_MP_TAC(TAUT `!b. (a ==> b) /\ (b ==> c) ==> a ==> c`) THEN
   EXISTS_TAC `bracket[B;Q;S] * bracket[A';R;S] =
               bracket[B;R;S] * bracket[A';Q;S]` THEN
-  CONJ_TAC THENL [POP_ASSUM MP_TAC THEN CONV_TAC REAL_RING; ALL_TAC] THEN
+  CONJ_TAC THENL [POP_ASSUM MP_TAC THEN CONV_TAC "100/desargues.ml:REAL_RING" REAL_RING; ALL_TAC] THEN
   FIRST_X_ASSUM(MP_TAC o CONJUNCT1) THEN
-  REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC REAL_RING);;
+  REWRITE_TAC[bracket; DET_3; VECTOR_3] THEN CONV_TAC "100/desargues.ml:REAL_RING" REAL_RING);;
